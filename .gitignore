@@ -208,3 +208,4 @@ __marimo__/
 /raw
 .DS_Store
 /Assignment1/raw
+Assignment1/scripts/prediction_full_lasso.csv
