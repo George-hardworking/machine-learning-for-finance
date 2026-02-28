@@ -27,11 +27,11 @@ Submitting format:
 
 A comprehensive Jupyter Notebook (.ipynb) containing executable code, visualizations, and detailed explanations for the project.
 
-Best regards
+
 
 ---
 
-## Recommended Workflow
+## My own Workflow
 
 1) Data Loading & Initial Checks
 - Load GKX dataset, inspect shape, date range, dtypes, missingness; plot basic distributions/anomalies for returns/features.
