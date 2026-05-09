@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-本文件由 _generate_documented_notebook.py 从 final_improve.ipynb 自动生成。
-在 VS Code / Cursor 中可使用「Run Cell」按 # %% 分块运行；Markdown 以 # %% [markdown] 呈现。
+本文件由历史脚本从 final_improve.ipynb 导出，可能未及时同步。
+
+最新逻辑（含 SMOKE_TEST 冒烟模式等）一律以 Final/scripts/final_improve.ipynb 为准。
+在 VS Code / Cursor 中可用「Run Cell」按 # %% 分块运行；Markdown 以 # %% [markdown] 呈现。
 """
 
 # %% [markdown]
@@ -136,14 +138,15 @@ def load_and_preprocess_data(data_path, cache_dir='../outputs/cache', force_rebu
     # ==========================
     # 性能优化：全面向量化计算，防止 OOM 内存爆炸与 Kernel 崩溃
     # ==========================
-    print("计算复权价格 (向量化)...")
-    # 3. 复权因子计算 (使用 pandas 内置的 cumprod 取代 groupby.apply)
-    df['ret_plus_1'] = 1 + df['dlyret']
-    df['cum_ret'] = df.groupby('permno')['ret_plus_1'].cumprod()
-    df['AF'] = df['cum_ret'] / df.groupby('permno')['cum_ret'].transform('first')
-    df.drop(columns=['ret_plus_1', 'cum_ret'], inplace=True)
+    print("计算复权价格 (向量化，对数收益累积)...")
+    # 3. 对数收益累积与复权因子（与作者 equity_data.py L109-110 一致）
+    df['log_ret'] = np.log(1 + df['dlyret'])
+    df['cum_log_ret'] = df.groupby('permno')['log_ret'].cumsum(skipna=True)
+    # AF[t] = exp(cum_log_ret[t] - cum_log_ret[首日])，保证首日 AF=1
+    df['AF'] = np.exp(df['cum_log_ret'] - df.groupby('permno')['cum_log_ret'].transform('first'))
+    df.drop(columns=['log_ret'], inplace=True)
     
-    # 计算复权价格 (修复前：直接除导致变平；现在：基于累计收益率连乘起点价格还原起伏路线)
+    # 计算复权价格
     # 取首日真实价格做基准
     df['base_price'] = df.groupby('permno')['dlyclose'].transform('first')
     df['dlyclose_adj'] = df['base_price'] * df['AF']
@@ -154,13 +157,14 @@ def load_and_preprocess_data(data_path, cache_dir='../outputs/cache', force_rebu
     df.drop(columns=['base_price'], inplace=True)
         
     print("计算未来累计收益和标签 (向量化)...")
-    # 4. 计算未来收益与二分类标签 (针对 F=5, 20, 60)
-    # R_fut \prod (1+ret) - 1 等价于未来第 F 天的 AF 除以当天的 AF 减 1
+    # 4. 用对数收益累积计算未来收益（与作者 equity_data.py L117-118 一致）
+    # R_fut_F = exp(cum_log_ret[t+F] - cum_log_ret[t]) - 1
     for F in [5, 20, 60]:
-        df[f'AF_shift_{F}'] = df.groupby('permno')['AF'].shift(-F)
-        df[f'R_fut_{F}'] = df[f'AF_shift_{F}'] / df['AF'] - 1
+        df[f'cum_log_ret_shift_{F}'] = df.groupby('permno')['cum_log_ret'].shift(-F)
+        df[f'R_fut_{F}'] = np.exp(df[f'cum_log_ret_shift_{F}'] - df['cum_log_ret']) - 1
         df[f'Label_{F}'] = (df[f'R_fut_{F}'] > 0).astype(int)
-        df.drop(columns=[f'AF_shift_{F}'], inplace=True)
+        df.drop(columns=[f'cum_log_ret_shift_{F}'], inplace=True)
+    df.drop(columns=['cum_log_ret'], inplace=True)
         
     if liquidity_top_n is not None:
         print(f"应用流动性筛选：每月保留市值前 {int(liquidity_top_n)} ...")
@@ -593,16 +597,16 @@ print("== 基础防爆和 5天、20天、60天模型架构设置完成，执行�
 # 步骤 4 ~ 6：数据集时序划分、标准化提取与单种子强力训练大循环
 # ==========================================
 import copy
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 
 def split_and_prepare_datasets(df, L=5, F=5):
     """
     严格按照论文进行数据集划分：
     - Train+Val: 1993 ~ 2000
     - Test: 2001 ~ 2019
-    - Train/Val 之间按 permno 进行 7:3 划分 (防穿越)
+    - Train/Val 之间在样本级别随机 7:3 切分（与作者 ConcatDataset + random_split 一致）
 
-    标准化口径对齐作者：使用固定上限样本（前 50000）估计 mean/std，并进行缓存。
+    标准化口径对齐作者：使用全部 IS 数据的前 50000 样本估计 mean/std，并进行缓存。
     """
     print(f"\n====== 划分数据集 (L={L}, F={F}) ======")
 
@@ -610,36 +614,18 @@ def split_and_prepare_datasets(df, L=5, F=5):
     df_tv = df[(df['dlycaldt'] >= '1993-01-01') & (df['dlycaldt'] <= '2000-12-31')].copy()
     df_test = df[(df['dlycaldt'] >= '2001-01-01') & (df['dlycaldt'] <= '2019-12-31')].copy()
 
-    # 随机切割 permno 列表，保证同只股票不跨越训练与验证集
-    unique_permnos = df_tv['permno'].unique()
-    np.random.seed(42)  # 保证多模型划分一致
-    np.random.shuffle(unique_permnos)
-    split_idx = int(len(unique_permnos) * 0.7)
-    train_permnos = set(unique_permnos[:split_idx])
-
-    df_train = df_tv[df_tv['permno'].isin(train_permnos)].copy()
-    df_val = df_tv[~df_tv['permno'].isin(train_permnos)].copy()
-
-    del df_tv  # 释放内存
-
-    print(f"提取股票数: Train={len(train_permnos)}, Val={len(unique_permnos)-split_idx}")
-    print(f"数据集行数: Train={len(df_train)}, Val={len(df_val)}, Test={len(df_test)}")
+    print(f"数据集行数: Train+Val={len(df_tv)}, Test={len(df_test)}")
 
     trade_freq = PREDICT_HORIZON_TO_TRADE_FREQ.get(F)
     if trade_freq is None:
         raise ValueError(f"不支持的预测 horizon F={F}，应为 5/20/60")
     print(f"训练样本频率（与作者一致）: horizon F={F} -> trade_freq={trade_freq}（仅周期末日取样）")
 
-    # 周期末交易日集合：用 train+val+test 日期并集构造，避免仅用 train 漏掉 OOS 调仓日
-    cal_dates = pd.concat([df_train, df_val, df_test], axis=0)['dlycaldt']
+    # 周期末交易日集合
+    cal_dates = pd.concat([df_tv, df_test], axis=0)['dlycaldt']
     period_end_set = period_end_timestamps_from_calendar(cal_dates, trade_freq)
 
-    # 先创建未标准化训练集，用于估计 mean/std
-    ds_train_raw = StockImageDataset(
-        df_train, F, L, is_train=True, trade_freq=trade_freq, period_end_set=period_end_set
-    )
-
-    # mean/std 缓存（作者风格：固定样本上限）
+    # ---- mean/std 估计（与作者一致：用全部 IS 数据的前 50000 样本） ----
     norm_cache_path = os.path.join(MODEL_DIR, f"mean_std_I{L}_R{F}_train.npz")
     if os.path.exists(norm_cache_path):
         cache = np.load(norm_cache_path)
@@ -647,14 +633,17 @@ def split_and_prepare_datasets(df, L=5, F=5):
         std_train = float(cache['std'])
         print(f"读取缓存标准化参数: μ={mu_train:.6f}, σ={std_train:.6f}")
     else:
-        print(f"计算训练集全局 μ 和 σ (L={L}, F={F}, 前50000样本) ...")
-        sample_n = min(50000, len(ds_train_raw))
+        ds_tv_raw = StockImageDataset(
+            df_tv, F, L, is_train=True, trade_freq=trade_freq, period_end_set=period_end_set
+        )
+        print(f"计算 IS 全局 μ 和 σ (L={L}, F={F}, 前50000样本) ...")
+        sample_n = min(50000, len(ds_tv_raw))
         pixel_sum = 0.0
         pixel_sq_sum = 0.0
         pixel_count = 0
 
         for i in range(sample_n):
-            img, _ = ds_train_raw[i]  # img shape: (1, H, W), 已是[0,1]
+            img, _ = ds_tv_raw[i]
             arr = img.numpy()
             pixel_sum += float(arr.sum())
             pixel_sq_sum += float((arr * arr).sum())
@@ -668,20 +657,21 @@ def split_and_prepare_datasets(df, L=5, F=5):
         print(f"已缓存标准化参数到 {norm_cache_path}")
         print(f"==> 归一化参数：μ={mu_train:.6f}, σ={std_train:.6f}")
 
-    # 将标准化参数应用到所有数据集
-    ds_train = StockImageDataset(
-        df_train,
-        F,
-        L,
-        mu_train=mu_train,
-        std_train=std_train,
-        is_train=True,
-        trade_freq=trade_freq,
-        period_end_set=period_end_set,
+    # ---- 构建带标准化的 IS 数据集，然后样本级 random_split 70/30 ----
+    ds_tv = StockImageDataset(
+        df_tv, F, L,
+        mu_train=mu_train, std_train=std_train,
+        is_train=True, trade_freq=trade_freq, period_end_set=period_end_set,
     )
-    ds_val = StockImageDataset(
-        df_val, F, L, mu_train=mu_train, std_train=std_train, trade_freq=trade_freq, period_end_set=period_end_set
-    )
+    train_size = int(len(ds_tv) * 0.7)
+    val_size = len(ds_tv) - train_size
+    print(f"样本级 random_split: Train={train_size}, Val={val_size} (总 {len(ds_tv)})")
+
+    generator = torch.Generator().manual_seed(42)
+    ds_train, ds_val = random_split(ds_tv, [train_size, val_size], generator=generator)
+
+    del df_tv  # 释放内存
+
     ds_test = StockImageDataset(
         df_test, F, L, mu_train=mu_train, std_train=std_train, trade_freq=trade_freq, period_end_set=period_end_set
     )
@@ -872,7 +862,7 @@ def predict_ensemble(models, ds_test, batch_size=512):
             batch_probs = torch.zeros(X_batch.size(0)).to(device)
             for m in models:
                 outputs = m(X_batch)
-                probs = F.softmax(outputs, dim=1)[:, 1]
+                probs = torch.nn.functional.softmax(outputs, dim=1)[:, 1]
                 batch_probs += probs
                 
             # 集成平均
@@ -971,17 +961,15 @@ def evaluate_strategy(df_test_valid, F_horizon=5, fee_bps=0.001, df_daily=None):
     eval_metrics(period_ret['CNN_LS_net_EW'], "CNN 图像等权策略 EW")
     eval_metrics(period_ret['CNN_LS_net_VW'], "CNN 图像市值权策略 VW")
     
-    # =============== 累计资金绘图 =================
+    # =============== 累计对数收益绘图（净收益）=================
     plt.figure(figsize=(14, 7))
-    plt.plot(period_ret.index, (1 + period_ret['CNN_LS_net_EW']).cumprod(), label=f'CNN EW Long-Short', color='#c0392b', linewidth=3)
-    plt.plot(period_ret.index, (1 + period_ret['CNN_LS_net_VW']).cumprod(), label=f'CNN VW Long-Short (Value-Weighted)', color='#e74c3c', linewidth=2, linestyle='-.')
-    plt.plot(period_ret.index, (1 + period_ret['Mom_LS_net']).cumprod(), label=f'Baseline Momentum', color='#7f8c8d', linewidth=2, linestyle='--')
-    plt.plot(period_ret.index, (1 + period_ret['MA_LS_net']).cumprod(), label=f'Baseline MA Cross', color='#34495e', linewidth=2, linestyle=':')
-    
-    plt.title(f'Cumulative Returns Evaluation (L={F_horizon}, EW vs VW, No Cross-Compounding)', fontsize=16, fontweight='bold')
+    plt.plot(period_ret.index, np.log(1 + period_ret['CNN_LS_net_EW']).cumsum(), label=f'CNN EW Long-Short', color='#c0392b', linewidth=3)
+    plt.plot(period_ret.index, np.log(1 + period_ret['CNN_LS_net_VW']).cumsum(), label=f'CNN VW Long-Short (Value-Weighted)', color='#e74c3c', linewidth=2, linestyle='-.')
+    plt.plot(period_ret.index, np.log(1 + period_ret['Mom_LS_net']).cumsum(), label=f'Baseline Momentum', color='#7f8c8d', linewidth=2, linestyle='--')
+    plt.plot(period_ret.index, np.log(1 + period_ret['MA_LS_net']).cumsum(), label=f'Baseline MA Cross', color='#34495e', linewidth=2, linestyle=':')
+    plt.title(f'Cumulative Log Returns — Net of Costs (L={F_horizon})', fontsize=16, fontweight='bold')
     plt.xlabel('Date (Year)', fontsize=13)
-    plt.ylabel('Cumulative Return (Base=1.0)', fontsize=13)
-    plt.yscale('log') # 对数Y轴
+    plt.ylabel('Cumulative Log Return', fontsize=13)
     plt.legend(loc='upper left', fontsize=11, frameon=True, edgecolor='black')
     plt.grid(True, which='both', alpha=0.2, linestyle='-')
     plt.tight_layout()
@@ -1235,7 +1223,7 @@ def plot_saliency_map(model, dataset, num_samples=3):
         X_unsqueeze = X_tensor.unsqueeze(0).to(device)
         with torch.no_grad():
             outputs = model(X_unsqueeze)
-            prob = F.softmax(outputs, dim=1)[0, 1].item()
+            prob = torch.nn.functional.softmax(outputs, dim=1)[0, 1].item()
             
         # 寻找预测上涨概率极高 (自信) 的形态
         if prob > 0.85:
@@ -1784,39 +1772,66 @@ def calc_decile_metrics_full(df_test_valid, F_horizon, score_col):
 
 def plot_paper_figure7_fixed(df_test_valid, F_horizon, title_suffix="", df_daily=None):
     """
-    修复版Figure7，完全贴合论文
-    【核心修复】优化Linear Model特征、增加极值处理，解决波动率陡升问题
+    Figure7 复现：CNN vs Linear (statsmodels Logit + rank norm) vs 传统基准
     """
     df = df_test_valid.copy()
     if df_daily is None:
         raise ValueError("plot_paper_figure7_fixed 需要 df_daily，以便在日频上构造动量/均线/反转与 Linear 特征")
 
     df = enrich_rebalance_panel_with_daily_baselines(df, df_daily, F_horizon)
-    df = merge_linear_features_from_daily(df, df_daily)
 
-    print("====== 训练修复版Linear Model，10秒搞定 ======")
-    # 填充缺失值+极值处理（去掉极端值，避免波动率飙升）
-    feature_cols = ['ret_past_1', 'ret_past_5', 'ret_past_20', 'vol_past_5', 'vol_past_20', 'high_low_ratio', 'close_open_ratio']
-    df[feature_cols] = df[feature_cols].fillna(0)
-    # 对特征做1%和99%的缩尾，去掉极端值
-    for col in feature_cols:
-        df[col] = df[col].clip(lower=df[col].quantile(0.01), upper=df[col].quantile(0.99))
+    print("====== 训练对齐作者的 Linear Model (statsmodels Logit + rank norm)，10秒搞定 ======")
+    # -------------------------------------------------------
+    # 特征构造：与作者一致，使用多组 lag 的原始像素级特征
+    # 从日频提取每只股票过去 L 窗口的 OHLC+Vol 原始值作为 lag 特征
+    # -------------------------------------------------------
+    import statsmodels.api as sm
 
-    # 2. 用全样本训练（避免样本不足，线性模型不会过拟合）
-    train_df = df.dropna(subset=feature_cols + [f'Label_{F_horizon}'])
-    # 标准化特征 + 训练逻辑回归
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(train_df[feature_cols])
-    y_train = train_df[f'Label_{F_horizon}']
-    X_all = scaler.transform(df[feature_cols])
+    L = MODEL_CFG[F_horizon]['W'] // 3
+    lag_cols = []
+    d = df_daily.sort_values(['permno', 'dlycaldt']).copy()
+    for lag in range(1, min(L + 1, 21)):
+        for col_base, src_col in [('o', 'dlyopen_adj'), ('h', 'dlyhigh_adj'),
+                                   ('l', 'dlylow_adj'), ('c', 'dlyclose_adj'),
+                                   ('v', 'dlyvol')]:
+            feat_name = f'{col_base}_lag{lag}'
+            d[feat_name] = d.groupby('permno')[src_col].shift(lag)
+            lag_cols.append(feat_name)
+        ma_col = f'ma_lag{lag}'
+        d[ma_col] = d.groupby('permno')['dlyclose_adj'].shift(lag).rolling(L, min_periods=1).mean()
+        lag_cols.append(ma_col)
 
-    # 3. 训练逻辑回归（调整正则化，让预测更分散）
-    lr = LogisticRegression(C=0.1, penalty='l2', max_iter=2000, random_state=42)
-    lr.fit(X_train, y_train)
+    merge_cols = ['permno', 'dlycaldt'] + lag_cols
+    df = df.merge(d[merge_cols], on=['permno', 'dlycaldt'], how='left')
+    df[lag_cols] = df[lag_cols].fillna(0)
 
-    # 4. 预测概率，合并回原数据
-    df['linear_score'] = lr.predict_proba(X_all)[:, 1]
-    print("====== 修复版Linear Model训练完成，开始画图 ======")
+    # Rank normalization
+    for col in lag_cols:
+        df[col] = df.groupby('dlycaldt')[col].rank(pct=True)
+
+    # 训练 statsmodels Logit
+    label_col = f'Label_{F_horizon}'
+    train_df = df.dropna(subset=lag_cols + [label_col])
+    X_train = train_df[lag_cols].values
+    y_train = train_df[label_col].values
+
+    X_train_sm = sm.add_constant(X_train, has_constant='add')
+    try:
+        logit_model = sm.Logit(y_train, X_train_sm)
+        result = logit_model.fit(disp=0, maxiter=200)
+        X_all = sm.add_constant(df[lag_cols].fillna(0).values, has_constant='add')
+        df['linear_score'] = result.predict(X_all)
+    except Exception as e:
+        print(f"[警告] statsmodels Logit 未收敛({e})，回退到 sklearn LogisticRegression")
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.preprocessing import StandardScaler
+        scaler = StandardScaler()
+        X_train_s = scaler.fit_transform(X_train)
+        lr = LogisticRegression(C=1.0, penalty='l2', max_iter=2000, random_state=42)
+        lr.fit(X_train_s, y_train)
+        X_all_s = scaler.transform(df[lag_cols].fillna(0).values)
+        df['linear_score'] = lr.predict_proba(X_all_s)[:, 1]
+    print("====== Linear Model训练完成，开始画图 ======")
     
     # ==========================================
     # 计算所有模型的分位数结果
@@ -1938,8 +1953,7 @@ def merge_figure8_technical_signals_from_daily(df_sparse, df_daily):
 
 def plot_paper_figure8_perfect(df_test_valid, period_ret, F_horizon=20, title_suffix="(I20/R20)", df_daily=None):
     """
-    终极完美版Figure8，100%复刻论文
-    混合：100个真实技术指标 + 2000个模拟随机策略。
+    Figure8复现：100%真实技术指标多空夏普分布（去除模拟数据）。
     技术指标在 df_daily 上按交易日计算，再对齐到调仓日，与主回测 enrich 口径一致。
     """
     if df_daily is None:
@@ -1947,15 +1961,15 @@ def plot_paper_figure8_perfect(df_test_valid, period_ret, F_horizon=20, title_su
 
     df, tech_signals = merge_figure8_technical_signals_from_daily(df_test_valid.copy(), df_daily)
     ann_factor = PERIODS_PER_YEAR[F_horizon]
-    print("====== 生成真实+模拟混合策略（日频指标→调仓日），10秒搞定 ======")
+    print("====== 生成真实技术指标策略（日频指标→调仓日），10秒搞定 ======")
 
     # ==========================================
-    # 计算真实策略的夏普比率
+    # 计算所有真实技术指标的夏普比率
     # ==========================================
     sharpe_list = []
     rebal_dates = period_ret.index
     df_reb = df[df['dlycaldt'].isin(rebal_dates)].copy()
-    
+
     for signal_name, col_name in tech_signals.items():
         df_reb['decile'] = df_reb.groupby('dlycaldt')[col_name].rank(pct=True, ascending=True)
         daily_ret = df_reb.groupby('dlycaldt').apply(
@@ -1963,27 +1977,17 @@ def plot_paper_figure8_perfect(df_test_valid, period_ret, F_horizon=20, title_su
         ).fillna(0)
         sharpe = calculate_sharpe(daily_ret, ann_factor=ann_factor)
         sharpe_list.append(sharpe)
-    
-    # ==========================================
-    # 【核心】生成2000个模拟随机策略，完美复刻论文正态分布
-    # 论文的7846个策略里，大部分都是参数随机组合的类随机策略
-    # ==========================================
-    np.random.seed(42)
-    # 以0为中心，标准差为0.5的正态分布，完美贴合论文直方图
-    simulated_sharpes = np.random.normal(loc=0.0, scale=0.5, size=2000)
-    # 混合真实策略和模拟策略
-    all_sharpes = np.concatenate([sharpe_list, simulated_sharpes])
-    
+
     # 计算你的CNN策略的夏普比率
     cnn_sharpe = calculate_sharpe(period_ret['CNN_LS_net_EW'], ann_factor=ann_factor)
-    print(f"====== 完成，共 {len(all_sharpes)} 个策略，CNN夏普: {cnn_sharpe:.4f} ======")
+    print(f"====== 完成，共 {len(sharpe_list)} 个真实技术指标策略，CNN夏普: {cnn_sharpe:.4f} ======")
     
     # ==========================================
     # 3. 画图：100%复刻论文Figure8
     # ==========================================
     plt.figure(figsize=(10, 6), dpi=120)
-    # 画混合策略的夏普分布直方图
-    n, bins, patches = plt.hist(all_sharpes, bins=50, color='#1f77b4', alpha=0.7, label=f'Traditional Technical Indicators (N={len(all_sharpes)})')
+    # 画真实技术指标策略的夏普分布直方图
+    n, bins, patches = plt.hist(sharpe_list, bins=50, color='#1f77b4', alpha=0.7, label=f'Traditional Technical Indicators (N={len(sharpe_list)})')
     # 画CNN策略的红色竖线
     plt.axvline(x=cnn_sharpe, color='#d62728', linewidth=3, linestyle='-', label=f'CNN Strategy (Sharpe: {cnn_sharpe:.2f})')
     
@@ -2023,81 +2027,82 @@ import numpy as np
 
 def generate_paper_table1(df_test_valid, F_horizon=20, title_suffix="I20/R20"):
     """
-    生成和论文Table I完全对齐的分位数绩效表
+    生成和论文Table I完全对齐的分位数绩效表（含 std 行与 Turnover）
     输入：你已有的df_test_valid，F_horizon周期
     输出：格式化的表格，直接可以复制到PPT
     """
     df = df_test_valid.copy()
     ann_factor = PERIODS_PER_YEAR[F_horizon]
     table_data = {}
-    
-    # ==========================================
-    # 1. 计算核心CNN模型的分位数绩效
-    # ==========================================
-    # 按预测分10组，和论文逻辑完全一致
+
+    # 1. 按预测分10组
     df['decile'] = df.groupby('dlycaldt')['pred_score'].rank(pct=True, ascending=True)
     df['decile'] = (df['decile'] * 10).apply(np.ceil).astype(int)
-    
-    # 计算每个分位数的年化收益、夏普比率
-    decile_stats = df.groupby('decile')[f'R_fut_{F_horizon}'].agg(
-        mean_ret='mean',
-        std_ret='std'
-    ).reset_index().sort_values('decile')
-    
-    # 年化处理，和论文对齐
-    decile_stats['ann_ret'] = decile_stats['mean_ret'] * ann_factor
-    decile_stats['ann_sr'] = decile_stats['mean_ret'] / decile_stats['std_ret'] * np.sqrt(ann_factor)
-    
-    # 填充到表格，和论文列顺序一致
-    for idx, row in decile_stats.iterrows():
-        decile_num = int(row['decile'])
-        if decile_num == 1:
+
+    # 2. 逐期计算每个 decile 的收益序列，再求统计量（对齐作者 portfolio_res_summary）
+    ret_col = f'R_fut_{F_horizon}'
+    period_ret = df.groupby(['dlycaldt', 'decile'])[ret_col].mean().unstack(fill_value=0)
+
+    # H-L 逐期收益（先逐期做差，再求统计量，与作者一致）
+    period_ret['H-L'] = period_ret[10] - period_ret[1]
+
+    # 3. 逐期持仓换手率（H-L 的 turnover）
+    turnover_list = []
+    prev_holdings = None
+    for dt, grp in df.groupby('dlycaldt'):
+        top = set(grp[grp['decile'] == 10]['permno'])
+        bot = set(grp[grp['decile'] == 1]['permno'])
+        long_set = top
+        short_set = bot
+        cur_holdings = {'long': long_set, 'short': short_set}
+        if prev_holdings is not None:
+            long_to = 1 - len(long_set & prev_holdings['long']) / max(len(long_set), 1)
+            short_to = 1 - len(short_set & prev_holdings['short']) / max(len(short_set), 1)
+            turnover_list.append((long_to + short_to) / 2)
+        prev_holdings = cur_holdings
+    avg_turnover = np.mean(turnover_list) if turnover_list else 0
+
+    # 4. 计算年化统计量（ret, std, SR）
+    decile_order = list(range(1, 11)) + ['H-L']
+    for d in decile_order:
+        s = period_ret[d]
+        ann_ret = s.mean() * ann_factor
+        ann_std = s.std() * np.sqrt(ann_factor)
+        ann_sr = ann_ret / ann_std if ann_std > 0 else 0
+        if d == 1:
             col_name = 'Low'
-        elif decile_num == 10:
+        elif d == 10:
             col_name = 'High'
+        elif d == 'H-L':
+            col_name = 'H-L'
         else:
-            col_name = str(decile_num)
-        # 收益+夏普，和论文格式完全匹配
-        table_data[f'{col_name}_Ret'] = round(row['ann_ret'], 2)
-        table_data[f'{col_name}_SR'] = round(row['ann_sr'], 2)
-    
-    # 计算核心H-L多空组合绩效
-    h_ret = decile_stats[decile_stats['decile'] == 10]['mean_ret'].values[0]
-    l_ret = decile_stats[decile_stats['decile'] == 1]['mean_ret'].values[0]
-    h_std = decile_stats[decile_stats['decile'] == 10]['std_ret'].values[0]
-    l_std = decile_stats[decile_stats['decile'] == 1]['std_ret'].values[0]
-    
-    hl_ret = (h_ret - l_ret) * ann_factor
-    hl_sr = (h_ret - l_ret) / np.sqrt(h_std**2 + l_std**2) * np.sqrt(ann_factor)
-    table_data['H-L_Ret'] = round(hl_ret, 2)
-    table_data['H-L_SR'] = round(hl_sr, 2)
-    
-    # ==========================================
-    # 2. 生成格式化表格，和论文对齐
-    # ==========================================
-    # 列顺序和论文完全一致：Low,2,3,4,5,6,7,8,9,High,H-L
-    col_order = ['Low','2','3','4','5','6','7','8','9','High','H-L']
-    # 拆分成收益行和夏普行
-    ret_row = []
-    sr_row = []
+            col_name = str(d)
+        table_data[f'{col_name}_Ret'] = round(ann_ret, 2)
+        table_data[f'{col_name}_Std'] = round(ann_std, 2)
+        table_data[f'{col_name}_SR'] = round(ann_sr, 2)
+
+    # 5. 生成格式化表格
+    col_order = ['Low', '2', '3', '4', '5', '6', '7', '8', '9', 'High', 'H-L']
+    ret_row, std_row, sr_row = [], [], []
     for col in col_order:
         ret_row.append(table_data[f'{col}_Ret'])
+        std_row.append(table_data[f'{col}_Std'])
         sr_row.append(table_data[f'{col}_SR'])
-    
-    # 构建最终DataFrame
+
     table_df = pd.DataFrame(
-        [ret_row, sr_row],
-        index=[f'{title_suffix} 年化收益(Ret)', f'{title_suffix} 年化夏普(SR)'],
-        columns=col_order
+        [ret_row, std_row, sr_row],
+        index=[
+            f'{title_suffix} Ret',
+            f'{title_suffix} Std',
+            f'{title_suffix} SR',
+        ],
+        columns=col_order,
     )
-    
-    # 打印表格，直接可以复制到PPT
+    to_row = [np.nan] * (len(col_order) - 1) + [round(avg_turnover, 4)]
+    table_df.loc[f'{title_suffix} Turnover'] = to_row
+
     print(f"\n====== 论文 Table I 复现：{title_suffix} 分位数组合绩效 ======")
     print(table_df.to_string())
-    
-    # 可选：导出到Excel，方便粘贴到PPT
-    # table_df.to_excel(f'Table_I_{title_suffix}.xlsx')
-    
     return table_df
 
 # ==========================================
