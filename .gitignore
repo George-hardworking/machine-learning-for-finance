@@ -217,3 +217,4 @@ Assignment1/scripts/prediction_full_ridge.csv
 Final/outputs/cache/cleaned_data.pkl
 Final/outputs/cache/tensor_images_L5_F5.pkl
 .vscode/settings.json
+/Final/outputs
