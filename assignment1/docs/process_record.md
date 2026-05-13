@@ -1,11 +1,11 @@
 User: 接下来，你所有回答我的问题都用中文回答。
-我现在正在上一门金融机器学习的课程，在这堂课中老师布置了一次assignment，所有的作业的要求，都放在Assignment1/docs/README.md里面，然后还有一个lecture2.pdf是我们上这门课的ppt的讲义。然后老师给的数据放在Assignment1/raw/gkx_20201231.csv里面。
-然后我的脚本文件放在Assignment1/scripts/assignment1_kaibiao.ipynb。
+我现在正在上一门金融机器学习的课程，在这堂课中老师布置了一次assignment，所有的作业的要求，都放在assignment1/docs/README.md里面，然后还有一个lecture2.pdf是我们上这门课的ppt的讲义。然后老师给的数据放在assignment1/raw/gkx_20201231.csv里面。
+然后我的脚本文件放在assignment1/scripts/assignment1_kaibiao.ipynb。
 现在请你告诉我老师这个作业要求我们做什么事情，我们应该分多少个阶段去做，请从数据的读取和查看，到必要的数据处理开始，告诉我我应该做一些什么事情才能够完成这个任务。
 
 GitHub Copilot: 正在优化工具选择...
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/docs/README.md)
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/docs/README.md)
 
 以下是作业要求与可执行的阶段性步骤概要，便于在Notebook中展开。
 
@@ -72,7 +72,7 @@ User: 请现在将这些流程写入README当中。并且在ipynb文件中完成
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-正在生成 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/docs/README.md) 中的修补程序(30 行)
+正在生成 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/docs/README.md) 中的修补程序(30 行)
 
 
 ```
@@ -80,7 +80,7 @@ GitHub Copilot: 正在检索笔记本摘要。
 ```
 
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 **更新内容**
 - 在 README.md 增加了推荐的完成流程（数据读取→清洗→时间序列CV→模型选择→经济价值→宏观+Group LASSO→报告复现）。
@@ -96,11 +96,11 @@ User: 请你查看输出结果，然后告诉我输出结果怎么样，然后�
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W0sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W0sZmlsZQ%3D%3D)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 **输出解读**
 - 数据量约 434 万行、101 列；已按 `DATE` 排序后日期显示为 1970 年时间戳格式。
@@ -133,11 +133,11 @@ User: 请检查这一次的输出结果，并告诉我后面我们需要做什�
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W3sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W3sZmlsZQ%3D%3D)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已查看最新输出：
 
@@ -166,7 +166,7 @@ User: 请查看现在的输出结果并告诉我后面需要做什么
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W6sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W6sZmlsZQ%3D%3D)
 
 当前输出要点：
 - 已删除高缺失特征 6 个，保留特征 88 列。
@@ -201,9 +201,9 @@ y_wins = winsorize_series(y_step2)
 
 User: 之前你做的都特别好，请你直接跟之前一样，写一个结果分析和下一步要做什么，然后就直接把代码写在里面。
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已按要求添加了“结果小结与下一步”的说明和后续代码：
 
@@ -223,9 +223,9 @@ User: 已经完成了你刚才的这个代码的运行，请继续进行下一�
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已追加时间序列递归CV与基线模型的说明和示例代码（末尾新建两格）：
 
@@ -238,9 +238,9 @@ Made changes.
 
 User: 首先现在代码报错了，请你解决一下，其次，我注意到你使用DATE进行切分，但是有一个重要的事情，你记不记得在回归和预测的时候是不能够用这个date的指标的，检查一下
 
-GitHub Copilot: Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+GitHub Copilot: Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已修正并更新了时间序列CV代码：
 
@@ -254,7 +254,7 @@ Made changes.
 
 User: 运行没有问题了，但是我想让你读取一下README中我们最开始说的工作步骤，你现在完成了哪些？还差哪些没完成？
 
-GitHub Copilot: 读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/docs/README.md)
+GitHub Copilot: 读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/docs/README.md)
 
 已核对 README 中的步骤，当前完成情况如下：
 
@@ -278,13 +278,13 @@ User: 我发现DATE的解析是完全有问题的，那个时间范围是错的�
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已按顺序修正：
 
@@ -299,9 +299,9 @@ Made changes.
 
 User: 现在任务进行到哪一步了接下来应该完成哪一个步骤？请完成接下来那一个步骤
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 **进度与已修正**
 - 已修正 DATE 解析（按 YYYYMMDD），并重跑读取。
@@ -323,7 +323,7 @@ Made changes.
 User: 请帮我确认一个问题：你数据的 DATE 是否每条记录都是“月末日期”（例如 1926-01-30、1926-02-27 这种）？
 你只要在 notebook 里快速看一下 work_df["DATE"].dt.day.value_counts().head() 或 work_df["DATE"].nunique() / work_df["DATE"].dt.to_period("M").nunique() 就能确认。
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已在 Notebook 末尾添加检查代码（新代码单元），会输出：
 - `DATE` 日号分布（前10个日号及计数）。
@@ -341,11 +341,11 @@ GitHub Copilot: Response cleared due to content safety filters, retrying with mo
 
 读取单元格输出
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#430-430)，行 430 到 465
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#430-430)，行 430 到 465
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X25sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X25sZmlsZQ%3D%3D)
 
 结论：`DATE` 是月度频率（每月只有一个日期，集中在 26–31 号等月末日）。
 - 日号分布（部分）：26: 32,288；27: 51,308；28: 483,518；29: 607,680；30: 1,395,248；31: 1,775,466。
@@ -363,7 +363,7 @@ GitHub Copilot: - 影响：月度频率意味着每月只有一个观测日（�
 
 User: 请查看网格搜索结果，并告诉我是什么意思，意味着什么，然后根据结果，写结果分析和接下来怎么做 然后给出下一个步骤的代码
 
-GitHub Copilot: Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+GitHub Copilot: Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
 **网格搜索结果解读**
 - Ridge：不同 alpha（0.01–100）表现几乎一致，MSE≈0.020848，R²≈-0.0044（与零基准相当甚至略差）。说明在当前特征/窗口下，Ridge 正则化强度影响不大，整体拟合力有限。
@@ -412,9 +412,9 @@ GitHub Copilot: - 线性回归是模型，时间有序的交叉验证（递归/�
 
 User: 原来如此。好的请你看看下一步要怎么做，然后做出来下一步，但是特征工程估计是不用做增加了，因为已经有很多特征了。
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已为“更多数据”添加全量评估步骤（末尾新添两单元）：
 - Markdown：说明用全量日期、固定 alpha（Ridge=1.0，LASSO=0.001）、5 折扩展窗口评估。
@@ -432,7 +432,7 @@ GitHub Copilot: 当前新增的“全量时间序列递归CV（固定 alpha）�
 
 User: 我害怕要跑很久，请加入一个tqbm的时间进度条
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已在“全量时间序列递归CV（固定 alpha）”代码单元加入 `tqdm` 进度条（遍历折时显示进度）。请运行该单元前确认环境已安装 tqdm，若未安装可先在终端或 Notebook 中 `pip install tqdm`。
 
@@ -444,13 +444,13 @@ GitHub Copilot: 正在检索笔记本摘要。
 
 Summarized conversation history
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#474-474)，行 474 到 544
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#474-474)，行 474 到 544
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#371-371)，行 371 到 451
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#371-371)，行 371 到 451
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#221-221)，行 221 到 239
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#221-221)，行 221 到 239
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
 原因梳理（基于最新输出 assignment1_kaibiao.ipynb):
 - R² 基本为 0 或小幅为负，说明线性特征在截尾后的 RET 上几乎没有可利用的预测信号，接近随机噪声。
@@ -478,7 +478,7 @@ Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machin
 
 User: 试试跑一个基线先？
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已在底部新增“基线”代码单元（Cell 16），复用全量折 `folds_full`，评估两个常数预测：预测 0 与预测训练均值。运行后会输出每折的 MSE/R²，并按模型做均值聚合，可直接和线性模型结果对比。如果还需要把基线并入前表格一起比较，可再合并 `results_full_df` 与 `baseline_df`。
 
@@ -486,7 +486,7 @@ Made changes.
 
 User: 运行报错了 请你解决一下
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已修复基线单元（Cell 16），主要改动：
 - 将 `y_train`/`y_val` 转成 numpy，避免 `np.zeros_like`/`np.full_like` 触发索引或 dtype 问题。
@@ -501,7 +501,7 @@ User: 结果已经出来了，请你查看
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X34sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X34sZmlsZQ%3D%3D)
 
 基线结果（Cell 16）显示：
 - 折均值：TrainMean MSE≈0.02285、R²≈-0.001；Zero MSE≈0.02293、R²≈-0.0048。
@@ -531,7 +531,7 @@ GitHub Copilot: 我无法在你的环境中自行请求或获得授权来运行�
 
 User: 选项A 然后你直接修改代码
 
-GitHub Copilot: 正在生成 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb) 中的修补程序(6 行)
+GitHub Copilot: 正在生成 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb) 中的修补程序(6 行)
 
 已把全量评估单元的初始训练占比改为 0.7（Cell 15，train_min_frac 由 0.5→0.7）。请按顺序运行：
 1) Cell 15（全量时间序列递归CV）
@@ -545,11 +545,11 @@ User: 已经运行完毕，请你查看就够
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
 读取单元格输出
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#554-554)，行 554 到 558
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#554-554)，行 554 到 558
 
 最新结果（全量递归 CV，train_min_frac=0.7，在 assignment1_kaibiao.ipynb）：
 - 稳定性改善：首折不再爆炸，R² 都在 0 附近。
@@ -568,13 +568,13 @@ Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machin
 
 User: 训练占比以后都控制在80%，然后请你按照你的建议，修改代码并注意两个代码区块之间要加一些statement
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 正在检索笔记本摘要。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已按要求修改：
 
@@ -593,9 +593,9 @@ User: 运行好了 你看一下
 
 GitHub Copilot: 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
 
 结果解读（train_min_frac=0.80，Ridge=10，LASSO=0.005）：
 - 折均值（按模型聚合）显示在基线单元（Cell 17）：LASSO MSE≈0.01981，R²≈-0.00135；TrainMean 基线相同；OLS/Ridge 稍劣；Zero 稍差。整体仍与常数基线持平，R² ~0。
@@ -631,7 +631,7 @@ GitHub Copilot: 我们在做的事情是：用时间序列递归交叉验证评�
 
 User: 能不能不管了 就直接这样子 做预测了
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 好的，已添加新单元（当前在末尾，Cell 19）：直接用全量数据拟合 LASSO(alpha=0.005) 并生成预测，保存为 `prediction_full_lasso.csv`，同时打印前几行。注意提示里也写了——当前模型并未优于基线，结果仅供参考。请运行该单元即可得到预测文件。
 
@@ -639,7 +639,7 @@ Made changes.
 
 User: 加上tqdm
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已在末尾预测单元（Cell 20）加入 tqdm，并在保存时显示进度。运行该单元即可看到进度条与预测结果/CSV 保存提示。
 
@@ -651,13 +651,13 @@ GitHub Copilot: 正在检索笔记本摘要。
 
 Summarized conversation history正在优化工具选择...
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
 - 网格搜索：Ridge 各 alpha 表现一致，MSE≈0.020848、R²≈-0.0044；LASSO 最好在 alpha=0.001，MSE≈0.020766、R²≈0.000054，差异极小，信号基本为零（见 assignment1_kaibiao.ipynb).
 - 全量递归 CV（train_min_frac=0.80，Ridge=10，LASSO=0.005）：5 折 R²均接近 0 或略为负，效果与 OLS 持平，未优于基线（折别输出在 assignment1_kaibiao.ipynb).
@@ -666,13 +666,13 @@ Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machin
 
 User: 请你检查readme文件，再次看看我的作业要求，现在是否偏离了我的作业要求了？
 
-GitHub Copilot: 读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/docs/README.md)
+GitHub Copilot: 读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/docs/README.md)
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#150-150)，行 150 到 260
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#150-150)，行 150 到 260
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#260-260)，行 260 到 380
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#260-260)，行 260 到 380
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#90-90)，行 90 到 150
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#90-90)，行 90 到 150
 
 - 基本要求覆盖情况：在特征准备中按要求先删 cols_del（包含 permno/DATE 等），并用 RET 作为目标（见 assignment1_kaibiao.ipynb）；时间有序递归/扩展窗口 CV、评估 MSE 与 $R^2$ 已完成（见 assignment1_kaibiao.ipynb）。
 - 可能的偏离：为控制缺失，额外删除了缺失率>60%的特征并剔除缺失>90%的样本行（见 assignment1_kaibiao.ipynb），这使“使用全部特征”变为“使用剩余特征”。如果要求严格保留全部特征，需取消这一步或解释合理性。
@@ -681,11 +681,11 @@ GitHub Copilot: 读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-lear
 
 User: 但是代码文件中预测没有给出最终模型的MSE和R方啊
 
-GitHub Copilot: 读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#430-430)，行 430 到 620
+GitHub Copilot: 读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#430-430)，行 430 到 620
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#620-620)，行 620 到 692
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#620-620)，行 620 到 692
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 更新了一个汇总单元（已写入空白单元）会显示当前全量递归CV的 MSE 和 R²（均值/标准差）。请在全量递归CV单元后运行这个新单元（就在原空白单元处）。如果已经跑过 CV，可直接运行它查看最终模型的指标。
 
@@ -693,7 +693,7 @@ Made changes.
 
 User: 再一次跟我讲一下什么是递归，什么是fold等概念
 
-GitHub Copilot: - 递归（扩展窗口）时间序列验证：按时间排序，首段数据做第一折训练，下一段做验证；第二折则用“之前所有数据”继续做训练，下一段做验证……训练集随时间累积、不回滚。这避免用未来数据训练过去（防前视偏差）。你在 notebook 中的全量 5 折递归 CV 就是这种方式（见 Assignment1/scripts/assignment1_kaibiao.ipynb#L474-L546）。
+GitHub Copilot: - 递归（扩展窗口）时间序列验证：按时间排序，首段数据做第一折训练，下一段做验证；第二折则用“之前所有数据”继续做训练，下一段做验证……训练集随时间累积、不回滚。这避免用未来数据训练过去（防前视偏差）。你在 notebook 中的全量 5 折递归 CV 就是这种方式（见 assignment1/scripts/assignment1_kaibiao.ipynb#L474-L546）。
 - 折（fold）：把按时间分段得到的“训练+验证”一次划分称为一折。例如 5 折意味着时间线上切出 5 个连续的验证片段，每个片段前面的所有历史数据作为该折的训练集。
 - train_min_frac：设定首次训练窗口占比（如 0.80 表示前 80% 日期作为第一折训练，剩余 20% 再按折数切成多个验证段）。
 - 验证段选择：在时间 CV 中验证集必须是“训练集之后的连续时间段”，不能打乱顺序或随机采样。
@@ -709,9 +709,9 @@ train_min_frac=0.6 + unique_dates 分位切
 写报告时不够直观
 建议你改成：按月度、明确10年=120个月最小训练，验证窗口12个月。 你自己也已经验证了：唯一日期数=唯一月份数=1140，数据就是月度。
 
-GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+GitHub Copilot: 编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已按月度滚动方式改好时间序列CV：
 
@@ -748,13 +748,13 @@ User: 请帮我给每一个cell都加上tqdm的计时
 
 GitHub Copilot: 已提出 2 个问题(Timing, Scope)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已在主要耗时单元加上 tqdm 计时与耗时打印：
 - Rolling 开发集 CV（10年训练+12个月验证，带进度与总耗时）。
@@ -776,13 +776,13 @@ User: 改进 1：用“按月横截面 R²（平均）”替代 pooled R²
 很多时候 pooled R² 看起来很差，但月度平均 R² 会更稳定、也更符合横截面预测的习惯。
 请完成这个改进。
 
-GitHub Copilot: 正在生成 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb) 中的修补程序(79 行)
+GitHub Copilot: 正在生成 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb) 中的修补程序(79 行)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已将验证集 R² 换成“月度横截面 R² 的平均”：
 - Rolling 开发集 CV 单元（10年训练+12个月验证）：新增 `mean_monthly_r2`，每折用月度 R² 平均，输出字段为 `R2_month`。
@@ -801,17 +801,17 @@ GitHub Copilot: 我先快速读取你当前 notebook 的最新运行结果（开
 
 我看到一个关键信号：最后“全量拟合+预测”单元是报错结束的。我再抓取几段输出，确认低 R² 的具体数值范围和是否有实现 bug 影响结果。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
 你这个结果“差”里有一部分是**正常现象**，但也确实有几处实现会把分数进一步拉低。
 
@@ -846,11 +846,11 @@ User: ok 我同意你给的建议，请你进行修改。注意，如果是一�
 
 GitHub Copilot: 我会一次性改 3 个关键单元：全量CV改为默认从 2000 年开始、基线改为“月度平均 R²”口径一致、汇总表增加 mean/median 并保留 tqdm。改完后你直接重跑这 3 个单元即可。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 修改已完成，核心提速点已经落地：全量CV默认缩到 2000–2020（从 85 折降到约 11 折）、每折预处理复用、LASSO迭代参数更快、基线口径与模型完全一致。下一步你只需按顺序重跑 13→14→15 这三个代码单元。已按你同意的方案改好，重点是“快 + 可比 + 可解释”：
 
@@ -877,15 +877,15 @@ User: 最后一个cell的报错是被我手动停止的，请你检查上面你�
 
 GitHub Copilot: 我先把“效果不理想+耗时大”的根因一起处理：在训练里加入可用特征筛选（剔除训练期几乎全缺失列），并把最后预测单元改成默认快速的 Ridge 版本（可切回 LASSO）。这样你能更快拿到更稳的结果。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已经把开发CV、网格搜索、全量CV都加上“按训练期可用性筛特征（≥5%非缺失）”，这会明显减少噪声和极端负R²。接下来我再把最后预测单元改成默认快速 Ridge，并保留 LASSO 可选。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 你判断得对：之前结果不理想不只是“信号弱”，还有“特征可用性”问题在拖累。  
 我已经把代码做了针对性优化，兼顾**更快**和**更稳**：
@@ -914,17 +914,17 @@ User: 现在不主要是时间的问题，主要是无论你怎么帮我改，�
 
 GitHub Copilot: 这个思路很对，而且在资产定价里是常见有效做法。我会直接改成你说的三档缺失策略 + 月度横截面 z-score，并同步到开发CV、网格搜索、全量CV、最终预测四个核心单元，保证口径一致。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 前两处已经改好：缺失值分层策略和开发CV已切到“月度横截面标准化”。我再把网格搜索、全量CV、最终预测同步成同一口径，避免前后不一致。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 这个方向是对的，我已经按你说的方案**完整落地**了，而且把全流程口径统一了。
 
@@ -964,29 +964,29 @@ GitHub Copilot: 我先抓取当前 notebook 的报错单元和错误栈，定位
 
 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
 Summarized conversation history我定位到了根因：`cs_zscore_by_month` 里 `groupby(...).transform(_z)` 会把单列 `Series` 传进 `_z`，导致 `std` 变成标量后 `.replace` 报错。接下来我会把相关单元统一改成向量化实现，避免这个错误在后续单元重复出现。正在优化工具选择...
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已把会触发同类错误的 4 个代码单元都修好了。现在先重跑第 9 个单元验证报错是否消失，再看是否还有新的异常。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
 已定位并修复，根因不是数据本身，而是标准化函数实现问题。
 
@@ -1014,7 +1014,7 @@ GitHub Copilot: 我现在按你的确认继续：先同步当前 notebook 最新
 
 当前状态已同步：第 11 个单元还没重跑。我现在直接运行它并提取网格结果，给你最优 alpha 与模型比较。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
 已完成：第 11 个网格搜索单元已成功跑完（无报错）。
 
@@ -1056,29 +1056,29 @@ Starting: *实现目标月内去噪* (2/5)
 
 我将一次性改 5 个关键代码单元：先在目标处理单元生成去噪目标 `y_target`，再把所有训练/搜索/评估/预测单元切换到“按月 rank 稳健化特征 + y_target”。改完后我会重跑验证。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 改动已经写入 5 个单元。下一步我会按顺序重跑“目标处理→开发CV→网格搜索”三个关键单元，确认两项改进已生效且无报错。
 
 Starting: *运行关键单元验证* (5/5)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X12sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X12sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
 两项改进已经在开发CV和网格搜索中验证通过，我再补跑全量CV单元，确保全链路也兼容这次改动。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
 Completed: *运行关键单元验证* (5/5)
 
@@ -1103,23 +1103,23 @@ User: 检查README文档，告诉我，我的作业完成度如何，我已经�
 
 GitHub Copilot: 我先逐条读取作业说明文档，再对照你当前 notebook 的实现与运行结果做一份“已完成/未完成/合规性风险”清单，确保覆盖老师要求。
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/docs/README.md)
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/docs/README.md)
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/docs/readme2021-1.md)
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/docs/readme2021-1.md)
 
 正在检索笔记本摘要。
 
 我已拿到说明文档与最新执行状态，接下来会抽查你 notebook 的关键代码段（删列、CV、模型、评估、未执行单元），然后给你一份按要求逐项对照的完成度报告。
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#86-86)，行 86 到 130
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#86-86)，行 86 到 130
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#264-264)，行 264 到 388
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#264-264)，行 264 到 388
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#411-411)，行 411 到 520
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#411-411)，行 411 到 520
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#538-538)，行 538 到 690
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#538-538)，行 538 到 690
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#695-695)，行 695 到 844
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#695-695)，行 695 到 844
 
 **总体结论**
 - 你的作业主体已经完成，基础要求完成度约 85%~90%；主要差距在“提交前完整可复现运行”和“可视化展示深度”。
@@ -1161,44 +1161,44 @@ Created 5 todos
 
 正在配置笔记本 assignment1_kaibiao.ipynb
 Completed with input: {
-  "filePath": "/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb"
+  "filePath": "/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb"
 }
 
 我先从前半部分开始顺序重跑（数据读取到开发CV），确认中间变量都是本轮新鲜状态，再继续后半部分单元。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W0sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W0sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W3sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W3sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W6sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W6sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X12sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X12sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
 前半段已全部执行成功。接下来我继续跑后半段（网格搜索、全量CV、汇总、基线、最终预测），然后再插入结论和图表单元。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
 所有原有代码单元已按顺序跑完且成功。我现在在末尾追加“最终结论”Markdown和“最佳模型+3张图”的代码单元，并马上执行给你结果。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已修正新增可视化单元的小语法问题，现在执行新增单元，确保“最佳模型/alpha + 3张图”都产出。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X61sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X61sZmlsZQ%3D%3D)
 
 我这边已经完成执行与图表生成，最后再同步一次 notebook 执行状态，确保“所有代码单元都已运行”这件事可核对。
 
@@ -1234,11 +1234,11 @@ User: 请你检查一下这个cell是不是有问题，因为最后输出的结�
 
 GitHub Copilot: 你判断得很对：这个不是你理解错了，而是第16个代码单元当前确实在“全样本(1926–2020)”上做最终拟合和预测，没有套用2000–2020窗口。我先把它改成默认使用2000–2020，并保留可切换开关。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已经修好第16个代码单元；现在快速重跑这个单元，确认输出日期会落在2000–2020。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
 你这个判断是对的，原来第 16 个代码单元确实有“口径不一致”：
 
@@ -1261,11 +1261,11 @@ User: 请你加上一个tqdm来显示运行时间，然后再运行这个cell
 
 GitHub Copilot: 我会把第16个代码单元改成“分阶段 tqdm 进度条 + 每阶段耗时输出”（拟合/预测/保存），然后立刻帮你运行这个单元验证。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已加好 tqdm 分阶段进度显示（3步：拟合/预测/保存）。现在开始运行第16个代码单元。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
 已完成两件事：
 
@@ -1288,7 +1288,7 @@ GitHub Copilot: 我先重新拉取当前 notebook 的最新执行状态和 READM
 
 正在检索笔记本摘要。
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/docs/README.md)
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/docs/README.md)
 
 **结论**
 - 是的，按你当前 notebook 的代码与输出，你已经完成了 **basic requirements**（不含 bonus）。
@@ -1309,23 +1309,23 @@ User: 能否请你读取process_record.md这个文档，这个文档是我跟你
 
 GitHub Copilot: 我会把现有 notebook 的关键流程段落系统化重写成“项目报告式”Markdown，并在模型与预测代码之间补充说明单元，这样就能满足老师要求的 comprehensive notebook（可执行代码 + 可视化 + 详细解释）。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已经把核心叙述型 Markdown 全部升级为报告式结构。接下来我再补一个“最终预测生成说明”的中间 Markdown（放在基线和最终预测代码之间），让逻辑链更完整。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 可以，已经按你的要求处理好了，而且我这次是基于你们完整聊天过程与当前代码状态统一整理的。
 
@@ -1354,15 +1354,15 @@ GitHub Copilot: 我来补上“可直接提交版摘要”，并放在 notebook 
 
 正在检索笔记本摘要。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X61sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X61sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
 
 我再补上你刚刚确认要的“提交版摘要”到 notebook 最前面，作为老师打开文件后第一眼就能看到的总览。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已补充完成。
 
@@ -1426,15 +1426,15 @@ Starting: *添加Bonus总览说明* (2/5)
 
 我将连续追加 Bonus 章节单元（说明+代码+说明+代码），并加入前置检查与失败兜底，这样你在重启内核后按顺序运行也不会卡死在依赖问题上。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 Bonus A 和 Bonus B 的结构都已加好，最后我再补一个可执行的 Group LASSO 单元（包含自动安装依赖和失败兜底），并尝试运行一次做语法验证。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 Summarized conversation history我已把 Bonus B 的主代码补到 notebook 末尾，包含宏观变量下载失败兜底、`group-lasso` 自动安装、按月滚动折评估与“被选中特征组频次”输出。接下来我先运行新增的 Bonus 单元，确认内核重启后的可执行性。正在优化工具选择...
 
@@ -1442,50 +1442,50 @@ Summarized conversation history我已把 Bonus B 的主代码补到 notebook 末
 
 正在配置笔记本 assignment1_kaibiao.ipynb
 Completed with input: {
-  "filePath": "/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb"
+  "filePath": "/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb"
 }
 
 我会按顺序执行所有代码单元到 Bonus B，保证依赖变量完整，再重点检查 Bonus A/B 是否成功产出结果表和图。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W0sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W0sZmlsZQ%3D%3D)
 
 基础加载单元已成功执行，数据与变量都正常；我继续顺序跑到 Bonus 前置特征工程和CV单元。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W3sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W3sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#W6sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#W6sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X12sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X12sZmlsZQ%3D%3D)
 
 现在开始跑核心开发期滚动 CV 和网格搜索单元，这一步最耗时，完成后就能直接运行 Bonus A/B。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
 网格搜索已跑完，最佳超参数仍稳定；我继续执行全样本评估、基线和最终预测单元，最后跑 Bonus A/B。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X32sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X65sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X65sZmlsZQ%3D%3D)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#Y100sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#Y100sZmlsZQ%3D%3D)
 
 Bonus A 与 Bonus B 都执行成功了；我再把 Bonus B 单元小幅增强为“自适应 `group_reg`（若全零系数就自动降正则）+ 修复 `resample('M')` 警告”，这样重跑时结果更稳。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#Y100sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#Y100sZmlsZQ%3D%3D)
 
 我再补一个 Bonus 总结单元，把经济价值和 Group LASSO 的结论写成可提交文字，避免你后续手动整理。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 **已完成**
 - 已把 Bonus 全流程落地到 assignment1_kaibiao.ipynb，并在重启内核后完整执行验证通过。
@@ -1510,11 +1510,11 @@ GitHub Copilot: 我会先重新获取 notebook 的最新单元结构，确认置
 
 已拿到最新结构，置顶是 `#VSC-8ac2fdac assignment1_kaibiao.ipynb`。我先读取这一个单元当前内容，避免覆盖你最近改过的文字，再做最小增量更新。
 
-读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#1-1)，行 1 到 80
+读取 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#1-1)，行 1 到 80
 
 我将只修改置顶 Markdown，不动代码单元：补一段更完整的 executive summary（含 Bonus A/B 关键结论）并加入“冷启动最小运行导航”。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 置顶摘要已经改完，我同步把任务状态收口，标记 Bonus 与 executive summary 相关项都已完成。
 
@@ -1540,7 +1540,7 @@ GitHub Copilot: 我先获取最新单元顺序并定位你当前选中的这个�
 
 我现在在该代码单元后直接插入一个结果解读 Markdown，产出会覆盖“性能、稳定性与下一步调参方向”三部分。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 已补好了。  
 我在你当前这个代码单元后面新增了一个结果分析 Markdown（现在是**第 11 个单元**），内容包括：
@@ -1562,43 +1562,43 @@ GitHub Copilot: 你这个说明很清楚：你要的是“直接写结论性的�
 
 我先批量读取关键结果单元的已保存输出，提取可直接写进结论的数值（最佳模型、R²/MSE、基线对比、Bonus 表现），然后一次性补全对应的结果解读单元。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X15sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X22sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X35sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X36sZmlsZQ%3D%3D)
 
 接着我再读取剩余关键单元（最终预测、最优模型图表、Bonus A、Bonus B）的输出，这样每段分析都能带具体数字结论。
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X41sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X61sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X61sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X65sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X65sZmlsZQ%3D%3D)
 
-Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#Y100sZmlsZQ%3D%3D)
+Read output of [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#Y100sZmlsZQ%3D%3D)
 
 我将先补前半段四个“结果结论”单元（开发CV、网格搜索、全量汇总、基线对比），这些会直接回答作业里 R²/MSE 和“哪个模型更好”的问题。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 前四段结果分析已补上，而且都是“直接结论+数字”。我继续把后半段关键输出（最终预测、图表结论、Bonus A、Bonus B）也逐个补齐。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 你说得对，这次我已经按“直接给分析结论”的方式补好了，不是教学说明。
 
@@ -1632,13 +1632,13 @@ GitHub Copilot: 你这个怀疑非常好，我先确认当前 Bonus A 代码里�
 
 结论先说：这里不是算错，而是**定义口径**问题——你代码里回撤定义是 `nav / nav.cummax() - 1`，因此最大回撤天然是非正数（下跌写成负号）。我会把 Bonus A 代码改成同时输出“有符号回撤”和“绝对跌幅(%)”，并把这段 Markdown 改成不易误解的表述。
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
-编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb)
+编辑 [](file:///Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb)
 
 我已经把代码和文字都改好了：现在会同时给“有符号回撤”和“绝对回撤百分比”，并在 Bonus A 结论里明确说明负号含义。下一步我快速帮你执行 Bonus A 单元，确认新列正常显示。
 
-Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/Assignment1/scripts/assignment1_kaibiao.ipynb#X65sZmlsZQ%3D%3D)
+Ran [](vscode-notebook-cell:/Users/kaibiaozhu/Documents/GitHub/machine-learning-for-finance/assignment1/scripts/assignment1_kaibiao.ipynb#X65sZmlsZQ%3D%3D)
 
 你这个点抓得很专业，确实容易误解。  
 不是算错，`MaxDrawdown` 在量化里常用“有符号定义”：
