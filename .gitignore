@@ -219,3 +219,35 @@ final_presentation_version/outputs/cache/tensor_images_L5_F5.pkl
 .vscode/settings.json
 /final_presentation_version/outputs
 final_submit_version/outputs/cache/cleaned_data_all.pkl
+
+# -----------------------------------------------------------------------------
+# LaTeX — paper_writing_latex/ 编译副产品（应提交：*.tex、*.sty、*.bib、checklist.tex、figures/、scripts/）
+# 若希望连 PDF 也不纳入 Git，取消下面 “*.pdf” 一行的注释。
+# -----------------------------------------------------------------------------
+paper_writing_latex/**/*.aux
+paper_writing_latex/**/*.bbl
+paper_writing_latex/**/*.blg
+paper_writing_latex/**/*.log
+paper_writing_latex/**/*.out
+paper_writing_latex/**/*.toc
+paper_writing_latex/**/*.lof
+paper_writing_latex/**/*.lot
+paper_writing_latex/**/*.synctex.gz
+paper_writing_latex/**/*.fdb_latexmk
+paper_writing_latex/**/*.fls
+paper_writing_latex/**/*.bcf
+paper_writing_latex/**/*.run.xml
+paper_writing_latex/**/*.xdv
+paper_writing_latex/**/*.dvi
+paper_writing_latex/**/*.nav
+paper_writing_latex/**/*.snm
+paper_writing_latex/**/*.vrb
+paper_writing_latex/**/*.idx
+paper_writing_latex/**/*.ilg
+paper_writing_latex/**/*.ind
+paper_writing_latex/**/*.listing
+paper_writing_latex/**/_minted-*
+# paper_writing_latex/**/*.pdf
+
+.cursor
+.claude
