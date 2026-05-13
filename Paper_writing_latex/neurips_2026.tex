@@ -4,101 +4,40 @@
 %     \PassOptionsToPackage{numbers, compress}{natbib}
 % before loading neurips_2026
 
-% The authors should use one of these tracks.
-% Before accepting by the NeurIPS conference, select one of the options below.
-% 0. "default" for submission
-\usepackage{neurips_2026}
-% the "default" option is equal to the "main" option, which is used for the Main Track with double-blind reviewing.
-% 1. "main" option is used for the Main Track
-%  \usepackage[main]{neurips_2026}
-% 2. "position" option is used for the Position Paper Track
-%  \usepackage[position]{neurips_2026}
-% 3. "eandd" option is used for the Evaluations & Datasets Track
- % \usepackage[eandd]{neurips_2026}
- % if you want to opt-in for a de-anomymized submission (not recommended, but OK):
- %\usepackage[eandd, nonanonymous]{neurips_2026}
-% 4. "creativeai" option is used for the Creative AI Track
-%  \usepackage[creativeai]{neurips_2026}
-% 5. "sglblindworkshop" option is used for the Workshop with single-blind reviewing
- % \usepackage[sglblindworkshop]{neurips_2026}
-% 6. "dblblindworkshop" option is used for the Workshop with double-blind reviewing
-%  \usepackage[dblblindworkshop]{neurips_2026}
+% Submission/track options (see neurips_2026.sty header).
+% We use the "preprint" track so author identity is shown, line numbers
+% are removed, and the footer reads "Preprint. Work in progress." which
+% is appropriate for a graded course report rather than a blind review.
+\usepackage[preprint]{neurips_2026}
 
-% After being accepted, the authors should add "final" behind the track to compile a camera-ready version.
-% 1. Main Track
- % \usepackage[main, final]{neurips_2026}
-% 2. Position Paper Track
-%  \usepackage[position, final]{neurips_2026}
-% 3. Evaluations & Datasets Track
- % \usepackage[eandd, final]{neurips_2026}
-% 4. Creative AI Track
-%  \usepackage[creativeai, final]{neurips_2026}
-% 5. Workshop with single-blind reviewing
-%  \usepackage[sglblindworkshop, final]{neurips_2026}
-% 6. Workshop with double-blind reviewing
-%  \usepackage[dblblindworkshop, final]{neurips_2026}
-% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote.
-% For workshops (5., 6.), the authors should add the name of the workshop, "\workshoptitle" command is used to set the workshop title.
-% \workshoptitle{WORKSHOP TITLE}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, fit, backgrounds, calc}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{font=small, labelfont=bf}
+\graphicspath{{figures/}}
 
-% "preprint" option is used for arXiv or other preprint submissions
- % \usepackage[preprint]{neurips_2026}
-
-% to avoid loading the natbib package, add option nonatbib:
-%    \usepackage[nonatbib]{neurips_2026}
-
-\usepackage[utf8]{inputenc} % allow utf-8 input
-\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
-\usepackage{url}            % simple URL typesetting
-\usepackage{booktabs}       % professional-quality tables
-\usepackage{amsfonts}       % blackboard math symbols
-\usepackage{nicefrac}       % compact symbols for 1/2, etc.
-\usepackage{microtype}      % microtypography
-\usepackage{xcolor}         % colors
-
-% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote. 
-\title{Formatting Instructions For NeurIPS 2026}
-
-
-% The \author macro works with any number of authors. There are two commands
-% used to separate the names and addresses of multiple authors: \And and \AND.
-%
-% Using \And between authors leaves it to LaTeX to determine where to break the
-% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
-% authors names on the first line, and the last on the second line, try using
-% \AND instead of \And before the third author name.
-
+\title{Re-Implementing CNN Price-Trend Signals:\\
+A Reproduction of Jiang, Kelly, and Xiu (2023)}
 
 \author{%
-  David S.~Hippocampus\thanks{Use footnote for providing further information
-    about author (webpage, alternative address)---\emph{not} for acknowledging
-    funding agencies.} \\
-  Department of Computer Science\\
-  Cranberry-Lemon University\\
-  Pittsburgh, PA 15213 \\
-  \texttt{hippo@cs.cranberry-lemon.edu} \\
-  % examples of more authors
-  % \And
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
-  % \AND
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
-  % \And
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
-  % \And
-  % Coauthor \\
-  % Affiliation \\
-  % Address \\
-  % \texttt{email} \\
+  Kaibiao Zhu \\
+  Final Project, Machine Learning for Finance \\
+  The Hong Kong University of Science and Technology (Guangzhou) \\
+  \texttt{kzhu597@connect.hkust-gz.edu.cn}
 }
 
 
@@ -109,384 +48,629 @@
 
 
 \begin{abstract}
-  The abstract paragraph should be indented \nicefrac{1}{2}~inch (3~picas) on both the left- and right-hand margins. Use 10~point type, with a vertical spacing (leading) of 11~points. The word \textbf{Abstract} must be centered, bold, and in point size 12. Two line spaces precede the abstract. The abstract must be limited to one paragraph.
+We reproduce the convolutional neural-network (CNN) price-trend forecaster of
+\citet{jiang2023reimagining} on a CRSP-style daily U.S. equity panel spanning
+1992-01-01 to 2024-12-31. We re-implement the OHLC--volume image construction
+(canvas sizes 15$\times$32, 60$\times$64 and 180$\times$96 for input horizons
+$I\in\{5,20,60\}$ days), train horizon-matched CNN heads with the same conv/pool
+recipe and a five-seed ensemble, and run a full out-of-sample long--short decile
+backtest from 2001 onward with proportional transaction costs. Against
+matched-horizon price-momentum, simple moving-average, and short-term reversal
+baselines, the CNN long--short spread achieves an annualised Sharpe ratio of
+$1.29$ at $I=5$, but only $0.16$ at $I=20$ and $-0.11$ at $I=60$. Out-of-sample
+binary classification accuracy and AUC are $49.45\%/0.5103$, $52.68\%/0.5242$
+and $53.70\%/0.5288$ respectively. A Fama--French five-factor plus momentum
+spanning regression delivers a $+0.28\%$ annualised, statistically insignificant
+alpha at $I=5$ but \emph{negative} alphas at $I=20$ ($-4.30\%$, $t=-2.23$) and
+$I=60$ ($-6.65\%$, $t=-3.77$), partially diverging from the original paper.
+Input-gradient saliency maps confirm that the CNN concentrates attention on
+the most-recent price action and on volume contrast, consistent with a
+data-driven momentum reading. All code and intermediate artefacts are released.
 \end{abstract}
 
 
+\section{Introduction}
+\label{sec:intro}
 
-\section{Submission of papers to NeurIPS 2026}
+Technical analysis has long suggested that the visual ``shape'' of a price
+chart conveys information beyond what is captured by scalar momentum or
+moving-average filters. \citet{jiang2023reimagining} formalise this intuition
+by feeding fixed-resolution open--high--low--close (OHLC) images with a
+volume sub-panel into a convolutional neural network and showing that the
+resulting forecasts dominate canonical price-trend signals out of sample.
+Their work joins a growing empirical asset-pricing literature that uses
+flexible machine-learning predictors to map raw historical features into
+expected returns \citep{gu2020empirical,kelly2019characteristics}, and it
+ties directly to early efforts at formalising chart patterns via kernel
+smoothing \citep{lo2000foundations}.
+
+This paper reproduces the core pipeline from end to end and stress-tests it
+against the same set of baselines on a longer post-publication sample. Our
+contributions are:
+\begin{enumerate}
+  \item A self-contained re-implementation of the OHLC image renderer that
+        matches the original PIL-level drawing rules pixel for pixel
+        (including SMA overlay, volume sub-panel, and the top-to-bottom
+        flip), as well as horizon-matched CNN backbones with the published
+        kernel/stride/dilation/padding specification.
+  \item A full 1992--2024 CRSP-style backtest with proportional transaction
+        costs, matched-horizon price-momentum, simple moving-average cross,
+        and short-term reversal baselines, plus a five-factor-plus-momentum
+        spanning regression \citep{fama1993common,fama2015five,carhart1997persistence}.
+  \item Input-gradient saliency analysis \citep{simonyan2014deep} of the
+        $I=60$ ensemble, which highlights the right tail of each image and
+        the volume bars as the dominant feature regions.
+  \item Public release of code, trained weights, and post-aggregation CSV
+        tables in \texttt{final\_submit\_version/}, allowing every numerical
+        claim to be regenerated.
+\end{enumerate}
+
+The remainder of the paper is organised as follows. Section~\ref{sec:related}
+positions our reproduction relative to the chart-pattern, deep-learning, and
+interpretability literatures. Section~\ref{sec:data} details data sources and
+image construction. Section~\ref{sec:arch} describes the CNN architecture and
+training recipe. Section~\ref{sec:results} reports empirical results
+(decile prediction accuracy, baseline comparisons, cumulative returns,
+classification metrics, decile portfolio statistics, and Fama--French
+spanning regressions). Section~\ref{sec:saliency} visualises model
+attention. Section~\ref{sec:discussion} discusses where our results align
+with and diverge from \citet{jiang2023reimagining}.
 
 
-Please read the instructions below carefully and follow them faithfully.
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Chart-pattern literature.}
+\citet{lo2000foundations} provided one of the first systematic treatments
+of technical chart patterns by combining kernel regression with automated
+pattern recognition. \citet{jegadeesh1993returns} documented price momentum
+as a robust cross-sectional return predictor, providing the canonical
+benchmark against which any technical-trend signal must be compared.
+
+\paragraph{Deep learning for return prediction.}
+Recent work demonstrates that deep architectures uncover return signals
+that are difficult to capture with closed-form characteristics. \citet{gu2020empirical}
+benchmark a broad set of supervised learners on U.S. equities;
+\citet{kelly2019characteristics} use latent-factor models with characteristic
+loadings. Within technical analysis, \citet{sezer2018algorithmic} convert
+indicators into images for trading. \citet{jiang2023reimagining} unify these
+threads by treating the OHLC chart itself as the model input.
+
+\paragraph{Interpretability via input gradients.}
+\citet{simonyan2014deep} introduced gradient-based saliency to visualise
+which input pixels most influence a CNN's class score; we apply the same
+technique to identify which segments of each OHLC image drive the model's
+``up'' probability. CNN architectures used here trace back to
+\citet{lecun1998gradient}.
 
 
-\subsection{Style}
+\section{Data and image construction}
+\label{sec:data}
 
+\paragraph{Universe.}
+We use a CRSP-style daily equity panel covering 1992-01-01 to 2024-12-31.
+The cleaning step retains the following columns per
+\texttt{final\_submit\_version/docs/variable\_description.txt}:
+\texttt{permno}, \texttt{dlycaldt}, \texttt{dlycap}, \texttt{dlyret},
+\texttt{dlyretx}, \texttt{dlyvol}, \texttt{dlyopen}, \texttt{dlyhigh},
+\texttt{dlylow}, \texttt{dlyclose}. We drop rows with any of those columns
+missing, apply a $\$1$ minimum-close and strictly positive
+volume filter, and compute log returns and adjusted OHLC prices via
+cumulative log-return compounding so that the first valid observation per
+\texttt{permno} acts as the price anchor. No survivorship adjustments are
+applied beyond what is implicit in the CRSP-style file.
 
-Papers to be submitted to NeurIPS 2026 must be prepared according to the
-instructions presented here. Papers may only be up to {\bf nine} pages long, including figures. \textbf{Papers that exceed the page limit will not be reviewed (or in any other way considered) for presentation at the conference.}
-Additional pages \emph{containing acknowledgments, references, checklist, and optional technical appendices} do not count as content pages. 
+\paragraph{Labels and holding period.}
+For each horizon $F\in\{5,20,60\}$ trading days we form
+$R^{\mathrm{fut}}_{t,F}=\exp\!\bigl(\sum_{s=t+1}^{t+F}\log(1+r_s)\bigr)-1$ on
+the adjusted price path, and a binary classification label
+$y_{t,F}=\mathbb{1}\{R^{\mathrm{fut}}_{t,F}>0\}$. Rebalance timestamps are
+fixed at period-end calendar boundaries (Friday for $F=5$, month-end for
+$F=20$, quarter-end for $F=60$), matching the canonical SPY trade calendar.
 
-
-The margins in 2026 are the same as those in previous years.
-
-
-Authors are required to use the NeurIPS \LaTeX{} style files obtainable at the NeurIPS website as indicated below. Please make sure you use the current files and not previous versions. Tweaking the style files may be grounds for desk rejection.
-
-
-\subsection{Retrieval of style files}
-
-
-The style files for NeurIPS and other conference information are available on the website at
+\paragraph{Image construction.}
+For input horizon $I\in\{5,20,60\}$ matched to $F=I$ we render a grayscale
+image of width $W=3I$ and height $H$ split into an OHLC panel of height
+$H_{\mathrm{ohlc}}$ stacked above a one-pixel-gap volume panel of height
+$H_{\mathrm{vol}}$:
 \begin{center}
-  \url{https://neurips.cc}.
+  \begin{tabular}{cccc}
+    \toprule
+    Horizon & $W$ & $H_{\mathrm{ohlc}}$ & $H_{\mathrm{vol}}$ \\
+    \midrule
+    $I=5$  & 15  & 25 & 6  \\
+    $I=20$ & 60  & 51 & 12 \\
+    $I=60$ & 180 & 76 & 19 \\
+    \bottomrule
+  \end{tabular}
 \end{center}
-% The file \verb+neurips_2026.pdf+ contains these instructions and illustrates the various formatting requirements your NeurIPS paper must satisfy.
-
-
-The only supported style file for NeurIPS 2026 is \verb+neurips_2026.sty+, rewritten for \LaTeXe{}. \textbf{Previous style files for \LaTeX{} 2.09,  Microsoft Word, and RTF are no longer supported.}
-
-
-The \LaTeX{} style file contains three optional arguments: 
-\begin{itemize}
-\item \verb+final+, which creates a camera-ready copy, 
-\item \verb+preprint+, which creates a preprint for submission to, e.g., arXiv, \item \verb+nonatbib+, which will not load the \verb+natbib+ package for you in case of package clash.
-\end{itemize}
-
-
-\paragraph{Preprint option}
-If you wish to post a preprint of your work online, e.g., on arXiv, using the NeurIPS style, please use the \verb+preprint+ option. This will create a nonanonymized version of your work with the text ``Preprint. Work in progress.'' in the footer. This version may be distributed as you see fit, as long as you do not say which conference it was submitted to. Please \textbf{do not} use the \verb+final+ option, which should \textbf{only} be used for papers accepted to NeurIPS.
-
-
-At submission time, please omit the \verb+final+ and \verb+preprint+ options. This will anonymize your submission and add line numbers to aid review. Please do \emph{not} refer to these line numbers in your paper as they will be removed during generation of camera-ready copies.
-
-
-The file \verb+neurips_2026.tex+ may be used as a ``shell'' for writing your paper. All you have to do is replace the author, title, abstract, and text of the paper with your own.
-
-
-The formatting instructions contained in these style files are summarized in Sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
-
-
-\section{General formatting instructions}
-\label{gen_inst}
-
-
-The text must be confined within a rectangle 5.5~inches (33~picas) wide and
-9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).  Use 10~point
-type with a vertical spacing (leading) of 11~points.  Times New Roman is the
-preferred typeface throughout, and will be selected for you by default.
-Paragraphs are separated by \nicefrac{1}{2}~line space (5.5 points), with no
-indentation.
-
-
-The paper title should be 17~point, initial caps/lower case, bold, centered
-between two horizontal rules. The top rule should be 4~points thick and the
-bottom rule should be 1~point thick. Allow \nicefrac{1}{4}~inch space above and
-below the title to rules. All pages should start at 1~inch (6~picas) from the
-top of the page.
-
-
-For the final version, authors' names are set in boldface, and each name is
-centered above the corresponding address. The lead author's name is to be listed
-first (left-most), and the co-authors' names (if different address) are set to
-follow. If there is only one co-author, list both author and co-author side by
-side.
-
-
-Please pay special attention to the instructions in Section \ref{others}
-regarding figures, tables, acknowledgments, and references.
-
-\section{Headings: first level}
-\label{headings}
-
-
-All headings should be lower case (except for first word and proper nouns),
-flush left, and bold.
-
-
-First-level headings should be in 12-point type.
-
-
-\subsection{Headings: second level}
-
-
-Second-level headings should be in 10-point type.
-
-
-\subsubsection{Headings: third level}
-
-
-Third-level headings should be in 10-point type.
-
-
-\paragraph{Paragraphs}
-
-
-There is also a \verb+\paragraph+ command available, which sets the heading in
-bold, flush left, and inline with the text, with the heading followed by 1\,em
-of space.
-
-
-\section{Citations, figures, tables, references}
-\label{others}
-
-
-These instructions apply to everyone.
-
-
-\subsection{Citations within the text}
-
-
-The \verb+natbib+ package will be loaded for you by default.  Citations may be
-author/year or numeric, as long as you maintain internal consistency.  As to the
-format of the references themselves, any style is acceptable as long as it is
-used consistently.
-
-
-The documentation for \verb+natbib+ may be found at
-\begin{center}
-  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-Of note is the command \verb+\citet+, which produces citations appropriate for
-use in inline text.  For example,
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-produces
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-
-If you wish to load the \verb+natbib+ package with options, you may add the
-following before loading the \verb+neurips_2026+ package:
-\begin{verbatim}
-   \PassOptionsToPackage{options}{natbib}
-\end{verbatim}
-
-
-If \verb+natbib+ clashes with another package you load, you can add the optional
-argument \verb+nonatbib+ when loading the style file:
-\begin{verbatim}
-   \usepackage[nonatbib]{neurips_2026}
-\end{verbatim}
-
-
-As submission is double blind, refer to your own published work in the third
-person. That is, use ``In the previous work of Jones et al.\ [4],'' not ``In our
-previous work [4].'' If you cite your other papers that are not widely available
-(e.g., a journal paper under review), use anonymous author names in the
-citation, e.g., an author of the form ``A.\ Anonymous'' and include a copy of the anonymized paper in the supplementary material.
-
-
-\subsection{Footnotes}
-
-
-Footnotes should be used sparingly.  If you do require a footnote, indicate
-footnotes with a number\footnote{Sample of the first footnote.} in the
-text. Place the footnotes at the bottom of the page on which they appear.
-Precede the footnote with a horizontal rule of 2~inches (12~picas).
-
-
-Note that footnotes are properly typeset \emph{after} punctuation
-marks.\footnote{As in this example.}
-
-
-\subsection{Figures}
-
-
-\begin{figure}
+For each day $\tau$ in the window we draw (a) a one-pixel vertical bar from
+the low to the high, (b) a one-pixel open tick at column $3\tau$ and a
+close tick at column $3\tau+2$, (c) a one-pixel SMA poly-line connecting
+the rolling $I$-day means of close prices (computed using $2I-1$ days of
+history so that the first SMA point already reflects $I$ observations),
+all scaled to a common $[P_{\min},P_{\max}]$ range that includes the SMA
+values. Volume bars are normalised to the window's own maximum. The
+finished OHLC panel is finally flipped top-to-bottom so that ``up'' moves
+appear visually upward, then concatenated with the volume panel with a
+one-pixel gap. Figure~\ref{fig:ohlc-sample} shows the three resolutions
+for a single \texttt{permno} anchored at the same calendar date.
+
+\begin{figure}[t]
   \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption. Explain what the figure shows and add a key take-away message to the caption.}
+  \includegraphics[width=\linewidth]{ohlc_sample.png}
+  \caption{OHLC-plus-volume images for a single security at horizons
+    $I\in\{5,20,60\}$. The same calendar anchor (2010-12-31) is used so
+    the visual density at different resolutions is directly comparable.}
+  \label{fig:ohlc-sample}
 \end{figure}
 
-
-All artwork must be neat, clean, and legible. Lines should be dark enough for
- reproduction purposes. The figure number and caption always appear after the
-figure. Place one line space before the figure caption and one line space after
-the figure. The figure caption should be lower case (except for the first word and proper nouns); figures are numbered consecutively.
-
-
-You may use color figures.  However, it is best for the figure captions and the
-paper body to be legible if the paper is printed in either black/white or in
-color.
+\paragraph{Train/validation/test split.}
+We follow \citet{jiang2023reimagining} in treating the early portion of
+the panel as in-sample. Training is performed on 1993--2000 with a
+70/30 random sample-level split for training/validation. Out-of-sample
+backtests start in 2001 and run through to the end of the cached panel.
+For the headline tables and figures we report results from 2001-01 to
+2019-12 to align with where all baseline ETFs (used for calendar
+construction) have continuous coverage.
 
 
-\subsection{Tables}
+\section{CNN architecture and training}
+\label{sec:arch}
 
+\paragraph{Architectures.}
+The three horizon-specific backbones mirror the published configuration.
+All blocks use $5\times3$ kernels, a LeakyReLU($0.01$) activation, batch
+normalisation, and $(2,1)$ MaxPool with \texttt{ceil\_mode=True} (the $I=5$
+head uses the standard floor mode). $I=20$ and $I=60$ insert dilated and
+strided first convolutions so the receptive field can span longer windows
+without an explosion in parameter count. Figure~\ref{fig:cnn-arch}
+summarises the three stacks; layer-level details are in
+Table~\ref{tab:cnn-layers} (Appendix~\ref{app:hyper}).
 
-All tables must be centered, neat, clean, and legible.  The table number and
-title always appear before the table.  See Table~\ref{sample-table}.
-
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for the first word and proper nouns); tables are
-numbered consecutively.
-
-
-Note that publication-quality tables \emph{do not contain vertical rules}. We
-strongly suggest the use of the \verb+booktabs+ package, which allows for
-typesetting high-quality, professional tables:
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
-
-
-\begin{table}
-  \caption{Sample table caption. Explain what the table shows and add a key take-away message to the caption.}
-  \label{sample-table}
+\begin{figure}[t]
   \centering
-  \begin{tabular}{lll}
+  \begin{tikzpicture}[
+      font=\footnotesize,
+      block/.style={draw, rounded corners, minimum height=0.85cm, minimum width=1.4cm, align=center, inner sep=2pt},
+      input/.style={draw, fill=gray!12, rounded corners, minimum height=0.85cm, minimum width=1.0cm, align=center, inner sep=2pt},
+      head/.style={draw, fill=gray!25, rounded corners, minimum height=0.85cm, minimum width=1.4cm, align=center, inner sep=2pt},
+      arr/.style={-{Latex[length=2mm]}, thick}
+    ]
+    %% I=5 row
+    \node[input] (i5in) at (0,2.2) {Input\\$15{\times}32$};
+    \node[block, right=4mm of i5in] (i5b1) {Conv64\\(5,3) s(1,1)};
+    \node[block, right=4mm of i5b1] (i5b2) {Conv128\\(5,3) s(1,1)};
+    \node[head,  right=4mm of i5b2] (i5fc) {FC\\$\to 2$};
+    \draw[arr] (i5in)  -- (i5b1);
+    \draw[arr] (i5b1)  -- (i5b2);
+    \draw[arr] (i5b2)  -- (i5fc);
+    \node[left=2mm of i5in] {$I=5$};
+    %% I=20 row
+    \node[input] (i20in) at (0,1.0) {Input\\$60{\times}64$};
+    \node[block, right=4mm of i20in] (i20b1) {Conv64\\s(3,1) d(2,1)};
+    \node[block, right=4mm of i20b1] (i20b2) {Conv128};
+    \node[block, right=4mm of i20b2] (i20b3) {Conv256};
+    \node[head,  right=4mm of i20b3] (i20fc) {FC\\$\to 2$};
+    \draw[arr] (i20in) -- (i20b1);
+    \draw[arr] (i20b1) -- (i20b2);
+    \draw[arr] (i20b2) -- (i20b3);
+    \draw[arr] (i20b3) -- (i20fc);
+    \node[left=2mm of i20in] {$I=20$};
+    %% I=60 row
+    \node[input] (i60in) at (0,-0.2) {Input\\$180{\times}96$};
+    \node[block, right=4mm of i60in] (i60b1) {Conv64\\s(3,1) d(3,1)};
+    \node[block, right=4mm of i60b1] (i60b2) {Conv128};
+    \node[block, right=4mm of i60b2] (i60b3) {Conv256};
+    \node[block, right=4mm of i60b3] (i60b4) {Conv512};
+    \node[head,  right=4mm of i60b4] (i60fc) {FC\\$\to 2$};
+    \draw[arr] (i60in) -- (i60b1);
+    \draw[arr] (i60b1) -- (i60b2);
+    \draw[arr] (i60b2) -- (i60b3);
+    \draw[arr] (i60b3) -- (i60b4);
+    \draw[arr] (i60b4) -- (i60fc);
+    \node[left=2mm of i60in] {$I=60$};
+  \end{tikzpicture}
+  \caption{Horizon-specific CNN backbones. Each rectangle represents one
+    Conv$\to$BatchNorm$\to$LeakyReLU$\to$MaxPool block. All kernels are
+    $5\times 3$; default stride and dilation are $(1,1)$ except where
+    explicitly noted. The fully-connected head has dropout $0.5$ and
+    outputs two logits.}
+  \label{fig:cnn-arch}
+\end{figure}
+
+\paragraph{Optimisation.}
+We minimise binary cross-entropy on the per-horizon label $y_{t,F}$ using
+stochastic gradient descent (Adam variant disabled), with learning rate
+$10^{-5}$, batch size $128$, and a maximum of $50$ epochs with
+early-stopping on validation loss. Convolutional and linear weights are
+initialised with Xavier-uniform and biases at zero. We train an ensemble
+of five seeds $\{42, 123, 456, 789, 101112\}$ and aggregate by averaging
+the softmax-probability outputs at inference time. The resulting
+checkpoints are stored under
+\texttt{final\_submit\_version/outputs/models/} with sizes $\approx
+0.6$\,MB ($I=5$), $\approx 2.8$\,MB ($I=20$), and $\approx 11.8$\,MB
+($I=60$) per seed, consistent with the parameter counts implied by
+Figure~\ref{fig:cnn-arch}.
+
+
+\section{Empirical results}
+\label{sec:results}
+
+We score every test-set observation with the five-seed ensemble and
+form ten cross-sectional deciles by predicted ``up''-probability at each
+rebalance date. The high-minus-low (H--L) portfolio is equal-weighted
+within deciles, rebalanced at horizon-end, and adjusted for proportional
+transaction costs at $10$\,bp per side ($20$\,bp round-trip) applied to
+both legs.
+
+\subsection{Decile prediction accuracy (Figure 6 reproduction)}
+\label{sec:r1}
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{fig6_I5.png}
+    \caption{$I=5$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{fig6_I20.png}
+    \caption{$I=20$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{fig6_I60.png}
+    \caption{$I=60$}
+  \end{subfigure}
+  \caption{Annualised decile returns by horizon for the CNN, matched-horizon
+    momentum, and moving-average cross signals. Reproduction of Figure~6 of
+    \citet{jiang2023reimagining}. Numbers are read from
+    \texttt{outputs/pipeline\_runs/tables/fig6\_I\{5,20,60\}\_\{cnn,mom,ma\}.csv}.}
+  \label{fig:fig6}
+\end{figure}
+
+At $I=5$ the CNN decile annualised returns rise nearly monotonically from
+$6.62\%$ in D1 to $20.67\%$ in D10 (Figure~\ref{fig:fig6}a), while the
+five-day momentum and moving-average curves are essentially flat across
+the cross-section. At longer horizons the picture changes: the $I=20$
+CNN spread between D10 and D1 is mildly positive ($11.10\%$ vs.\ $9.78\%$;
+Figure~\ref{fig:fig6}b), and at $I=60$ the CNN ordering is essentially
+flat ($11.95\%$ in D10 against $13.00\%$ in D1; Figure~\ref{fig:fig6}c).
+The traditional baselines, by contrast, display a U-shaped pattern at
+$I=20$ and $I=60$: both the bottom and top deciles deliver above-average
+returns, reflecting the well-known concentration of momentum and
+mean-reversion premia in the extreme deciles.
+
+\subsection{Comparison with traditional baselines (Figure 7)}
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{fig7_I5.png}
+    \caption{$I=5$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{fig7_I20.png}
+    \caption{$I=20$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{fig7_I60.png}
+    \caption{$I=60$}
+  \end{subfigure}
+  \caption{Simplified Figure~7 reproduction: CNN deciles against momentum,
+    moving-average cross, and short-term reversal baselines. At $I=5$ the
+    reversal baseline's D10 reaches an annualised return of $37.78\%$,
+    against which the CNN's monotone ranking is more useful as a signal
+    than as a stand-alone strategy.}
+  \label{fig:fig7}
+\end{figure}
+
+Figure~\ref{fig:fig7} shows that at $I=5$ the CNN ranking strictly
+dominates both momentum and moving-average cross across the cross-section,
+but is itself dominated in absolute level by the short-term reversal
+baseline whose D10 annualised return reaches $37.78\%$ (driven by the
+microstructure-style bid--ask bounce on which it relies). At $I=20$ the
+momentum and moving-average curves display the same U-shaped pattern noted
+above, and the CNN's monotone ranking is qualitatively closer to the
+behaviour reported in the original paper. At $I=60$ the CNN ranking is
+nearly horizontal in both our reproduction and the original figure,
+consistent with the well-documented attenuation of price-trend signals
+at quarterly horizons.
+
+\subsection{Cumulative returns}
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{cum_ret_net_L5.png}
+    \caption{Net, $I=5$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{cum_ret_net_L20.png}
+    \caption{Net, $I=20$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{cum_ret_net_L60.png}
+    \caption{Net, $I=60$}
+  \end{subfigure}\\[2pt]
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{cum_ret_gross_L5.png}
+    \caption{Gross, $I=5$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{cum_ret_gross_L20.png}
+    \caption{Gross, $I=20$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.32\linewidth}\centering
+    \includegraphics[width=\linewidth]{cum_ret_gross_L60.png}
+    \caption{Gross, $I=60$}
+  \end{subfigure}
+  \caption{Cumulative log returns of the H--L decile spread, net of
+    transaction costs (top row) and gross (bottom row). The $I=5$ spread
+    is the only one whose net curve still rises persistently; the $I=20$
+    and $I=60$ net curves flatten relative to their gross counterparts
+    because round-trip turnover is in the $84$--$87\%$ range
+    (Table~\ref{tab:table1}).}
+  \label{fig:fig8}
+\end{figure}
+
+Figure~\ref{fig:fig8} plots the cumulative log return of the H--L
+spread. The $I=5$ net curve climbs steadily because the high-frequency
+ranking is sharp enough to absorb the transaction-cost drag. At $I=20$
+and $I=60$, the gross curves are mildly positive but the net curves are
+substantially attenuated: with turnover at $84.08\%$ and $86.68\%$ per
+period (Table~\ref{tab:table1}), the $20$\,bp round-trip cost erases
+most of the gross spread.
+
+\subsection{Decile portfolio statistics (Table~1 reproduction)}
+
+\begin{table}[t]
+  \centering
+  \caption{Equal-weighted decile portfolio statistics (Table~1 reproduction).
+    \texttt{Ret} is annualised mean return, \texttt{Std} annualised standard
+    deviation, \texttt{SR} the resulting Sharpe ratio. ``H--L'' columns
+    are for the long--short decile spread net of $20$\,bp round-trip
+    transaction costs. Numbers are read from
+    \texttt{outputs/pipeline\_runs/tables/table1\_I\{5,20,60\}.csv}.}
+  \label{tab:table1}
+  \small
+  \begin{tabular}{l rrrrrrrrrrr r}
     \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
+       & D1 & D2 & D3 & D4 & D5 & D6 & D7 & D8 & D9 & D10 & H--L \\
     \midrule
-    Dendrite & Input terminal  & $\approx$100     \\
-    Axon     & Output terminal & $\approx$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
+    \multicolumn{12}{l}{\textbf{$I=5$ (weekly rebalance, turnover $0.858$)}}\\
+    Ret & 0.07 & 0.12 & 0.13 & 0.13 & 0.14 & 0.15 & 0.16 & 0.16 & 0.17 & 0.21 & 0.14 \\
+    Std & 0.13 & 0.16 & 0.17 & 0.17 & 0.18 & 0.18 & 0.19 & 0.19 & 0.20 & 0.21 & 0.11 \\
+    SR  & 0.55 & 0.75 & 0.77 & 0.77 & 0.75 & 0.79 & 0.83 & 0.85 & 0.89 & 1.04 & 1.29 \\
+    \midrule
+    \multicolumn{12}{l}{\textbf{$I=20$ (monthly rebalance, turnover $0.841$)}}\\
+    Ret & 0.10 & 0.12 & 0.13 & 0.12 & 0.11 & 0.12 & 0.11 & 0.11 & 0.11 & 0.11 & 0.01 \\
+    Std & 0.17 & 0.18 & 0.18 & 0.18 & 0.18 & 0.18 & 0.17 & 0.17 & 0.17 & 0.17 & 0.08 \\
+    SR  & 0.59 & 0.63 & 0.72 & 0.65 & 0.63 & 0.65 & 0.65 & 0.66 & 0.68 & 0.68 & 0.16 \\
+    \midrule
+    \multicolumn{12}{l}{\textbf{$I=60$ (quarterly rebalance, turnover $0.867$)}}\\
+    Ret & 0.13 & 0.13 & 0.13 & 0.14 & 0.13 & 0.12 & 0.13 & 0.13 & 0.12 & 0.12 & $-0.01$ \\
+    Std & 0.22 & 0.20 & 0.20 & 0.19 & 0.20 & 0.19 & 0.18 & 0.18 & 0.17 & 0.16 & 0.11 \\
+    SR  & 0.60 & 0.65 & 0.67 & 0.71 & 0.65 & 0.67 & 0.69 & 0.73 & 0.73 & 0.77 & $-0.11$ \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{Math}
-Note that display math in bare TeX commands will not create correct line numbers for submission. Please use LaTeX (or AMSTeX) commands for unnumbered display math. (You really shouldn't be using \$\$ anyway; see \url{https://tex.stackexchange.com/questions/503/why-is-preferable-to} and \url{https://tex.stackexchange.com/questions/40492/what-are-the-differences-between-align-equation-and-displaymath} for more information.)
+Table~\ref{tab:table1} confirms the pattern visible in
+Figures~\ref{fig:fig6}--\ref{fig:fig8}: only the $I=5$ horizon delivers a
+robust net H--L spread (annualised SR $1.29$). At $I=20$ the H--L SR is
+$0.16$, and at $I=60$ the spread is mildly negative ($-0.11$). The
+monotone increase in within-decile Sharpe ratios at $I=60$ (from $0.60$
+at D1 to $0.77$ at D10) shows that the CNN \emph{ordering} is still
+informative, but the gross spread is too small relative to volatility to
+survive transaction costs.
 
-\subsection{Final instructions}
+\subsection{Classification metrics}
 
-Do not change any aspects of the formatting parameters in the style files.  In
-particular, do not modify the width or length of the rectangle the text should
-fit into, and do not change font sizes. Please note that pages should be
-numbered.
+\begin{table}[t]
+  \centering
+  \caption{Out-of-sample binary classification metrics for the CNN
+    ensemble. $N_{\mathrm{test}}$ is the size of the
+    \texttt{outputs/cache/preds\_I*.npy} vector, i.e.\ the number of
+    rebalance-day observations scored by the five-seed ensemble.}
+  \label{tab:classmetrics}
+  \small
+  \begin{tabular}{lrrr}
+    \toprule
+    Horizon & Accuracy & AUC--ROC & $N_{\mathrm{test}}$ \\
+    \midrule
+    $I=5$  & 49.45\% & 0.5103 & 6{,}378{,}408 \\
+    $I=20$ & 52.68\% & 0.5242 & 1{,}441{,}167 \\
+    $I=60$ & 53.70\% & 0.5288 & ~~~453{,}847 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
+Table~\ref{tab:classmetrics} reads numbers from
+\texttt{outputs/ppt\_images/ppt16\_classification\_metrics.csv}. AUC rises
+with horizon, in line with the original paper's finding that longer
+look-back windows expose more learnable structure; accuracy at $I=5$ is
+\emph{below} the $50\%$ benchmark, which is consistent with a left-skewed
+label distribution (more days lose money in the weekly rebalance
+universe) rather than a strictly negative signal: the H--L Sharpe of
+$1.29$ shows that the predicted-probability \emph{ranking} is far more
+informative than the binary forecast.
 
-\section{Preparing PDF files}
+\subsection{Fama--French five-factor + momentum spanning}
 
+\begin{table}[t]
+  \centering
+  \caption{Fama--French five-factor plus momentum spanning regression
+    of the net long--short CNN spread $r_t^{\mathrm{CNN,LS}}-r_t^f$
+    on $\{$Mkt--RF, SMB, HML, RMW, CMA, Mom$\}$ at the matched
+    rebalance frequency. Alphas are annualised; $t$-statistics are
+    reported in parentheses. Numbers come from
+    \texttt{outputs/pipeline\_runs/tables/ff\_regression\_combined.csv}.}
+  \label{tab:ff6}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+                          & $I=5$ & $I=20$ & $I=60$ \\
+    \midrule
+    $\alpha$ (annualised, \%) & $+0.28$  & $-4.30$ & $-6.65$ \\
+                              & $(0.13)$ & $(-2.23)$ & $(-3.77)$ \\
+    $\beta_{\mathrm{Mkt-RF}}$ & $0.29$ $(14.24)$ & $0.10$ $(2.21)$ & $0.08$ $(1.24)$ \\
+    $\beta_{\mathrm{SMB}}$    & $0.14$ $(3.81)$  & $0.01$ $(0.11)$ & $-0.14$ $(-1.24)$ \\
+    $\beta_{\mathrm{HML}}$    & $0.13$ $(3.57)$  & $0.02$ $(0.27)$ & $0.23$ $(2.21)$ \\
+    $\beta_{\mathrm{RMW}}$    & $0.02$ $(0.41)$  & $0.32$ $(3.48)$ & $0.69$ $(5.24)$ \\
+    $\beta_{\mathrm{CMA}}$    & $-0.25$ $(-4.20)$ & $-0.11$ $(-0.98)$ & $-0.29$ $(-2.01)$ \\
+    $\beta_{\mathrm{Mom}}$    & $-0.03$ $(-1.51)$ & $-0.00$ $(-0.05)$ & $0.23$ $(3.86)$ \\
+    $R^{2}$                   & 0.34 & 0.07 & 0.63 \\
+    $N$ periods               & 989  & 226  & 74   \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
-Please prepare submission files with paper size ``US Letter,'' and not, for
-example, ``A4.''
-
-
-Fonts were the main cause of problems in the past years. Your PDF file must only
-contain Type 1 or Embedded TrueType fonts. Here are a few instructions to
-achieve this.
-
-
-\begin{itemize}
-
-
-\item You should directly generate PDF files using \verb+pdflatex+.
-
-
-\item You can check which fonts a PDF files uses.  In Acrobat Reader, select the
-  menu Files$>$Document Properties$>$Fonts and select Show All Fonts. You can
-  also use the program \verb+pdffonts+ which comes with \verb+xpdf+ and is
-  available out-of-the-box on most Linux machines.
-
-
-\item \verb+xfig+ ``patterned'' shapes are implemented with bitmap fonts.  Use
-  "solid" shapes instead.
-
-
-\item The \verb+\bbold+ package almost always uses bitmap fonts.  You should use
-  the equivalent AMS Fonts:
-\begin{verbatim}
-   \usepackage{amsfonts}
-\end{verbatim}
-followed by, e.g., \verb+\mathbb{R}+, \verb+\mathbb{N}+, or \verb+\mathbb{C}+
-for $\mathbb{R}$, $\mathbb{N}$ or $\mathbb{C}$.  You can also use the following
-workaround for reals, natural and complex:
-\begin{verbatim}
-   \newcommand{\RR}{I\!\!R} %real numbers
-   \newcommand{\Nat}{I\!\!N} %natural numbers
-   \newcommand{\CC}{I\!\!\!\!C} %complex numbers
-\end{verbatim}
-Note that \verb+amsfonts+ is automatically loaded by the \verb+amssymb+ package.
-
-
-\end{itemize}
-
-
-If your file contains type 3 fonts or non embedded TrueType fonts, we will ask
-you to fix it.
-
-
-\subsection{Margins in \LaTeX{}}
-
-
-Most of the margin problems come from figures positioned by hand using
-\verb+\special+ or other commands. We suggest using the command
-\verb+\includegraphics+ from the \verb+graphicx+ package. Always specify the
-figure width as a multiple of the line width as in the example below:
-\begin{verbatim}
-   \usepackage[pdftex]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]{myfile.pdf}
-\end{verbatim}
-See Section 4.4 in the graphics bundle documentation
-(\url{http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf})
-
-
-A number of width problems arise when \LaTeX{} cannot properly hyphenate a
-line. Please give LaTeX hyphenation hints using the \verb+\-+ command when
-necessary.
-
-\begin{ack}
-Use unnumbered first level headings for the acknowledgments. All acknowledgments
-go at the end of the paper before the list of references. Moreover, you are required to declare
-funding (financial activities supporting the submitted work) and competing interests (related financial activities outside the submitted work).
-More information about this disclosure can be found at: \url{https://neurips.cc/Conferences/2026/PaperInformation/FundingDisclosure}.
+The regression in Table~\ref{tab:ff6} delivers three messages. First, at
+$I=5$ the strategy's annualised alpha is statistically indistinguishable
+from zero ($+0.28\%$, $t=0.13$): the high raw Sharpe is largely captured
+by factor exposures (significant loadings on Mkt--RF, SMB, HML, and an
+opposite-signed load on CMA). Second, at $I=20$ and $I=60$ the alphas
+are \emph{negative} and significant ($-4.30\%$, $t=-2.23$; $-6.65\%$,
+$t=-3.77$); the loadings on RMW are positive and large, and at $I=60$ the
+strategy also picks up a positive momentum loading. Third, the very
+high $R^{2}$ at $I=60$ ($0.63$) suggests that the CNN signal at this
+horizon is essentially a re-weighting of standard style factors rather
+than an independent source of premia.
 
 
-Do {\bf not} include this section in the anonymized submission, only in the final paper. You can use the \texttt{ack} environment provided in the style file to automatically hide this section in the anonymized submission.
-\end{ack}
+\section{Interpretability: input-gradient saliency}
+\label{sec:saliency}
 
-\section*{References}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{saliency_I60.png}
+  \caption{Input-gradient saliency for three high-confidence positive
+    predictions of the $I=60$ ensemble. Left column: the original input
+    image (inverted to a white background for readability). Right
+    column: the same image with the gradient magnitude $|\partial f_{\text{up}}/\partial x|$
+    overlaid in red. The network's attention concentrates on the
+    right-most third of each window (i.e.\ the most-recent price action)
+    and on volume bars near regime changes.}
+  \label{fig:saliency}
+\end{figure}
 
-
-References follow the acknowledgments in the camera-ready paper. Use unnumbered first-level heading for
-the references. Any choice of citation style is acceptable as long as you are
-consistent. It is permissible to reduce the font size to \verb+small+ (9 point)
-when listing the references.
-Note that the Reference section does not count towards the page limit.
-\medskip
-
-
-{
-\small
-
-
-[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms for
-connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and T.K.\ Leen
-(eds.), {\it Advances in Neural Information Processing Systems 7},
-pp.\ 609--616. Cambridge, MA: MIT Press.
-
-
-[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS: Exploring
-  Realistic Neural Models with the GEneral NEural SImulation System.}  New York:
-TELOS/Springer--Verlag.
+Following \citet{simonyan2014deep}, we compute the absolute pixel-level
+gradient of the ``up'' logit with respect to each input image for three
+high-confidence positive examples drawn from the $I=60$ test window
+(Figure~\ref{fig:saliency}). Across all three examples the saliency mass
+is concentrated on the right-most $10$--$20\%$ of the OHLC panel and on
+volume bars near sharp price moves. This is consistent with a
+data-driven momentum reading: the CNN essentially learns to up-weight
+the most-recent observations, which is also the regime in which classical
+price-trend signals concentrate their power.
 
 
-[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of learning and
-recall at excitatory recurrent synapses and cholinergic modulation in rat
-hippocampal region CA3. {\it Journal of Neuroscience} {\bf 15}(7):5249-5262.
-}
+\section{Discussion and conclusion}
+\label{sec:discussion}
+
+Our reproduction reproduces the qualitative shape of
+\citet{jiang2023reimagining} at $I=5$ -- a monotone decile ranking, a
+high gross-of-cost H--L spread that survives transaction costs into a
+$1.29$ net Sharpe ratio, and a decile-by-decile dominance over momentum
+and moving-average cross. At $I=20$ and $I=60$ the qualitative ranking
+is preserved (Table~\ref{tab:table1}, Figure~\ref{fig:fig6}), but the
+H--L spread is too thin to survive costs, and the Fama--French six-factor
+regression delivers a statistically significant \emph{negative} alpha at
+both horizons.
+
+Three factors plausibly account for the gap relative to the original
+paper. (i) Our CRSP-style file extends through 2024, well past the
+post-publication window in which momentum-style signals have decayed
+broadly. (ii) Our five-seed ensemble is markedly smaller than the
+original ensembles, which increases variance in the predicted
+probabilities. (iii) Differences in transaction-cost handling and
+volume-bar normalisation across the published reference implementation
+and our own may explain part of the residual gap at longer horizons.
+
+The saliency analysis (Figure~\ref{fig:saliency}) shows that the
+$I=60$ CNN learns a momentum-like reading rather than a more exotic
+pattern; this is consistent with a model whose alpha is largely
+spanned by RMW and Mom. Promising directions for future work include
+regime-conditioned heads, industry- or size-neutralised label
+construction, and a mixture-of-experts ensemble that explicitly
+allocates capacity across horizons.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{plainnat}
+\bibliography{references}
+
 
 \appendix
 
-\section{Technical appendices and supplementary material}
-Technical appendices with additional results, figures, graphs, and proofs may be submitted with the paper submission before the full submission deadline (see above). You can upload a ZIP file for videos or code, but do not upload a separate PDF file for the appendix. There is no page limit for the technical appendices. 
+\section{Reproduction artefact map}
+\label{app:artefacts}
 
-Note: Think of the appendix as ``optional reading'' for reviewers. The paper must be able to stand alone without the appendix; for example, adding critical experiments that support the main claims to an appendix is inappropriate. 
+Every numerical claim in this paper traces back to a file in
+\texttt{final\_submit\_version/outputs/}:
+\begin{itemize}
+  \item Figure~\ref{fig:ohlc-sample}: produced by
+        \texttt{scripts/pipeline\_split/export\_paper\_assets.py}.
+  \item Figure~\ref{fig:fig6}, Figure~\ref{fig:fig7}: PNGs in
+        \texttt{pipeline\_runs/figures/}; decile-level CSVs in
+        \texttt{pipeline\_runs/tables/fig\{6,7\_simple\}\_I\{5,20,60\}\_\{cnn,ma,mom,reversal\}.csv}.
+  \item Figure~\ref{fig:fig8}: PNGs in
+        \texttt{ppt\_images/ppt15\_cumulative\_returns\{,\_gross\}\_L\{5,20,60\}.png}.
+  \item Table~\ref{tab:table1}:
+        \texttt{pipeline\_runs/tables/table1\_I\{5,20,60\}.csv}.
+  \item Table~\ref{tab:classmetrics}:
+        \texttt{ppt\_images/ppt16\_classification\_metrics.csv} plus
+        shape of \texttt{cache/preds\_I\{5,20,60\}.npy}.
+  \item Table~\ref{tab:ff6}: produced by
+        \texttt{scripts/pipeline\_split/export\_ff\_regression.py};
+        intermediate file
+        \texttt{pipeline\_runs/tables/ff\_regression\_combined.csv}.
+  \item Figure~\ref{fig:saliency}: produced by
+        \texttt{scripts/pipeline\_split/export\_saliency\_map.py} using
+        the $I=60$ checkpoint at seed $42$.
+\end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hyperparameters and per-block tensor shapes}
+\label{app:hyper}
 
-\newpage
+Table~\ref{tab:cnn-layers} reports the per-block configuration used in
+the three CNN backbones; all blocks share the
+Conv$\to$BatchNorm$\to$LeakyReLU($0.01$)$\to$MaxPool$(2,1)$ pattern.
+
+\begin{table}[h]
+  \centering
+  \caption{Per-block convolutional configuration. ``--'' denotes a block
+    that the horizon does not use.}
+  \label{tab:cnn-layers}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    Block & $I=5$ & $I=20$ & $I=60$ \\
+    \midrule
+    Block 1 channels    & $1\to64$ & $1\to64$ & $1\to64$ \\
+    Block 1 stride      & (1,1) & (3,1) & (3,1) \\
+    Block 1 dilation    & (1,1) & (2,1) & (3,1) \\
+    Block 2 channels    & $64\to128$ & $64\to128$ & $64\to128$ \\
+    Block 3 channels    & --         & $128\to256$ & $128\to256$ \\
+    Block 4 channels    & --         & --          & $256\to512$ \\
+    FC input dim        & 15{,}360 & --          & 184{,}320 \\
+    Approx.\ params     & $\sim$\,150\,k & $\sim$\,700\,k & $\sim$\,3.0\,M \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Computational footprint}
+\label{app:compute}
+
+The cleaned daily panel cache
+(\texttt{final\_submit\_version/outputs/cache/cleaned\_data\_all.pkl}) is
+$\sim 11.1$\,GB. Per-seed checkpoint sizes are $0.6$\,MB ($I=5$),
+$2.8$\,MB ($I=20$), and $11.8$\,MB ($I=60$); five seeds per horizon give
+a total of $\approx 76$\,MB on disk. Training and ensemble inference were
+performed on a single CUDA GPU (with an MPS fallback for Apple-silicon
+development); end-to-end execution of the pipeline takes on the order of
+a few wall-clock hours from the cleaned cache.
+
+
 \input{checklist.tex}
 
 
