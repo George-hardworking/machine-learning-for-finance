@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source /root/miniconda3/bin/activate 5020_env
-cd /root/machine-learning-for-finance/Final/scripts
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-NOTEBOOK_IN="final_improve.ipynb"
+if [ -f "/root/miniconda3/bin/activate" ]; then
+  # Compatible with your original cloud-server environment.
+  source /root/miniconda3/bin/activate 5020_env
+fi
+cd "${SCRIPT_DIR}"
+
+NOTEBOOK_IN="${PROJECT_ROOT}/notebooks/final_improve.ipynb"
 NOTEBOOK_OUT="final_improve_output.ipynb"
 LOG_FILE="run_live.log"
 PID_FILE="run_live.pid"
@@ -18,7 +24,7 @@ python - <<'PY'
 import json
 from pathlib import Path
 
-p = Path("final_improve.ipynb")
+p = Path("../notebooks/final_improve.ipynb")
 nb = json.loads(p.read_text())
 dirty = False
 for cell in nb.get("cells", []):
@@ -54,8 +60,8 @@ export FIG6_ENABLE="${FIG6_ENABLE:-0}"
 export FIG7_ENABLE="${FIG7_ENABLE:-0}"
 export FIG8_ENABLE="${FIG8_ENABLE:-0}"
 export TABLE1_ENABLE="${TABLE1_ENABLE:-0}"
-export FIG_OUT_DIR="${FIG_OUT_DIR:-/root/autodl-tmp/outputs/pipeline_runs/figures}"
-export TABLE_OUT_DIR="${TABLE_OUT_DIR:-/root/autodl-tmp/outputs/pipeline_runs/tables}"
+export FIG_OUT_DIR="${FIG_OUT_DIR:-${PROJECT_ROOT}/outputs/pipeline_runs/figures}"
+export TABLE_OUT_DIR="${TABLE_OUT_DIR:-${PROJECT_ROOT}/outputs/pipeline_runs/tables}"
 export FIG_DATA_OUT_DIR="${FIG_DATA_OUT_DIR:-$TABLE_OUT_DIR}"
 export FIG7_MAX_LAG="${FIG7_MAX_LAG:-6}"
 export FIG7_MAX_TRAIN_ROWS="${FIG7_MAX_TRAIN_ROWS:-400000}"

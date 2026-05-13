@@ -1,0 +1,202 @@
+date range
+
+1992-1-1 to 2024-12-31
+
+=== selected ===
+
+PERMNO (permno)
+
+Daily Calendar Date (dlycaldt)
+
+Daily Capitalization (dlycap)
+
+Daily Total Return (dlyret)
+
+Daily Price Return (dlyretx)
+
+Daily Volume (dlyvol)
+
+Daily Close (dlyclose)
+
+Daily Low (dlylow)
+
+Daily High (dlyhigh)
+
+Daily Open (dlyopen)
+
+
+
+
+=== all ===
+
+PERMNO (permno)
+
+Security Information Start Date (secinfostartdt)
+
+Security Information End Date (secinfoenddt)
+
+Begin Date of Stock Data (securitybegdt)
+
+End Date of Stock Data (securityenddt)
+
+Security Header Flag (securityhdrflg)
+
+Header CUSIP -8 Characters (hdrcusip)
+
+Header CUSIP -9 Characters (hdrcusip9)
+
+CUSIP (cusip)
+
+CUSIP9 (cusip9)
+
+Primary Exchange (primaryexch)
+
+Conditional Type (conditionaltype)
+
+Exchange Tier (exchangetier)
+
+Trading Status Flag (tradingstatusflg)
+
+Security Name (securitynm)
+
+Share Class (shareclass)
+
+US Incorporation Flag (usincflg)
+
+Issuer Type (issuertype)
+
+Security Type (securitytype)
+
+Security Sub-Type (securitysubtype)
+
+Share Type (sharetype)
+
+Security Active Flag (securityactiveflg)
+
+Delisting Corporate Action Type (delactiontype)
+
+Delisting Completion Status Type (delstatustype)
+
+Delisting Reason Type (delreasontype)
+
+Delisting Payment Summary Type (delpaymenttype)
+
+Ticker (ticker)
+
+Trading Symbol (tradingsymbol)
+
+PERMCO (permco)
+
+Sic Code (siccd)
+
+NAICS Code (naics)
+
+ICB Industry Code (icbindustry)
+
+Issuer Name (issuernm)
+
+YYYYMMDD - Daily Calendar Period Key (yyyymmdd)
+
+Daily Calendar Date (dlycaldt)
+
+Daily Delisting Flag (dlydelflg)
+
+Daily Price (dlyprc)
+
+Daily Price Flag (dlyprcflg)
+
+Daily Capitalization (dlycap)
+
+Daily Capitalization Flag (dlycapflg)
+
+Daily Previous Price (dlyprevprc)
+
+Daily Previous Price Flag (dlyprevprcflg)
+
+Daily Previous Price Date (dlyprevdt)
+
+Daily Previous Capitalization (dlyprevcap)
+
+Daily Previous Capitalization Flag (dlyprevcapflg)
+
+Daily Total Return (dlyret)
+
+Daily Price Return (dlyretx)
+
+Daily Income Return (dlyreti)
+
+Daily Return Missing Flag (dlyretmissflg)
+
+Daily Return Duration Flag (dlyretdurflg)
+
+Daily Ordinary Dividend Amount (dlyorddivamt)
+
+Daily Non-Ordinary Dividend Amount (dlynonorddivamt)
+
+Daily Factor To Adjust Price (dlyfacprc)
+
+Daily Distribution Return Impact Flag (dlydistretflg)
+
+Daily Volume (dlyvol)
+
+Daily Close (dlyclose)
+
+Daily Low (dlylow)
+
+Daily High (dlyhigh)
+
+Daily Bid (dlybid)
+
+Daily Ask (dlyask)
+
+Daily Open (dlyopen)
+
+Daily Number Of Trades (dlynumtrd)
+
+Daily Market Maker Count (dlymmcnt)
+
+Daily Price Volume (dlyprcvol)
+
+Share Information Start Date (shrstartdt)
+
+Share Information End Date (shrenddt)
+
+Shares Outstanding (shrout)
+
+Share Change Source Type (shrsource)
+
+Share Factor Type (shrfactype)
+
+Share Adr Flag (shradrflg)
+
+Ex-Distribution Date (disexdt)
+
+Distribution Sequence Number (disseqnbr)
+
+Distribution Ordinary Dividend Flag (disordinaryflg)
+
+Distribution Type (distype)
+
+Distribution Frequency Type (disfreqtype)
+
+Distribution Payment Method Type (dispaymenttype)
+
+Distribution Detail Type (disdetailtype)
+
+Distribution Tax Status Type (distaxtype)
+
+Distribution Original Currency Type (disorigcurtype)
+
+Dividend Amount (disdivamt)
+
+Factor To Adjust Price (disfacpr)
+
+Factor To Adjust Shares (disfacshr)
+
+Declaration Date (disdeclaredt)
+
+Record Date (disrecorddt)
+
+Payment Date (dispaydt)
+
+PERMNO of the Security Received (dispermno)

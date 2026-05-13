@@ -9,8 +9,9 @@ import pandas as pd
 PREDICT_HORIZON_TO_TRADE_FREQ = {5: "week", 20: "month", 60: "quarter"}
 PERIODS_PER_YEAR = {5: 52, 20: 12, 60: 4}
 
-CACHE_DIR = Path("/root/machine-learning-for-finance/Final/outputs/cache")
-OUT_DIR = Path("/root/machine-learning-for-finance/Final/outputs/pipeline_runs/tables")
+ROOT_DIR = Path(__file__).resolve().parents[2]
+CACHE_DIR = ROOT_DIR / "outputs" / "cache"
+OUT_DIR = ROOT_DIR / "outputs" / "pipeline_runs" / "tables"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 

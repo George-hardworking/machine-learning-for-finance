@@ -1,10 +1,11 @@
 from pathlib import Path
 
-BASE_DIR = Path("/root/machine-learning-for-finance/Final/scripts")
-NOTEBOOK_IN = BASE_DIR / "final_improve.ipynb"
+ROOT_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = ROOT_DIR / "scripts"
+NOTEBOOK_IN = ROOT_DIR / "notebooks" / "final_improve.ipynb"
 RUNNER = BASE_DIR / "run_papermill.sh"
 
-OUTPUT_ROOT = Path("/root/machine-learning-for-finance/Final/outputs/pipeline_runs")
+OUTPUT_ROOT = ROOT_DIR / "outputs" / "pipeline_runs"
 LOG_DIR = OUTPUT_ROOT / "logs"
 NB_DIR = OUTPUT_ROOT / "notebooks"
 META_DIR = OUTPUT_ROOT / "meta"

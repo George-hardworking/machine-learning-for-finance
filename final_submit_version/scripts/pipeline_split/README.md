@@ -14,9 +14,9 @@ This folder splits execution into independent `.py` entrypoints.
 
 All stage outputs are categorized under:
 
-- `Final/outputs/pipeline_runs/logs/` - stage logs
-- `Final/outputs/pipeline_runs/notebooks/` - stage notebook snapshots
-- `Final/outputs/pipeline_runs/meta/` - stage metadata/status files
+- `outputs/pipeline_runs/logs/` - stage logs
+- `outputs/pipeline_runs/notebooks/` - stage notebook snapshots
+- `outputs/pipeline_runs/meta/` - stage metadata/status files
 
 ## Notes about GPU
 

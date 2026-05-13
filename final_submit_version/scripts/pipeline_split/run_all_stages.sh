@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd /root/machine-learning-for-finance/Final/scripts/pipeline_split
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+cd "${SCRIPT_DIR}"
 
-MASTER_LOG="/root/machine-learning-for-finance/Final/outputs/pipeline_runs/logs/master_stages.log"
+MASTER_LOG="${PROJECT_ROOT}/outputs/pipeline_runs/logs/master_stages.log"
 mkdir -p "$(dirname "${MASTER_LOG}")"
 
 echo "[MASTER] start $(date '+%F %T')" | tee -a "${MASTER_LOG}"
