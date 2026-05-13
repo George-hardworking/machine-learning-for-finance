@@ -1,0 +1,4 @@
+stage=fig7
+return_code=0
+log=/root/machine-learning-for-finance/Final/outputs/pipeline_runs/logs/fig7_20260511_074453.log
+snapshot_notebook=/root/machine-learning-for-finance/Final/outputs/pipeline_runs/notebooks/fig7_20260511_074453.ipynb
