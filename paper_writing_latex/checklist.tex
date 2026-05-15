@@ -47,7 +47,7 @@
     \item {\bf Experimental result reproducibility}
     \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~\ref{sec:data} specifies the universe and image construction; Section~\ref{sec:arch} and Appendix~\ref{app:hyper} detail the architecture, optimiser, learning rate, batch size, dropout, and the five training seeds. The end-to-end pipeline runs from \texttt{final\_submit\_version/scripts/} (see Appendix~\ref{app:artefacts}).
+    \item[] Justification: Section~\ref{sec:data} specifies the universe and image construction; Section~\ref{sec:arch} and Appendix~\ref{app:hyper} detail the architecture, optimiser, learning rate, batch size, dropout, and the five training seeds. Appendix~\ref{app:artefacts} describes the reproducibility protocol used to regenerate the reported tables and figures.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
@@ -67,7 +67,7 @@
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
     \item[] Answer: \answerYes{}
-    \item[] Justification: All code, notebooks, trained checkpoints (five seeds per horizon), prediction arrays, and aggregation CSVs are released under \texttt{final\_submit\_version/}, with stage-by-stage entrypoints in \texttt{scripts/pipeline\_split/}. The underlying daily equity panel is sourced from CRSP under the standard institutional licence; the variable list is documented in \texttt{final\_submit\_version/docs/variable\_description.txt}.
+    \item[] Justification: The replication materials include the code, notebooks, trained checkpoints (five seeds per horizon), prediction arrays, and post-aggregation tables needed to reproduce the main results. The underlying daily equity panel is sourced from CRSP under the standard institutional licence; the relevant fields and filters are described in Section~\ref{sec:data}.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that paper does not include experiments requiring code.
@@ -178,7 +178,7 @@
 \item {\bf New assets}
     \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The released code is structured as stage-based runners under \texttt{final\_submit\_version/scripts/pipeline\_split/}, each with a one-purpose entrypoint script and per-stage README. Trained checkpoints, prediction arrays, and aggregation CSVs follow consistent naming conventions documented in Appendix~\ref{app:artefacts}.
+    \item[] Justification: The released assets are organised by empirical stage, with separate components for data construction, image generation, model training, prediction, portfolio aggregation, factor regressions, and saliency analysis. The trained checkpoints, prediction arrays, and post-aggregation tables are documented alongside the replication materials.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not release new assets.

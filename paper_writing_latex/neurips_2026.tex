@@ -27,6 +27,7 @@
 \usepackage{multirow}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{float}
 \captionsetup{font=small, labelfont=bf}
 \graphicspath{{figures/}}
 
@@ -60,8 +61,8 @@ the magnitudes reported by \citet{jiang2023reimagining}, medium- and
 long-horizon strategies weaken substantially after costs, and factor stripping
 yields significantly negative alphas. Saliency
 maps indicate that the CNN mainly attends to recent price movement and volume
-contrast. We release all code and artefacts needed to audit and extend the
-reproduction.
+contrast. We also provide replication materials so that the empirical results
+can be audited and extended.
 \end{abstract}
 
 
@@ -100,9 +101,9 @@ reported for 2001--2019. Our contributions are:
   \item Input-gradient saliency analysis \citep{simonyan2014deep} of the
         $I=60$ ensemble, which highlights the right tail of each image and
         the volume bars as the dominant feature regions.
-  \item Public release of code, trained weights, and post-aggregation CSV
-        tables in \texttt{final\_submit\_version/}, allowing every numerical
-        claim to be regenerated.
+  \item Code, trained weights, and post-aggregation CSV tables are released
+        on \href{https://github.com/George-hardworking/machine-learning-for-finance/tree/main/final_submit_version}{GitHub},
+        allowing every numerical claim to be regenerated.
 \end{enumerate}
 
 The remainder of the paper is organised as follows. Section~\ref{sec:related}
@@ -125,7 +126,8 @@ with and diverge from \citet{jiang2023reimagining}.
 of technical chart patterns by combining kernel regression with automated
 pattern recognition. \citet{jegadeesh1993returns} documented price momentum
 as a robust cross-sectional return predictor, providing the canonical
-benchmark against which any technical-trend signal must be compared.
+baseline against which chart-based technical trend signals are often
+benchmarked empirically.
 
 \paragraph{Deep learning for return prediction.}
 Recent work demonstrates that deep architectures uncover return signals
@@ -148,59 +150,93 @@ technique to identify which segments of each OHLC image drive the model's
 \label{sec:data}
 
 \paragraph{Universe.}
-We use a CRSP-style daily equity panel covering 1992-01-01 to 2024-12-31.
-The cleaning step retains the following columns per
-\texttt{final\_submit\_version/docs/variable\_description.txt}:
-\texttt{permno}, \texttt{dlycaldt}, \texttt{dlycap}, \texttt{dlyret},
-\texttt{dlyretx}, \texttt{dlyvol}, \texttt{dlyopen}, \texttt{dlyhigh},
-\texttt{dlylow}, \texttt{dlyclose}. We drop rows with any of those columns
-missing, apply a $\$1$ minimum-close and strictly positive
-volume filter, and compute log returns and adjusted OHLC prices via
-cumulative log-return compounding so that the first valid observation per
-\texttt{permno} acts as the price anchor. No survivorship adjustments are
-applied beyond what is implicit in the CRSP-style file.
+We employ a CRSP-consistent daily security-level panel of U.S. equities
+spanning January 1, 1992, to December 31, 2024. Data are observed at the
+daily frequency for each security, uniquely identified by its CRSP permanent
+security number (PERMNO). The panel includes core trading and pricing
+fields: daily market capitalization, total and price returns, trading
+volume, and open-high-low-close (OHLC) prices. We impose a standard
+sequential screening procedure: all fields are required to be non-missing;
+we retain only securities with a closing price of at least \$1 and strictly
+positive trading volume. Log returns are computed, and OHLC prices are
+adjusted for corporate actions via cumulative log-return compounding, with
+the first valid observation for each security serving as the normalization
+anchor. No additional survivorship bias adjustments are applied beyond those
+inherent to the standard CRSP universe construction.
 
 \paragraph{Labels and holding period.}
 For each horizon $F\in\{5,20,60\}$ trading days we form
 $R^{\mathrm{fut}}_{t,F}=\exp\!\bigl(\sum_{s=t+1}^{t+F}\log(1+r_s)\bigr)-1$ on
 the adjusted price path, and a binary classification label
-$y_{t,F}=\mathbb{1}\{R^{\mathrm{fut}}_{t,F}>0\}$. Rebalance timestamps are
+$y_{t,F}=\mathbf{1}\{R^{\mathrm{fut}}_{t,F}>0\}$. Rebalance timestamps are
 fixed at period-end calendar boundaries (Friday for $F=5$, month-end for
 $F=20$, quarter-end for $F=60$), matching the canonical SPY trade calendar.
 
 \paragraph{Image construction.}
-For input horizon $I\in\{5,20,60\}$ matched to $F=I$ we render a grayscale
-image of width $W=3I$ and height $H$ split into an OHLC panel of height
-$H_{\mathrm{ohlc}}$ stacked above a one-pixel-gap volume panel of height
-$H_{\mathrm{vol}}$:
+Following \citet{jiang2023reimagining}, we encode each stock--date
+observation as a fixed-size grayscale \emph{chart image} rather than a
+vector of technical indicators. The background is black (pixel value~0)
+and all price--volume objects are drawn in white (255). We consider three
+input horizons $I\in\{5,20,60\}$, each matched to the prediction horizon
+$F=I$, so the image summarizes the most recent $I$ trading days of adjusted
+OHLC prices and daily volume.
+
+\emph{OHLC panel.}
+The upper portion of the image is reserved for open--high--low--close
+prices. Each trading day $\tau$ in the $I$-day window occupies three
+adjacent pixel columns: a one-pixel open marker in the left column, a
+vertical high--low bar in the centre, and a one-pixel close marker in the
+right column. Prices are linearly mapped into the vertical axis using the
+window minimum and maximum, where the range is defined to include both the
+raw OHLC values and the moving-average line described below. After drawing,
+the OHLC sub-panel is flipped top-to-bottom so that upward price movements
+read visually as ``up'' on the chart, in line with conventional price
+plots.
+
+\emph{Moving-average line.}
+We overlay a simple moving average (SMA) of the close price, using an
+$I$-day window---the same length as the chart horizon (e.g., a 20-day chart
+uses a 20-day SMA). For each day, the SMA value is placed on the centre
+column of that day; consecutive days are connected by a one-pixel poly-line.
+To ensure that the first in-window SMA already reflects $I$ days of
+history, the SMA is computed from $2I-1$ days of past closes ending at the
+chart date.
+
+\emph{Volume sub-panel.}
+The lower portion of the image displays volume bars. As in
+\citet{jiang2023reimagining}, the volume chart is drawn along the bottom of
+the image and occupies one-fifth of the total height; the OHLC panel fills
+the upper four-fifths, with a one-pixel gap between the two regions. Within
+the volume band,
+the largest daily volume in the window is scaled to the top of the band and
+all other days are drawn proportionally. Missing-volume days are left
+blank.
+
+\emph{Image dimensions.}
+Because each day uses three pixel columns, the image width is $W=3I$.
+The total height $H$ stacks the OHLC block, the separator, and the volume
+band. The $(W,H)$ pairs used in our implementation, identical to those reported
+by \citet{jiang2023reimagining}, are:
 \begin{center}
-  \begin{tabular}{cccc}
+  \begin{tabular}{ccc}
     \toprule
-    Horizon & $W$ & $H_{\mathrm{ohlc}}$ & $H_{\mathrm{vol}}$ \\
+    Horizon & $W$ & $H$ \\
     \midrule
-    $I=5$  & 15  & 25 & 6  \\
-    $I=20$ & 60  & 51 & 12 \\
-    $I=60$ & 180 & 76 & 19 \\
+    $I=5$  & 15  & 32 \\
+    $I=20$ & 60  & 64 \\
+    $I=60$ & 180 & 96 \\
     \bottomrule
   \end{tabular}
 \end{center}
-For each day $\tau$ in the window we draw (a) a one-pixel vertical bar from
-the low to the high, (b) a one-pixel open tick at column $3\tau$ and a
-close tick at column $3\tau+2$, (c) a one-pixel SMA poly-line connecting
-the rolling $I$-day means of close prices (computed using $2I-1$ days of
-history so that the first SMA point already reflects $I$ observations),
-all scaled to a common $[P_{\min},P_{\max}]$ range that includes the SMA
-values. Volume bars are normalised to the window's own maximum. The
-finished OHLC panel is finally flipped top-to-bottom so that ``up'' moves
-appear visually upward, then concatenated with the volume panel with a
-one-pixel gap. Figure~\ref{fig:ohlc-sample} shows the three resolutions
-for a single \texttt{permno} anchored at the same calendar date.
 
-\begin{figure}[t]
+Figure~\ref{fig:ohlc-sample} illustrates the three horizons for one security
+on the same calendar date, so the reader can compare how a longer look-back
+compresses the same price path into a wider and taller canvas.
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{ohlc_sample.png}
   \caption{OHLC-plus-volume images for a single security at horizons
-    $I\in\{5,20,60\}$. The same calendar anchor (2010-12-31) is used so
+    $I\in\{5,20,60\}$. The same calendar anchor (2015-12-18) is used so
     the visual density at different resolutions is directly comparable.}
   \label{fig:ohlc-sample}
 \end{figure}
@@ -228,54 +264,61 @@ without an explosion in parameter count. Figure~\ref{fig:cnn-arch}
 summarises the three stacks; layer-level details are in
 Table~\ref{tab:cnn-layers} (Appendix~\ref{app:hyper}).
 
-\begin{figure}[t]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}[
       font=\footnotesize,
-      block/.style={draw, rounded corners, minimum height=0.85cm, minimum width=1.4cm, align=center, inner sep=2pt},
+      block/.style={draw, rounded corners, minimum height=1.0cm, minimum width=1.55cm, align=center, inner sep=2pt},
       input/.style={draw, fill=gray!12, rounded corners, minimum height=0.85cm, minimum width=1.0cm, align=center, inner sep=2pt},
       head/.style={draw, fill=gray!25, rounded corners, minimum height=0.85cm, minimum width=1.4cm, align=center, inner sep=2pt},
       arr/.style={-{Latex[length=2mm]}, thick}
     ]
-    %% I=5 row
-    \node[input] (i5in) at (0,2.2) {Input\\$15{\times}32$};
-    \node[block, right=4mm of i5in] (i5b1) {Conv64\\(5,3) s(1,1)};
-    \node[block, right=4mm of i5b1] (i5b2) {Conv128\\(5,3) s(1,1)};
-    \node[head,  right=4mm of i5b2] (i5fc) {FC\\$\to 2$};
+    %% I=5 (two blocks, as in Jiang Figure~2)
+    \node[input] (i5in) at (0,2.2) {Input\\$32{\times}15$};
+    \node[block, right=3.5mm of i5in] (i5b1) {$5{\times}3$ conv, 64\\$2{\times}1$ MaxPool};
+    \node[block, right=3.5mm of i5b1] (i5b2) {$5{\times}3$ conv, 128\\$2{\times}1$ MaxPool};
+    \node[head,  right=3.5mm of i5b2] (i5fc) {FC\\15{,}360};
+    \node[head,  right=3mm of i5fc] (i5sm) {Softmax};
     \draw[arr] (i5in)  -- (i5b1);
     \draw[arr] (i5b1)  -- (i5b2);
     \draw[arr] (i5b2)  -- (i5fc);
+    \draw[arr] (i5fc)  -- (i5sm);
     \node[left=2mm of i5in] {$I=5$};
-    %% I=20 row
-    \node[input] (i20in) at (0,1.0) {Input\\$60{\times}64$};
-    \node[block, right=4mm of i20in] (i20b1) {Conv64\\s(3,1) d(2,1)};
-    \node[block, right=4mm of i20b1] (i20b2) {Conv128};
-    \node[block, right=4mm of i20b2] (i20b3) {Conv256};
-    \node[head,  right=4mm of i20b3] (i20fc) {FC\\$\to 2$};
+    %% I=20 (three blocks)
+    \node[input] (i20in) at (0,1.0) {Input\\$64{\times}60$};
+    \node[block, right=3.5mm of i20in] (i20b1) {$5{\times}3$ conv, 64\\$2{\times}1$ MaxPool};
+    \node[block, right=3.5mm of i20b1] (i20b2) {$5{\times}3$ conv, 128\\$2{\times}1$ MaxPool};
+    \node[block, right=3.5mm of i20b2] (i20b3) {$5{\times}3$ conv, 256\\$2{\times}1$ MaxPool};
+    \node[head,  right=3.5mm of i20b3] (i20fc) {FC\\46{,}080};
+    \node[head,  right=3mm of i20fc] (i20sm) {Softmax};
     \draw[arr] (i20in) -- (i20b1);
     \draw[arr] (i20b1) -- (i20b2);
     \draw[arr] (i20b2) -- (i20b3);
     \draw[arr] (i20b3) -- (i20fc);
+    \draw[arr] (i20fc) -- (i20sm);
     \node[left=2mm of i20in] {$I=20$};
-    %% I=60 row
-    \node[input] (i60in) at (0,-0.2) {Input\\$180{\times}96$};
-    \node[block, right=4mm of i60in] (i60b1) {Conv64\\s(3,1) d(3,1)};
-    \node[block, right=4mm of i60b1] (i60b2) {Conv128};
-    \node[block, right=4mm of i60b2] (i60b3) {Conv256};
-    \node[block, right=4mm of i60b3] (i60b4) {Conv512};
-    \node[head,  right=4mm of i60b4] (i60fc) {FC\\$\to 2$};
+    %% I=60 (four blocks)
+    \node[input] (i60in) at (0,-0.2) {Input\\$96{\times}180$};
+    \node[block, right=3.5mm of i60in] (i60b1) {$5{\times}3$ conv, 64\\$2{\times}1$ MaxPool};
+    \node[block, right=3.5mm of i60b1] (i60b2) {$5{\times}3$ conv, 128\\$2{\times}1$ MaxPool};
+    \node[block, right=3.5mm of i60b2] (i60b3) {$5{\times}3$ conv, 256\\$2{\times}1$ MaxPool};
+    \node[block, right=3.5mm of i60b3] (i60b4) {$5{\times}3$ conv, 512\\$2{\times}1$ MaxPool};
+    \node[head,  right=3.5mm of i60b4] (i60fc) {FC\\184{,}320};
+    \node[head,  right=3mm of i60fc] (i60sm) {Softmax};
     \draw[arr] (i60in) -- (i60b1);
     \draw[arr] (i60b1) -- (i60b2);
     \draw[arr] (i60b2) -- (i60b3);
     \draw[arr] (i60b3) -- (i60b4);
     \draw[arr] (i60b4) -- (i60fc);
+    \draw[arr] (i60fc) -- (i60sm);
     \node[left=2mm of i60in] {$I=60$};
   \end{tikzpicture}
-  \caption{Horizon-specific CNN backbones. Each rectangle represents one
-    Conv$\to$BatchNorm$\to$LeakyReLU$\to$MaxPool block. All kernels are
-    $5\times 3$; default stride and dilation are $(1,1)$ except where
-    explicitly noted. The fully-connected head has dropout $0.5$ and
-    outputs two logits.}
+  \caption{Horizon-specific CNN backbones (cf.\ Figure~2 of
+    \citet{jiang2023reimagining}). Each rectangle is one block:
+    $5{\times}3$ convolution (with the channel width shown), LeakyReLU,
+    batch normalisation, and $2{\times}1$ max pooling. Stride and dilation
+    for $I=20$ and $I=60$ are in Table~\ref{tab:cnn-layers}. FC widths
+    15{,}360 / 46{,}080 / 184{,}320 match our implementation.}
   \label{fig:cnn-arch}
 \end{figure}
 
@@ -286,12 +329,10 @@ $10^{-5}$, batch size $128$, and a maximum of $50$ epochs with
 early-stopping on validation loss. Convolutional and linear weights are
 initialised with Xavier-uniform and biases at zero. We train an ensemble
 of five seeds $\{42, 123, 456, 789, 101112\}$ and aggregate by averaging
-the softmax-probability outputs at inference time. The resulting
-checkpoints are stored under
-\texttt{final\_submit\_version/outputs/models/} with sizes $\approx
-0.6$\,MB ($I=5$), $\approx 2.8$\,MB ($I=20$), and $\approx 11.8$\,MB
-($I=60$) per seed, consistent with the parameter counts implied by
-Figure~\ref{fig:cnn-arch}.
+the softmax-probability outputs at inference time. The resulting model
+sizes are approximately $0.6$\,MB ($I=5$), $2.8$\,MB ($I=20$), and
+$11.8$\,MB ($I=60$) per seed, consistent with the parameter counts implied
+by Figure~\ref{fig:cnn-arch}.
 
 
 \section{Empirical results}
@@ -323,8 +364,8 @@ both legs.
   \end{subfigure}
   \caption{Annualised decile returns by horizon for the CNN, matched-horizon
     momentum, and moving-average cross signals. Reproduction of Figure~6 of
-    \citet{jiang2023reimagining}. Numbers are read from
-    \texttt{outputs/pipeline\_runs/tables/fig6\_I\{5,20,60\}\_\{cnn,mom,ma\}.csv}.}
+    \citet{jiang2023reimagining}; all series are computed from the same
+    out-of-sample prediction panels and rebalance calendar.}
   \label{fig:fig6}
 \end{figure}
 
@@ -430,8 +471,7 @@ most of the gross spread.
     \texttt{Ret} is annualised mean return, \texttt{Std} annualised standard
     deviation, \texttt{SR} the resulting Sharpe ratio. ``H--L'' columns
     are for the long--short decile spread net of $20$\,bp round-trip
-    transaction costs. Numbers are read from
-    \texttt{outputs/pipeline\_runs/tables/table1\_I\{5,20,60\}.csv}.}
+    transaction costs.}
   \label{tab:table1}
   \small
   \begin{tabular}{l rrrrrrrrrrr r}
@@ -470,9 +510,8 @@ survive transaction costs.
 \begin{table}[t]
   \centering
   \caption{Out-of-sample binary classification metrics for the CNN
-    ensemble. $N_{\mathrm{test}}$ is the size of the
-    \texttt{outputs/cache/preds\_I*.npy} vector, i.e.\ the number of
-    rebalance-day observations scored by the five-seed ensemble.}
+    ensemble. $N_{\mathrm{test}}$ is the number of rebalance-day
+    observations scored by the five-seed ensemble.}
   \label{tab:classmetrics}
   \small
   \begin{tabular}{lrrr}
@@ -486,9 +525,8 @@ survive transaction costs.
   \end{tabular}
 \end{table}
 
-Table~\ref{tab:classmetrics} reads numbers from
-\texttt{outputs/ppt\_images/ppt16\_classification\_metrics.csv}. AUC rises
-with horizon, in line with \citet{jiang2023reimagining}, who argue that longer
+Table~\ref{tab:classmetrics} shows that AUC rises with horizon, in line
+with \citet{jiang2023reimagining}, who argue that longer
 look-back windows expose more learnable structure; accuracy at $I=5$ is
 \emph{below} the $50\%$ benchmark, which is consistent with a left-skewed
 label distribution (more days lose money in the weekly rebalance
@@ -504,8 +542,7 @@ informative than the binary forecast.
     of the net long--short CNN spread $r_t^{\mathrm{CNN,LS}}-r_t^f$
     on $\{$Mkt--RF, SMB, HML, RMW, CMA, Mom$\}$ at the matched
     rebalance frequency. Alphas are annualised; $t$-statistics are
-    reported in parentheses. Numbers come from
-    \texttt{outputs/pipeline\_runs/tables/ff\_regression\_combined.csv}.}
+    reported in parentheses.}
   \label{tab:ff6}
   \small
   \begin{tabular}{lccc}
@@ -653,7 +690,7 @@ Conv$\to$BatchNorm$\to$LeakyReLU($0.01$)$\to$MaxPool$(2,1)$ pattern.
     Block 2 channels    & $64\to128$ & $64\to128$ & $64\to128$ \\
     Block 3 channels    & --         & $128\to256$ & $128\to256$ \\
     Block 4 channels    & --         & --          & $256\to512$ \\
-    FC input dim        & 15{,}360 & --          & 184{,}320 \\
+    FC input dim        & 15{,}360 & 46{,}080    & 184{,}320 \\
     Approx.\ params     & $\sim$\,150\,k & $\sim$\,700\,k & $\sim$\,3.0\,M \\
     \bottomrule
   \end{tabular}
@@ -662,14 +699,13 @@ Conv$\to$BatchNorm$\to$LeakyReLU($0.01$)$\to$MaxPool$(2,1)$ pattern.
 \section{Computational footprint}
 \label{app:compute}
 
-The cleaned daily panel cache
-(\texttt{final\_submit\_version/outputs/cache/cleaned\_data\_all.pkl}) is
-$\sim 11.1$\,GB. Per-seed checkpoint sizes are $0.6$\,MB ($I=5$),
-$2.8$\,MB ($I=20$), and $11.8$\,MB ($I=60$); five seeds per horizon give
-a total of $\approx 76$\,MB on disk. Training and ensemble inference were
-performed on a single CUDA GPU (with an MPS fallback for Apple-silicon
-development); end-to-end execution of the pipeline takes on the order of
-a few wall-clock hours from the cleaned cache.
+The cleaned daily panel occupies approximately $11.1$\,GB. Per-seed model
+checkpoints are approximately $0.6$\,MB ($I=5$), $2.8$\,MB ($I=20$), and
+$11.8$\,MB ($I=60$); five seeds per horizon give a total of about $76$\,MB.
+Training and ensemble inference were performed on a single CUDA GPU (with
+an Apple-silicon fallback for development); end-to-end execution of the
+pipeline takes on the order of a few wall-clock hours once the cleaned panel
+has been constructed.
 
 
 \input{checklist.tex}

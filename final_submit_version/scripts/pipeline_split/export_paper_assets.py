@@ -34,7 +34,7 @@ MODEL_CFG = {
 }
 
 SEED = 42
-ANCHOR_DATE = pd.Timestamp("2010-12-31")
+ANCHOR_DATE = pd.Timestamp("2015-12-18")
 
 
 def draw_sample_image(perm_df: pd.DataFrame, t_idx: int, L: int) -> tuple[np.ndarray, int]:
@@ -156,10 +156,24 @@ def main() -> int:
     chosen = int(rng.choice(eligible))
     perm_df = df[df["permno"] == chosen].reset_index(drop=True)
     print(f"Selected permno={chosen} with {len(perm_df)} daily rows")
+    print(f"Anchor date: {ANCHOR_DATE.date()}")
 
     fig, axes = plt.subplots(1, 3, figsize=(7.5, 2.6), dpi=300)
     for ax, L in zip(axes, [5, 20, 60]):
-        idx = pick_anchor_index(perm_df, L)
+        idx0 = pick_anchor_index(perm_df, L)
+        # Ensure the illustrative window has an overall "up" movement:
+        # first close in the window < last close in the window.
+        close_adj = perm_df["dlyclose_adj"].to_numpy()
+        n = len(perm_df)
+        t_candidates = np.arange(n)
+        valid = (t_candidates - 2 * L + 1 >= 0) & (t_candidates + L < n)
+        valid &= (close_adj[t_candidates - L] < close_adj[t_candidates - 1])
+        t_candidates = t_candidates[valid]
+        if t_candidates.size > 0:
+            idx = int(t_candidates[np.argmin(np.abs(t_candidates - idx0))])
+        else:
+            idx = idx0
+
         if idx - 2 * L + 1 < 0 or idx + L >= len(perm_df):
             sys.stderr.write(f"[error] insufficient history for I={L} at idx={idx}\n")
             return 3
@@ -169,13 +183,8 @@ def main() -> int:
         ax.set_yticks([])
         for spine in ax.spines.values():
             spine.set_visible(False)
-        ax.set_title(f"I={L}\nlabel={'up' if lab == 1 else 'down'}", fontsize=10)
+        ax.set_title(f"I={L}\nlabel={lab}", fontsize=10)
 
-    fig.suptitle(
-        f"OHLC + volume image bundle (permno {chosen}, anchor {ANCHOR_DATE.date()})",
-        fontsize=11,
-        y=1.02,
-    )
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT_PATH, bbox_inches="tight", facecolor="white")
     plt.close(fig)
