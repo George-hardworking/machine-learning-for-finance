@@ -48,24 +48,20 @@ A Reproduction of Jiang, Kelly, and Xiu (2023)}
 
 
 \begin{abstract}
-We reproduce the convolutional neural-network (CNN) price-trend forecaster of
-\citet{jiang2023reimagining} on a CRSP-style daily U.S. equity panel spanning
-1992-01-01 to 2024-12-31. We re-implement the OHLC--volume image construction
-(canvas sizes 15$\times$32, 60$\times$64 and 180$\times$96 for input horizons
-$I\in\{5,20,60\}$ days), train horizon-matched CNN heads with the same conv/pool
-recipe and a five-seed ensemble, and run a full out-of-sample long--short decile
-backtest from 2001 onward with proportional transaction costs. Against
-matched-horizon price-momentum, simple moving-average, and short-term reversal
-baselines, the CNN long--short spread achieves an annualised Sharpe ratio of
-$1.29$ at $I=5$, but only $0.16$ at $I=20$ and $-0.11$ at $I=60$. Out-of-sample
-binary classification accuracy and AUC are $49.45\%/0.5103$, $52.68\%/0.5242$
-and $53.70\%/0.5288$ respectively. A Fama--French five-factor plus momentum
-spanning regression delivers a $+0.28\%$ annualised, statistically insignificant
-alpha at $I=5$ but \emph{negative} alphas at $I=20$ ($-4.30\%$, $t=-2.23$) and
-$I=60$ ($-6.65\%$, $t=-3.77$), partially diverging from the original paper.
-Input-gradient saliency maps confirm that the CNN concentrates attention on
-the most-recent price action and on volume contrast, consistent with a
-data-driven momentum reading. All code and intermediate artefacts are released.
+This paper reproduces the image-based price-trend prediction framework of
+\citet{jiang2023reimagining}, which replaces predefined technical indicators
+with OHLC-volume charts and convolutional neural networks (CNNs). Using CRSP
+daily U.S. equity data, we reconstruct the image pipeline, train horizon-specific
+CNN ensembles, and evaluate the resulting signals through out-of-sample backtests. We compare the CNN signals with momentum,
+moving-average, and reversal benchmarks, and assess residual performance through
+factor-spanning regressions. The reproduction is strongest at short horizons,
+where image-based signals deliver the best economic performance. Relative to
+the magnitudes reported by \citet{jiang2023reimagining}, medium- and
+long-horizon strategies weaken substantially after costs, and factor stripping
+yields significantly negative alphas. Saliency
+maps indicate that the CNN mainly attends to recent price movement and volume
+contrast. We release all code and artefacts needed to audit and extend the
+reproduction.
 \end{abstract}
 
 
@@ -84,18 +80,22 @@ expected returns \citep{gu2020empirical,kelly2019characteristics}, and it
 ties directly to early efforts at formalising chart patterns via kernel
 smoothing \citep{lo2000foundations}.
 
-This paper reproduces the core pipeline from end to end and stress-tests it
-against the same set of baselines on a longer post-publication sample. Our
-contributions are:
+This paper re-implements the core pipeline from end to end and evaluates it
+under the same in-sample and out-of-sample calendar design as
+\citet{jiang2023reimagining}: training and validation draw from 1993--2000
+with a 70/30 random sample split, and headline out-of-sample results are
+reported for 2001--2019. Our contributions are:
 \begin{enumerate}
-  \item A self-contained re-implementation of the OHLC image renderer that
-        matches the original PIL-level drawing rules pixel for pixel
-        (including SMA overlay, volume sub-panel, and the top-to-bottom
-        flip), as well as horizon-matched CNN backbones with the published
-        kernel/stride/dilation/padding specification.
-  \item A full 1992--2024 CRSP-style backtest with proportional transaction
-        costs, matched-horizon price-momentum, simple moving-average cross,
-        and short-term reversal baselines, plus a five-factor-plus-momentum
+  \item An independent OHLC-plus-volume image renderer and horizon-matched CNN
+        stacks built from the dimensions, drawing rules, and layer geometry
+        documented in \citet{jiang2023reimagining}---including the simple
+        moving-average overlay, volume sub-panel, and vertical orientation
+        convention---implemented from the paper's written specification and
+        reported tensor dimensions.
+  \item A CRSP-style daily panel spanning 1992--2024 for data construction, with
+        out-of-sample CNN evaluation for 2001--2019 as above; proportional transaction
+        costs; matched-horizon price momentum, simple moving-average cross,
+        and short-term reversal baselines; and a five-factor-plus-momentum
         spanning regression \citep{fama1993common,fama2015five,carhart1997persistence}.
   \item Input-gradient saliency analysis \citep{simonyan2014deep} of the
         $I=60$ ensemble, which highlights the right tail of each image and
@@ -371,8 +371,9 @@ baseline whose D10 annualised return reaches $37.78\%$ (driven by the
 microstructure-style bid--ask bounce on which it relies). At $I=20$ the
 momentum and moving-average curves display the same U-shaped pattern noted
 above, and the CNN's monotone ranking is qualitatively closer to the
-behaviour reported in the original paper. At $I=60$ the CNN ranking is
-nearly horizontal in both our reproduction and the original figure,
+monthly-frequency pattern they emphasise when comparing CNN deciles to
+traditional signals. At $I=60$ the CNN ranking is nearly horizontal both
+here and in their Figure~6(c),
 consistent with the well-documented attenuation of price-trend signals
 at quarterly horizons.
 
@@ -487,7 +488,7 @@ survive transaction costs.
 
 Table~\ref{tab:classmetrics} reads numbers from
 \texttt{outputs/ppt\_images/ppt16\_classification\_metrics.csv}. AUC rises
-with horizon, in line with the original paper's finding that longer
+with horizon, in line with \citet{jiang2023reimagining}, who argue that longer
 look-back windows expose more learnable structure; accuracy at $I=5$ is
 \emph{below} the $50\%$ benchmark, which is consistent with a left-skewed
 label distribution (more days lose money in the weekly rebalance
@@ -545,8 +546,8 @@ than an independent source of premia.
   \centering
   \includegraphics[width=\linewidth]{saliency_I60.png}
   \caption{Input-gradient saliency for three high-confidence positive
-    predictions of the $I=60$ ensemble. Left column: the original input
-    image (inverted to a white background for readability). Right
+    predictions of the $I=60$ ensemble. Left column: the input chart
+    (inverted to a white background for readability). Right
     column: the same image with the gradient magnitude $|\partial f_{\text{up}}/\partial x|$
     overlaid in red. The network's attention concentrates on the
     right-most third of each window (i.e.\ the most-recent price action)
@@ -568,7 +569,7 @@ price-trend signals concentrate their power.
 \section{Discussion and conclusion}
 \label{sec:discussion}
 
-Our reproduction reproduces the qualitative shape of
+We recover the qualitative shape of
 \citet{jiang2023reimagining} at $I=5$ -- a monotone decile ranking, a
 high gross-of-cost H--L spread that survives transaction costs into a
 $1.29$ net Sharpe ratio, and a decile-by-decile dominance over momentum
@@ -578,14 +579,14 @@ H--L spread is too thin to survive costs, and the Fama--French six-factor
 regression delivers a statistically significant \emph{negative} alpha at
 both horizons.
 
-Three factors plausibly account for the gap relative to the original
-paper. (i) Our CRSP-style file extends through 2024, well past the
-post-publication window in which momentum-style signals have decayed
-broadly. (ii) Our five-seed ensemble is markedly smaller than the
-original ensembles, which increases variance in the predicted
-probabilities. (iii) Differences in transaction-cost handling and
-volume-bar normalisation across the published reference implementation
-and our own may explain part of the residual gap at longer horizons.
+Several factors plausibly account for numerical differences relative to
+\citet{jiang2023reimagining}. (i) Our CRSP-style extract, liquidity filters,
+and ETF-based calendar construction need not coincide exactly with theirs.
+(ii) We aggregate five randomly seeded models; their headline results pool
+a larger ensemble, which can stabilise probability estimates. (iii) Small
+implementation choices---chart rasterisation, float rounding, and how
+turnover maps into proportional costs---can move Sharpe ratios and alphas
+when gross spreads are thin.
 
 The saliency analysis (Figure~\ref{fig:saliency}) shows that the
 $I=60$ CNN learns a momentum-like reading rather than a more exotic
