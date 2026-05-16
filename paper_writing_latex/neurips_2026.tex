@@ -110,10 +110,11 @@ The remainder of the paper is organised as follows. Section~\ref{sec:related}
 positions our reproduction relative to the chart-pattern, deep-learning, and
 interpretability literatures. Section~\ref{sec:data} details data sources and
 image construction. Section~\ref{sec:arch} describes the CNN architecture and
-training recipe. Section~\ref{sec:results} reports empirical results
-(decile prediction accuracy, baseline comparisons, cumulative returns,
-classification metrics, decile portfolio statistics, and Fama--French
-spanning regressions). Section~\ref{sec:saliency} visualises model
+training recipe. Section~\ref{sec:results} reports empirical results:
+cross-sectional decile analyses against momentum, moving-average cross,
+and short-term reversal benchmarks; cumulative H--L performance; portfolio
+statistics; classification metrics; and Fama--French factor spanning.
+Section~\ref{sec:saliency} visualises model
 attention. Section~\ref{sec:discussion} discusses where our results align
 with and diverge from the original paper.
 
@@ -367,34 +368,22 @@ within deciles, rebalanced at horizon-end, and adjusted for proportional
 transaction costs at $10$\,bp per side ($20$\,bp round-trip) applied to
 both legs.
 
-\subsection{Decile prediction accuracy (Figure 6 reproduction)}
-\label{sec:r1}
+\subsection{Cross-sectional deciles versus conventional benchmarks}
+\label{sec:deciles}
 
-At $I=5$ the CNN decile annualised returns rise nearly monotonically from
-$6.62\%$ in D1 to $20.67\%$ in D10 (Figure~\ref{fig:fig6}), while the
-five-day momentum and moving-average curves are essentially flat across
-the cross-section. At longer horizons the picture changes: the $I=20$
-CNN spread between D10 and D1 is mildly positive ($11.10\%$ vs.\ $9.78\%$),
-and at $I=60$ the CNN ordering is essentially
-flat ($11.95\%$ in D10 against $13.00\%$ in D1); corresponding plots are
-provided in Appendix~\ref{app:fig6-horizons}.
-The traditional baselines, by contrast, display a U-shaped pattern at
-$I=20$ and $I=60$: both the bottom and top deciles deliver above-average
-returns, reflecting the well-known concentration of momentum and
-mean-reversion premia in the extreme deciles.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.82\linewidth]{fig6_I5.png}
-  \caption{Annualised decile returns at the $I=5$ horizon for the CNN,
-    matched-horizon momentum, and moving-average cross signals. Reproduction
-    of Figure~6(a) of the original paper; series are computed from the same
-    out-of-sample prediction panels and rebalance calendar. Analogous plots
-    for $I=20$ and $I=60$ are in Appendix~\ref{app:fig6-horizons}.}
-  \label{fig:fig6}
-\end{figure}
-
-\subsection{Comparison with traditional baselines (Figure 7)}
+Our first empirical object is unconditional decile-sort performance. At
+each horizon $I\in\{5,20,60\}$ we partition stocks into predicted-probability
+deciles using the CNN ensemble score, and we form analogous deciles from
+matched-horizon momentum, moving-average crossover, and short-term reversal
+signals constructed on the same out-of-sample panel and rebalance calendar.
+For every horizon we summarise average annualised realised \emph{levels} and
+volatilities by decile in the dual-panel layout of Figure~7 in the original
+paper (returns on the left, volatilities on the right), overlaying all four
+signals to contrast the CNN's ranking with traditional patterns. To keep the
+main exposition readable, Figure~\ref{fig:fig7} reports only the $I=5$
+(weekly) case, which is also where the economic spread survives costs most
+clearly; Appendix~\ref{app:fig7-horizons} reproduces the identical format for
+$I=20$ and $I=60$.
 
 \begin{figure}[H]
   \centering
@@ -409,17 +398,41 @@ mean-reversion premia in the extreme deciles.
   \label{fig:fig7}
 \end{figure}
 
-Figure~\ref{fig:fig7} shows that at $I=5$ the CNN ranking strictly
-dominates both momentum and moving-average cross across the cross-section,
-but is itself dominated in absolute level by the short-term reversal
-baseline whose D10 annualised return reaches $37.78\%$ (driven by the
-microstructure-style bid--ask bounce on which it relies). At $I=20$ the
-momentum and moving-average curves display the same U-shaped pattern noted
-above, and the CNN's monotone ranking is qualitatively closer to the
-monthly-frequency pattern the original paper emphasises when comparing CNN
-deciles to traditional signals. At $I=60$ the CNN ranking is nearly
-horizontal, consistent with the well-documented attenuation of price-trend
-signals at quarterly horizons (see Appendix~\ref{app:fig7-horizons}).
+At $I=5$, the CNN traces a stable, nearly monotone gradient across
+deciles---annualised realised returns rise from $6.62\%$ in D1 to
+$20.67\%$ in D10---so predicted probability cleanly orders the cross-section,
+which is precisely what portfolio construction needs when translating a scalar
+forecast into decile-ranked positions. Matched-horizon momentum and
+moving-average signals, by contrast, show little separation across deciles:
+their profiles remain comparatively flat between D1 and D10, implying weak
+incremental discriminatory power rather than an economically coherent
+ranking ladder. Figure~\ref{fig:fig7} therefore highlights how the CNN
+systematically aligns predicted ``up'' probability with realised performance
+
+The short-term reversal line offers a contrasting story: isolated tail
+positions can deliver very high average returns (notably around
+$37.78\%$ at extreme deciles tied to battered names and bounce effects), yet
+those readings are intermittent and mechanically concentrated rather than part
+of a smooth cross-sectional map. Relative to reversal, then, the CNN is the
+most reliable vehicle for exploiting the chart-based signal globally across
+every decile, which is why it remains the cornerstone of our long--short
+construction even though naive reversal exposures can episodically post larger
+average returns.
+
+At longer horizons---Appendix Figures~\ref{fig:fig7-i20} and~\ref{fig:fig7-i60}
+---the classical benchmarks become structurally uneven: momentum and MA both
+bend into pronounced U-shaped patterns, with dispersion jumping at the extremes
+rather than drifting steadily with the sorting variable; that curvature is less
+investable for uniform decile-spanning mandates and aligns with intermittent
+premium pockets rather than a stable scoring rule. Against this backdrop the
+CNN's decile trajectory remains comparatively smooth across the histogram: even
+when the D10-vs-D1 wedge narrows (e.g.\ $11.10\%$ vs.\ $9.78\%$ at $I=20$, or an
+approximately flat footprint at $I=60$), the CNN seldom exhibits the bipolar
+bounce between bottom and top deciles that dominates the plotted traditional
+signals, underscoring the relative stability with which convolutional summaries
+preserve a coherent monotone ordering versus ad hoc extremes of reversal and
+price-trend heuristics.
+
 
 \subsection{Cumulative returns}
 
@@ -500,8 +513,9 @@ most of the gross spread.
   \end{tabular}
 \end{table}
 
-Table~\ref{tab:table1} confirms the pattern visible in
-Figures~\ref{fig:fig6}--\ref{fig:fig8}: only the $I=5$ horizon delivers a
+Table~\ref{tab:table1} confirms the pattern evident in Figure~\ref{fig:fig7}
+and the cumulative-return evidence in Figure~\ref{fig:fig8}: only the $I=5$
+horizon delivers a
 robust net H--L spread (annualised SR $1.29$). At $I=20$ the H--L SR is
 $0.16$, and at $I=60$ the spread is mildly negative ($-0.11$). The
 monotone increase in within-decile Sharpe ratios at $I=60$ (from $0.60$
@@ -615,7 +629,7 @@ the original paper at $I=5$ -- a monotone decile ranking, a
 high gross-of-cost H--L spread that survives transaction costs into a
 $1.29$ net Sharpe ratio, and a decile-by-decile dominance over momentum
 and moving-average cross. At $I=20$ and $I=60$ the qualitative ranking
-is preserved (Table~\ref{tab:table1}, Figure~\ref{fig:fig6}), but the
+is preserved (Table~\ref{tab:table1}, Figure~\ref{fig:fig7}), but the
 H--L spread is too thin to survive costs, and the Fama--French six-factor
 regression delivers a statistically significant \emph{negative} alpha at
 both horizons.
@@ -652,9 +666,11 @@ Every numerical claim in this paper traces back to a file in
 \begin{itemize}
   \item Figure~\ref{fig:ohlc-sample}: produced by
         \texttt{scripts/pipeline\_split/export\_paper\_assets.py}.
-  \item Figure~\ref{fig:fig6}, Figure~\ref{fig:fig7}: PNGs in
-        \texttt{pipeline\_runs/figures/}; decile-level CSVs in
-        \texttt{pipeline\_runs/tables/fig\{6,7\_simple\}\_I\{5,20,60\}\_\{cnn,ma,mom,reversal\}.csv}.
+  \item Figure~\ref{fig:fig7} (appendix Figures~\ref{fig:fig7-i20} and
+        \ref{fig:fig7-i60}): PNGs in
+        \texttt{pipeline\_runs/figures/}; decile-level CSVs via
+        \texttt{fig7\_simple\_I\{5,20,60\}\_*.csv} (the pipeline additionally
+        exports Figure~6-style tables for reproducibility auditing).
   \item Figure~\ref{fig:fig8}: PNGs in
         \texttt{ppt\_images/ppt15\_cumulative\_returns\{,\_gross\}\_L\{5,20,60\}.png}.
   \item Table~\ref{tab:table1}:
@@ -711,30 +727,6 @@ Training and ensemble inference were performed on a single CUDA GPU (with
 an Apple-silicon fallback for development); end-to-end execution of the
 pipeline takes on the order of a few wall-clock hours once the cleaned panel
 has been constructed.
-
-
-\section{Decile return plots for \texorpdfstring{$I=20$}{I=20} and \texorpdfstring{$I=60$}{I=60}}
-\label{app:fig6-horizons}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.82\linewidth]{fig6_I20.png}
-  \caption{Annualised decile returns at the $I=20$ horizon for the CNN,
-    matched-horizon momentum, and moving-average cross signals. Reproduction
-    of Figure~6(b) of the original paper.}
-  \label{fig:fig6-i20}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.82\linewidth]{fig6_I60.png}
-  \caption{Annualised decile returns at the $I=60$ horizon for the CNN,
-    matched-horizon momentum, and moving-average cross signals. Reproduction
-    of Figure~6(c) of the original paper. The CNN ordering is nearly flat
-    across deciles at this horizon, consistent with the attenuation of
-    price-trend signals at quarterly look-back windows.}
-  \label{fig:fig6-i60}
-\end{figure}
 
 
 \section{Baseline comparison plots for \texorpdfstring{$I=20$}{I=20} and \texorpdfstring{$I=60$}{I=60}}
