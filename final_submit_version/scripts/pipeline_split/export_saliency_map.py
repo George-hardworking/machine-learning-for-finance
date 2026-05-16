@@ -267,7 +267,6 @@ def main() -> int:
         ax_right.axis("off")
         fig.colorbar(im, ax=ax_right, fraction=0.046, pad=0.04)
 
-    fig.suptitle("CNN input-gradient saliency on I=60 OHLC images", fontsize=12, y=1.01)
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT_PATH, bbox_inches="tight", facecolor="white")
     plt.close(fig)
