@@ -265,16 +265,20 @@ the original paper.
 
 \paragraph{Architectures.}
 The three horizon-specific backbones mirror the published configuration.
-All blocks use $5\times3$ kernels, a LeakyReLU($0.01$) activation, batch
-normalisation, and $(2,1)$ MaxPool with \texttt{ceil\_mode=True} (the $I=5$
-head uses the standard floor mode). $I=20$ and $I=60$ insert dilated and
-strided first convolutions so the receptive field can span longer windows
-without an explosion in parameter count. Figure~\ref{fig:cnn-arch}
-summarises the three stacks; layer-level details are in
-Table~\ref{tab:cnn-layers} (Appendix~\ref{app:hyper}).
+Each block applies a $5\times3$ convolution, LeakyReLU($0.01$), batch
+normalisation, and $2\times1$ max pooling along the time axis. For
+$I=20$ and $I=60$, the opening convolution uses dilation and stride to widen
+the receptive field without a proportional increase in parameters, and
+pooling is configured so that spatial dimensions are preserved enough to
+yield the fully connected widths reported in the original paper; the
+$I=5$ network is shallower and uses the default pooling rule throughout.
+Figure~\ref{fig:cnn-arch} summarises the three stacks; stride, dilation,
+and channel widths are listed in Table~\ref{tab:cnn-layers}
+(Appendix~\ref{app:hyper}).
 
 \begin{figure}[H]
   \centering
+  \resizebox{\linewidth}{!}{%
   \begin{tikzpicture}[
       font=\footnotesize,
       block/.style={draw, rounded corners, minimum height=1.0cm, minimum width=1.55cm, align=center, inner sep=2pt},
@@ -321,13 +325,13 @@ Table~\ref{tab:cnn-layers} (Appendix~\ref{app:hyper}).
     \draw[arr] (i60b4) -- (i60fc);
     \draw[arr] (i60fc) -- (i60sm);
     \node[left=2mm of i60in] {$I=60$};
-  \end{tikzpicture}
-  \caption{Horizon-specific CNN backbones (cf.\ Figure~2 of
-    the original paper). Each rectangle is one block:
+  \end{tikzpicture}%
+  }
+  \caption{Horizon-specific CNN backbones. Each rectangle is one block:
     $5{\times}3$ convolution (with the channel width shown), LeakyReLU,
     batch normalisation, and $2{\times}1$ max pooling. Stride and dilation
-    for $I=20$ and $I=60$ are in Table~\ref{tab:cnn-layers}. FC widths
-    15{,}360 / 46{,}080 / 184{,}320 match our implementation.}
+    for $I=20$ and $I=60$ are in Table~\ref{tab:cnn-layers}. Fully connected
+    input sizes are 15{,}360 ($I=5$), 46{,}080 ($I=20$), and 184{,}320 ($I=60$).}
   \label{fig:cnn-arch}
 \end{figure}
 
@@ -336,12 +340,21 @@ We minimise binary cross-entropy on the per-horizon label $y_{t,F}$ using
 stochastic gradient descent (Adam variant disabled), with learning rate
 $10^{-5}$, batch size $128$, and a maximum of $50$ epochs with
 early-stopping on validation loss. Convolutional and linear weights are
-initialised with Xavier-uniform and biases at zero. We train an ensemble
-of five seeds $\{42, 123, 456, 789, 101112\}$ and aggregate by averaging
-the softmax-probability outputs at inference time. The resulting model
-sizes are approximately $0.6$\,MB ($I=5$), $2.8$\,MB ($I=20$), and
-$11.8$\,MB ($I=60$) per seed, consistent with the parameter counts implied
-by Figure~\ref{fig:cnn-arch}.
+initialised with Xavier-uniform and biases at zero.
+
+The original paper reports headline results from an ensemble of
+independently trained networks whose softmax outputs are averaged at
+inference. Our replication proceeded in two stages. For the course
+presentation, limited local compute allowed only a single random seed
+($42$) per horizon, so we could not yet reproduce the full
+ensemble-averaging protocol. For the final project we reran training on
+rented cloud GPUs with five seeds
+$\{42, 123, 456, 789, 101112\}$ and aggregate by averaging
+softmax-probability outputs at inference time, as in the original paper.
+All empirical results in Sections~\ref{sec:results}--\ref{sec:saliency}
+use this five-seed ensemble. The resulting model sizes are approximately
+$0.6$\,MB ($I=5$), $2.8$\,MB ($I=20$), and $11.8$\,MB ($I=60$) per seed,
+consistent with the parameter counts implied by Figure~\ref{fig:cnn-arch}.
 
 
 \section{Empirical results}
@@ -357,60 +370,42 @@ both legs.
 \subsection{Decile prediction accuracy (Figure 6 reproduction)}
 \label{sec:r1}
 
-\begin{figure}[t]
-  \centering
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{fig6_I5.png}
-    \caption{$I=5$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{fig6_I20.png}
-    \caption{$I=20$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{fig6_I60.png}
-    \caption{$I=60$}
-  \end{subfigure}
-  \caption{Annualised decile returns by horizon for the CNN, matched-horizon
-    momentum, and moving-average cross signals. Reproduction of Figure~6 of
-    the original paper; all series are computed from the same
-    out-of-sample prediction panels and rebalance calendar.}
-  \label{fig:fig6}
-\end{figure}
-
 At $I=5$ the CNN decile annualised returns rise nearly monotonically from
-$6.62\%$ in D1 to $20.67\%$ in D10 (Figure~\ref{fig:fig6}a), while the
+$6.62\%$ in D1 to $20.67\%$ in D10 (Figure~\ref{fig:fig6}), while the
 five-day momentum and moving-average curves are essentially flat across
 the cross-section. At longer horizons the picture changes: the $I=20$
-CNN spread between D10 and D1 is mildly positive ($11.10\%$ vs.\ $9.78\%$;
-Figure~\ref{fig:fig6}b), and at $I=60$ the CNN ordering is essentially
-flat ($11.95\%$ in D10 against $13.00\%$ in D1; Figure~\ref{fig:fig6}c).
+CNN spread between D10 and D1 is mildly positive ($11.10\%$ vs.\ $9.78\%$),
+and at $I=60$ the CNN ordering is essentially
+flat ($11.95\%$ in D10 against $13.00\%$ in D1); corresponding plots are
+provided in Appendix~\ref{app:fig6-horizons}.
 The traditional baselines, by contrast, display a U-shaped pattern at
 $I=20$ and $I=60$: both the bottom and top deciles deliver above-average
 returns, reflecting the well-known concentration of momentum and
 mean-reversion premia in the extreme deciles.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.82\linewidth]{fig6_I5.png}
+  \caption{Annualised decile returns at the $I=5$ horizon for the CNN,
+    matched-horizon momentum, and moving-average cross signals. Reproduction
+    of Figure~6(a) of the original paper; series are computed from the same
+    out-of-sample prediction panels and rebalance calendar. Analogous plots
+    for $I=20$ and $I=60$ are in Appendix~\ref{app:fig6-horizons}.}
+  \label{fig:fig6}
+\end{figure}
+
 \subsection{Comparison with traditional baselines (Figure 7)}
 
-\begin{figure}[t]
+\begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{fig7_I5.png}
-    \caption{$I=5$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{fig7_I20.png}
-    \caption{$I=20$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{fig7_I60.png}
-    \caption{$I=60$}
-  \end{subfigure}
-  \caption{Simplified Figure~7 reproduction: CNN deciles against momentum,
-    moving-average cross, and short-term reversal baselines. At $I=5$ the
-    reversal baseline's D10 reaches an annualised return of $37.78\%$,
-    against which the CNN's monotone ranking is more useful as a signal
-    than as a stand-alone strategy.}
+  \includegraphics[width=0.82\linewidth]{fig7_I5.png}
+  \caption{CNN deciles against momentum, moving-average cross, and
+    short-term reversal baselines at the $I=5$ horizon. Reproduction of
+    Figure~7 of the original paper. The reversal baseline's D10 reaches an
+    annualised return of $37.78\%$, against which the CNN's monotone ranking
+    is more useful as a cross-sectional signal than as a stand-alone
+    strategy. Analogous plots for $I=20$ and $I=60$ are in
+    Appendix~\ref{app:fig7-horizons}.}
   \label{fig:fig7}
 \end{figure}
 
@@ -421,11 +416,10 @@ baseline whose D10 annualised return reaches $37.78\%$ (driven by the
 microstructure-style bid--ask bounce on which it relies). At $I=20$ the
 momentum and moving-average curves display the same U-shaped pattern noted
 above, and the CNN's monotone ranking is qualitatively closer to the
-monthly-frequency pattern the original paper emphasises when comparing CNN deciles to
-traditional signals. At $I=60$ the CNN ranking is nearly horizontal both
-here and in Figure~6(c) of the original paper,
-consistent with the well-documented attenuation of price-trend signals
-at quarterly horizons.
+monthly-frequency pattern the original paper emphasises when comparing CNN
+deciles to traditional signals. At $I=60$ the CNN ranking is nearly
+horizontal, consistent with the well-documented attenuation of price-trend
+signals at quarterly horizons (see Appendix~\ref{app:fig7-horizons}).
 
 \subsection{Cumulative returns}
 
@@ -717,6 +711,54 @@ Training and ensemble inference were performed on a single CUDA GPU (with
 an Apple-silicon fallback for development); end-to-end execution of the
 pipeline takes on the order of a few wall-clock hours once the cleaned panel
 has been constructed.
+
+
+\section{Decile return plots for \texorpdfstring{$I=20$}{I=20} and \texorpdfstring{$I=60$}{I=60}}
+\label{app:fig6-horizons}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.82\linewidth]{fig6_I20.png}
+  \caption{Annualised decile returns at the $I=20$ horizon for the CNN,
+    matched-horizon momentum, and moving-average cross signals. Reproduction
+    of Figure~6(b) of the original paper.}
+  \label{fig:fig6-i20}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.82\linewidth]{fig6_I60.png}
+  \caption{Annualised decile returns at the $I=60$ horizon for the CNN,
+    matched-horizon momentum, and moving-average cross signals. Reproduction
+    of Figure~6(c) of the original paper. The CNN ordering is nearly flat
+    across deciles at this horizon, consistent with the attenuation of
+    price-trend signals at quarterly look-back windows.}
+  \label{fig:fig6-i60}
+\end{figure}
+
+
+\section{Baseline comparison plots for \texorpdfstring{$I=20$}{I=20} and \texorpdfstring{$I=60$}{I=60}}
+\label{app:fig7-horizons}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.82\linewidth]{fig7_I20.png}
+  \caption{CNN deciles against momentum, moving-average cross, and
+    short-term reversal baselines at the $I=20$ horizon. Reproduction of
+    Figure~7 of the original paper. The CNN's monotone ranking is
+    qualitatively closer to the monthly-frequency pattern than at $I=5$.}
+  \label{fig:fig7-i20}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.82\linewidth]{fig7_I60.png}
+  \caption{CNN deciles against momentum, moving-average cross, and
+    short-term reversal baselines at the $I=60$ horizon. The CNN decile
+    ordering is nearly flat, consistent with the attenuation of price-trend
+    signals at quarterly look-back windows.}
+  \label{fig:fig7-i60}
+\end{figure}
 
 
 \input{checklist.tex}
