@@ -39,11 +39,11 @@ A Reproduction of Jiang, Kelly, and Xiu (2023)}
 
 
 \begin{abstract}
-This paper reproduces the image-based price-trend prediction framework of
+This paper present my \textbf{final project} of the course \textbf{Machine Learning for Finance, }which reproduces the image-based price-trend prediction framework of
 \citet{jiang2023reimagining} (hereafter the \emph{original paper}), which replaces predefined technical indicators
 with OHLC-volume charts and convolutional neural networks (CNNs). Using CRSP
-daily U.S. equity data, we reconstruct the image pipeline, train horizon-specific
-CNN ensembles, and evaluate the resulting signals through out-of-sample backtests. We compare the CNN signals with momentum,
+daily U.S. equity data, I reconstruct the image pipeline, train horizon-specific
+CNN ensembles, and evaluate the resulting signals through out-of-sample backtests. I compare the CNN signals with momentum,
 moving-average, and reversal benchmarks, and assess residual performance through
 factor-spanning regressions. The reproduction is strongest at short horizons,
 where image-based signals deliver the best economic performance. Relative to
@@ -51,7 +51,7 @@ the magnitudes reported by the original paper, medium- and
 long-horizon strategies weaken substantially after costs, and factor stripping
 yields significantly negative alphas. Saliency
 maps indicate that the CNN mainly attends to recent price movement and volume
-contrast. We also provide replication materials so that the empirical results
+contrast. I also provide replication materials so that the empirical results
 can be audited and extended.
 \end{abstract}
 
@@ -75,7 +75,7 @@ This paper re-implements the core pipeline from end to end and evaluates it
 under the same in-sample and out-of-sample calendar design as
 the original paper: training and validation draw from 1993--2000
 with a 70/30 random sample split, and headline out-of-sample results are
-reported for 2001--2019. Our contributions are:
+reported for 2001--2019. My contributions are:
 \begin{enumerate}
   \item An independent OHLC-plus-volume image renderer and horizon-matched CNN
         stacks built from the dimensions, drawing rules, and layer geometry
@@ -97,7 +97,7 @@ reported for 2001--2019. Our contributions are:
 \end{enumerate}
 
 The remainder of the paper is organised as follows. Section~\ref{sec:related}
-positions our reproduction relative to the chart-pattern, deep-learning, and
+positions my reproduction relative to the chart-pattern, deep-learning, and
 interpretability literatures. Section~\ref{sec:data} details data sources and
 image construction. Section~\ref{sec:arch} describes the CNN architecture and
 training recipe. Section~\ref{sec:results} reports empirical results:
@@ -106,7 +106,7 @@ and short-term reversal benchmarks; volatility-adjusted cumulative long--short
 performance (Figure~5--style); portfolio
 statistics; classification metrics; and Fama--French factor spanning.
 Section~\ref{sec:saliency} visualises model
-attention. Section~\ref{sec:discussion} discusses where our results align
+attention. Section~\ref{sec:discussion} discusses where my results align
 with and diverge from the original paper.
 
 
@@ -132,7 +132,7 @@ threads by treating the OHLC chart itself as the model input.
 
 \paragraph{Interpretability via input gradients.}
 \citet{simonyan2014deep} introduced gradient-based saliency to visualise
-which input pixels most influence a CNN's class score; we apply the same
+which input pixels most influence a CNN's class score; I apply the same
 technique to identify which segments of each OHLC image drive the model's
 ``up'' probability. CNN architectures used here trace back to
 \citet{lecun1998gradient}.
@@ -142,14 +142,14 @@ technique to identify which segments of each OHLC image drive the model's
 \label{sec:data}
 
 \paragraph{Universe.}
-We employ a CRSP-consistent daily security-level panel of U.S. equities
+I employ a CRSP-consistent daily security-level panel of U.S. equities
 spanning 1992-01-01, to 2024-12-31. Data are observed at the
 daily frequency for each security, uniquely identified by its CRSP permanent
 security number (PERMNO). The panel includes core trading and pricing
 fields: daily market capitalization, total and price returns, trading
-volume, and open-high-low-close (OHLC) prices. We impose a standard
+volume, and open-high-low-close (OHLC) prices. I impose a standard
 sequential screening procedure: all fields are required to be non-missing;
-we retain only securities with a closing price of at least \$1 and strictly
+I retain only securities with a closing price of at least \$1 and strictly
 positive trading volume. Log returns are computed, and OHLC prices are
 adjusted for corporate actions via cumulative log-return compounding, with
 the first valid observation for each security serving as the normalization
@@ -157,7 +157,7 @@ anchor. No additional survivorship bias adjustments are applied beyond those
 inherent to the standard CRSP universe construction.
 
 \paragraph{Labels and holding period.}
-For each horizon $F\in\{5,20,60\}$ trading days we form
+For each horizon $F\in\{5,20,60\}$ trading days I form
 $R^{\mathrm{fut}}_{t,F}=\exp\!\bigl(\sum_{s=t+1}^{t+F}\log(1+r_s)\bigr)-1$ on
 the adjusted price path, and a binary classification label
 $y_{t,F}=\mathbf{1}\{R^{\mathrm{fut}}_{t,F}>0\}$. Rebalance timestamps are
@@ -165,10 +165,10 @@ fixed at period-end calendar boundaries (Friday for $F=5$, month-end for
 $F=20$, quarter-end for $F=60$), matching the canonical SPY trade calendar.
 
 \paragraph{Image construction.}
-Following the original paper, we encode each stock--date
+Following the original paper, I encode each stock--date
 observation as a fixed-size grayscale \emph{chart image} rather than a
 vector of technical indicators. The background is black (pixel value~0)
-and all price--volume objects are drawn in white (255). We consider three
+and all price--volume objects are drawn in white (255). I consider three
 input horizons $I\in\{5,20,60\}$, each matched to the prediction horizon
 $F=I$, so the image summarizes the most recent $I$ trading days of adjusted
 OHLC prices and daily volume.
@@ -186,7 +186,7 @@ read visually as ``up'' on the chart, in line with conventional price
 plots.
 
 \emph{Moving-average line.}
-We overlay a simple moving average (SMA) of the close price, using an
+I overlay a simple moving average (SMA) of the close price, using an
 $I$-day window---the same length as the chart horizon (e.g., a 20-day chart
 uses a 20-day SMA). For each day, the SMA value is placed on the centre
 column of that day; consecutive days are connected by a one-pixel poly-line.
@@ -207,7 +207,7 @@ blank.
 \emph{Image dimensions.}
 Because each day uses three pixel columns, the image width is $W=3I$.
 The total height $H$ stacks the OHLC block, the separator, and the volume
-band. Table~\ref{tab:image-dims} reports the $(W,H)$ pairs used in our
+band. Table~\ref{tab:image-dims} reports the $(W,H)$ pairs used in my
 implementation, identical to those in the original paper.
 \begin{table}[ht]
   \centering
@@ -225,7 +225,7 @@ implementation, identical to those in the original paper.
 \end{table}
 
 Figure~\ref{fig:ohlc-sample} provides a concrete illustration of the
-construction rules above. We plot the same security on the same calendar
+construction rules above. I plot the same security on the same calendar
 anchor for $I\in\{5,20,60\}$, so the only deliberate difference across panels
 is the look-back length. The left panel ($I=5$) is the coarsest view: fifteen
 columns of price action and a compact volume strip. The centre and right
@@ -245,7 +245,7 @@ monthly, and quarterly zoom levels.
 \end{figure}
 
 \paragraph{Train/validation/test split.}
-We follow the original paper in treating the early portion of
+I follow the original paper in treating the early portion of
 the panel as in-sample. Training is performed on 1993--2000 with a
 70/30 random sample-level split for training/validation. Out-of-sample backtests start in January 2001. Headline tables and figures
 report results through December 2019, matching the evaluation window in
@@ -328,7 +328,7 @@ and channel widths are listed in Table~\ref{tab:cnn-layers}
 \end{figure}
 
 \paragraph{Optimisation.}
-We minimise binary cross-entropy on the per-horizon label $y_{t,F}$ using
+I minimise binary cross-entropy on the per-horizon label $y_{t,F}$ using
 stochastic gradient descent (Adam variant disabled), with learning rate
 $10^{-5}$, batch size $128$, and a maximum of $50$ epochs with
 early-stopping on validation loss. Convolutional and linear weights are
@@ -336,15 +336,15 @@ initialised with Xavier-uniform and biases at zero.
 
 The original paper reports headline results from an ensemble of
 independently trained networks whose softmax outputs are averaged at
-inference. Our replication proceeded in two stages. For the course
+inference. My replication proceeded in two stages. For the course
 presentation, limited local compute allowed only a single random seed
-($42$) per horizon and we restricted the panel to the Top~1{,}000 stocks
-by market capitalization to keep training tractable, so we could not yet
+($42$) per horizon and I restricted the panel to the Top~1{,}000 stocks
+by market capitalization to keep training tractable, so I could not yet
 reproduce the full ensemble-averaging protocol or match the original
-cross-section breadth. For the final project we reran training on
+cross-section breadth. For the final project I reran training on
 rented cloud GPUs on the full eligible universe (without Top~1{,}000
-truncation), using five seeds
-$\{42, 123, 456, 789, 101112\}$ and aggregate by averaging
+truncation). I use five independent seeds
+$\{42, 123, 456, 789, 101112\}$ and average
 softmax-probability outputs at inference time, as in the original paper.
 All empirical results in Sections~\ref{sec:results}--\ref{sec:saliency}
 use this five-seed ensemble. The resulting model sizes are approximately
@@ -355,7 +355,7 @@ consistent with the parameter counts implied by Figure~\ref{fig:cnn-arch}.
 \section{Empirical results}
 \label{sec:results}
 
-We score every test-set observation with the five-seed ensemble and
+I score every test-set observation with the five-seed ensemble and
 form ten cross-sectional deciles by predicted ``up''-probability at each
 rebalance date. The high-minus-low (H--L) portfolio is equal-weighted
 within deciles, rebalanced at horizon-end, and adjusted for proportional
@@ -365,12 +365,12 @@ both legs.
 \subsection{Cross-sectional deciles versus conventional benchmarks}
 \label{sec:deciles}
 
-Our first empirical object is unconditional decile-sort performance. At
-each horizon $I\in\{5,20,60\}$ we partition stocks into predicted-probability
-deciles using the CNN ensemble score, and we form analogous deciles from
+My first empirical object is unconditional decile-sort performance. At
+each horizon $I\in\{5,20,60\}$ I partition stocks into predicted-probability
+deciles using the CNN ensemble score, and I form analogous deciles from
 matched-horizon momentum, moving-average crossover, and short-term reversal
 signals constructed on the same out-of-sample panel and rebalance calendar.
-For every horizon we summarise average annualised realised \emph{levels} and
+For every horizon I summarise average annualised realised \emph{levels} and
 volatilities by decile in the dual-panel layout of Figure~7 in the original
 paper (returns on the left, volatilities on the right), overlaying all four
 signals to contrast the CNN's ranking with traditional patterns. To keep the
@@ -409,7 +409,7 @@ $37.78\%$ at extreme deciles tied to battered names and bounce effects), yet
 those readings are intermittent and mechanically concentrated rather than part
 of a smooth cross-sectional map. Relative to reversal, then, the CNN is the
 most reliable vehicle for exploiting the chart-based signal globally across
-every decile, which is why it remains the cornerstone of our long--short
+every decile, which is why it remains the cornerstone of my long--short
 construction even though naive reversal exposures can episodically post larger
 average returns.
 
@@ -432,7 +432,7 @@ price-trend heuristics.
 
 Image-based forecasts are most useful economically if they translate into
 profitable portfolios, not merely higher classification scores. Following the
-short-horizon portfolio analysis in the original paper, we therefore focus first
+short-horizon portfolio analysis in the original paper, I therefore focus first
 on the weekly signal and ask whether the CNN ranking produces persistent
 long--short gains relative to standard price-trend benchmarks. The portfolio
 return is the gross high-minus-low spread between the top and bottom forecast
@@ -441,10 +441,10 @@ and the weekly momentum and moving-average spreads are constructed on the same
 rebalance calendar.
 
 One implementation choice differs from the original paper. Its Figure~5 uses a
-common weekly holding period for several image lengths, whereas our portfolio
+common weekly holding period for several image lengths, whereas my portfolio
 backtests use matched prediction and holding horizons: $I=5$ is rebalanced every
 five trading days, $I=20$ every 20 trading days, and $I=60$ every 60 trading
-days. We adopt this design because the trained labels, forecast panels, and
+days. I adopt this design because the trained labels, forecast panels, and
 transaction-cost calculations in this replication are horizon matched
 ($F=I$). It avoids applying a 20- or 60-day image model to a weekly trading
 problem for which it was not trained, and it makes turnover and holding-period
@@ -452,7 +452,7 @@ returns internally comparable across the reported tables and figures.
 
 Figure~\ref{fig:fig8} reports cumulative \emph{volatility-adjusted} log
 returns. For a strategy with periodic gross spread $r_t^{s}$, and a benchmark
-holding-period return $r_t^{b}$ measured over the same interval, we compute
+holding-period return $r_t^{b}$ measured over the same interval, I compute
 \[
   \tilde r_t^{s}
   =
@@ -465,12 +465,12 @@ $\sum_t \log(1+\tilde r_t^{s})$. This normalization puts all strategies on the
 same volatility scale as the equity benchmark, so differences in slope reflect
 average return per unit of matched risk rather than mechanical differences in
 unconditional volatility.\footnote{The original paper scales to SPY volatility.
-Because SPY price downloads were unavailable in our execution environment, we
+Because SPY price downloads were unavailable in my execution environment, I
 use the Fama--French cash-inclusive daily market return
 ($\mathrm{Mkt{-}RF}+\mathrm{RF}$) as the volatility-matching benchmark. This
 keeps the object an investable broad-market volatility target, while introducing
 a small benchmark-definition difference relative to the original paper. The
-$I=20$ and $I=60$ CNN lines use our cached monthly and quarterly native
+$I=20$ and $I=60$ CNN lines use my cached monthly and quarterly native
 rebalancing calendars, labelled I20/R20 and I60/R60. Thus those two lines are
 included as longer-horizon diagnostics rather than exact replicas of the
 original paper's common weekly-holding overlays.}
@@ -545,12 +545,12 @@ monotone increase in within-decile Sharpe ratios at $I=60$ (from $0.60$
 at D1 to $0.77$ at D10) shows that the CNN \emph{ordering} is still
 informative, but the gross spread is too small relative to volatility to
 survive transaction costs. This weaker medium- and long-horizon performance
-should be read together with our horizon-matched trading design: unlike the
+should be read together with my horizon-matched trading design: unlike the
 original paper's weekly holding-period overlays, the $I=20$ and $I=60$
 portfolios here rebalance only monthly and quarterly, respectively. Such long
 holding intervals leave more time for short-lived chart signals to decay before
 portfolio formation is refreshed, which plausibly contributes to the gap between
-our $I=20$/$I=60$ portfolio performance and the stronger magnitudes reported in
+my $I=20$/$I=60$ portfolio performance and the stronger magnitudes reported in
 the original paper.
 
 \subsection{Classification metrics}
@@ -580,7 +580,7 @@ not be rare---hard accuracy is not a sufficient statistic for economic value,
 because it is mechanically tied to label prevalence and the default
 predict-majority rule. The AUC--ROC at $I=5$ is only modestly above
 chance ($0.5103$), but AUC measures rank discrimination and is therefore aligned
-with how we use the model: decile-sorted long--short portfolios exploit the
+with how I use the model: decile-sorted long--short portfolios exploit the
 \emph{ordering} implied by forecast probabilities, which can yield a high H--L
 Sharpe ($1.29$ at $I=5$) even when a single threshold would underperform on raw
 accuracy.
@@ -619,7 +619,7 @@ accuracy.
 
 The Fama--French five-factor-plus-momentum spanning analysis in
 Table~\ref{tab:ff6} is a novel extension to the empirical design of
-\citet{jiang2023reimagining}. We implement this test to quantify the incremental
+\citet{jiang2023reimagining}. I implement this test to quantify the incremental
 pricing information contained in the CNN long--short returns, above and beyond
 the explanatory power of standard traded style factors.
 The regressions yield three key findings.
@@ -657,8 +657,8 @@ represent an independent source of return premia.
 
 The original paper illustrate their CNNs using gradient-weighted class
 activation mapping producing layer-wise heatmaps for an I20/R20 model (their Section~6.3 and Figure~13).
-This reproduction instead reports pixel-level input-gradient saliency which easier to implement in our codebase and focused on
-the $I=60$ ensemble in Figure~\ref{fig:saliency}. We compute the absolute
+This reproduction instead reports pixel-level input-gradient saliency, which is easier to implement in my codebase and is focused on
+the $I=60$ ensemble in Figure~\ref{fig:saliency}. I compute the absolute
 pixel-level gradient of the ``up'' logit with respect to each input image for
 three high-confidence positive examples drawn from the $I=60$ test window.
 Across all three examples the saliency mass is concentrated on the right-most
@@ -683,7 +683,7 @@ classical price-trend signals concentrate their power.
 \section{Discussion and conclusion}
 \label{sec:discussion}
 
-We successfully reproduce the core qualitative findings of the original paper at the short horizon $I=5$: a monotonic cross-sectional decile return ranking, a robust gross long-short spread that retains a net Sharpe ratio of 1.29 after transaction costs, and consistent outperformance relative to conventional momentum and moving-average crossover strategies. For medium and long horizons $I=20$ and $I=60$, the qualitative cross-sectional ranking structure is preserved (Table~\ref{tab:table2}, Figure~\ref{fig:fig7}), yet the long-short spread becomes insufficient to offset transaction costs. Notably, our novel Fama--French six-factor spanning regressions---a contribution beyond the original study---document statistically significant negative alphas at both longer horizons.
+I successfully reproduce the core qualitative findings of the original paper at the short horizon $I=5$: a monotonic cross-sectional decile return ranking, a robust gross long-short spread that retains a net Sharpe ratio of 1.29 after transaction costs, and consistent outperformance relative to conventional momentum and moving-average crossover strategies. For medium and long horizons $I=20$ and $I=60$, the qualitative cross-sectional ranking structure is preserved (Table~\ref{tab:table2}, Figure~\ref{fig:fig7}), yet the long-short spread becomes insufficient to offset transaction costs. Notably, my novel Fama--French six-factor spanning regressions---a contribution beyond the original study---document statistically significant negative alphas at both longer horizons.
 
 {\bfseries\noindent
 In order to provide a more perfect reproduction, the empirical exercise was deliberately upgraded in a second phase.
@@ -695,21 +695,21 @@ The results reported throughout Sections~\ref{sec:results}--\ref{sec:saliency}
 instead come from a final pass on the full eligible equity panel (no
 Top~1{,}000 truncation), with five independent random seeds per horizon
 aggregated exactly as in the original paper.
-We rented cloud GPU servers specifically to afford this fuller cross-section
+I rented cloud GPU servers specifically to afford this fuller cross-section
 and multi-seed ensemble protocol and thereby align the implementation as
-closely as permitted by our data pipeline.
+closely as permitted by my data pipeline.
 }\medskip
 
-Several factors explain the numerical discrepancies between our reproduction and the original study. First, our CRSP-style data processing pipeline, liquidity screening criteria, and ETF-aligned trading calendar implementation differ slightly from the original setup. Second, minor implementation details---including image rasterization precision, numerical floating-point rounding, and the mapping of portfolio turnover to proportional transaction costs---can materially influence Sharpe ratios and alpha estimates when gross return spreads are narrow.
+Several factors explain the numerical discrepancies between my reproduction and the original study. First, my CRSP-style data processing pipeline, liquidity screening criteria, and ETF-aligned trading calendar implementation differ slightly from the original setup. Second, minor implementation details---including image rasterization precision, numerical floating-point rounding, and the mapping of portfolio turnover to proportional transaction costs---can materially influence Sharpe ratios and alpha estimates when gross return spreads are narrow.
 
 \paragraph{Limitations.}
-First, our strategy strictly follows a fixed rebalancing calendar (Friday for $I{=}5$, month-end for $I{=}20$, quarter-end for $I{=}60$) consistent with the label construction. As such, the spanning coefficients in Table~\ref{tab:ff6} reflect factor covariances conditional on this specific timing rule; alternative rebalancing schemes (e.g., staggered execution to avoid overlap with standard factor realization windows) may alter estimated betas and alphas, and formal robustness tests for this design choice are left to future research.
-Second, our set of traditional benchmark signals is parsimonious: we evaluate the CNN against momentum, moving-average crossover, and a five-day short-term reversal proxy, rather than replicating the full suite of technical indicators (STR/WSTR/TREND) in the original paper.
-Third, we apply a fixed proportional transaction cost assumption across all stocks and time periods, without accounting for time-varying liquidity, cross-sectional differences in trading costs, or market impact, which may affect real-world strategy performance.
-Fourth, our analysis is restricted to U.S. equities over the 1992--2024 period; we do not test the generalizability of the CNN trend signal to global equity markets or distinct market regimes (e.g., high-volatility crises or prolonged low-interest-rate environments).
-Finally, we strictly replicate the fixed CNN architecture from the original study without conducting hyperparameter optimization or architectural ablation studies, which limits our analysis of the model's sensitivity to design choices.
+First, my strategy strictly follows a fixed rebalancing calendar (Friday for $I{=}5$, month-end for $I{=}20$, quarter-end for $I{=}60$) consistent with the label construction. As such, the spanning coefficients in Table~\ref{tab:ff6} reflect factor covariances conditional on this specific timing rule; alternative rebalancing schemes (e.g., staggered execution to avoid overlap with standard factor realization windows) may alter estimated betas and alphas, and formal robustness tests for this design choice are left to future research.
+Second, my set of traditional benchmark signals is parsimonious: I evaluate the CNN against momentum, moving-average crossover, and a five-day short-term reversal proxy, rather than replicating the full suite of technical indicators (STR/WSTR/TREND) in the original paper.
+Third, I apply a fixed proportional transaction cost assumption across all stocks and time periods, without accounting for time-varying liquidity, cross-sectional differences in trading costs, or market impact, which may affect real-world strategy performance.
+Fourth, my analysis is restricted to U.S. equities over the 1992--2024 period; I do not test the generalizability of the CNN trend signal to global equity markets or distinct market regimes (e.g., high-volatility crises or prolonged low-interest-rate environments).
+Finally, I strictly replicate the fixed CNN architecture from the original study without conducting hyperparameter optimization or architectural ablation studies, which limits my analysis of the model's sensitivity to design choices.
 
-Our input-gradient saliency analysis (Figure~\ref{fig:saliency}) demonstrates that the $I=60$ CNN learns simple momentum-like patterns instead of complex or exotic price patterns, which aligns with our spanning regression results showing the model's alpha is largely spanned by profitability (RMW) and momentum (Mom) factors. Promising directions for future research include regime-specific network heads, industry- or size-neutralized return label construction, and mixture-of-experts ensembles that dynamically allocate predictive capacity across short, medium, and long horizons.
+My input-gradient saliency analysis (Figure~\ref{fig:saliency}) demonstrates that the $I=60$ CNN learns simple momentum-like patterns instead of complex or exotic price patterns, which aligns with my spanning regression results showing the model's alpha is largely spanned by profitability (RMW) and momentum (Mom) factors. Promising directions for future research include regime-specific network heads, industry- or size-neutralized return label construction, and mixture-of-experts ensembles that dynamically allocate predictive capacity across short, medium, and long horizons.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
@@ -836,7 +836,7 @@ Conv$\to$BatchNorm$\to$LeakyReLU($0.01$)$\to$MaxPool$(2,1)$ pattern.
 The cleaned daily panel occupies approximately $11.1$\,GB. Per-seed model
 checkpoints are approximately $0.6$\,MB ($I=5$), $2.8$\,MB ($I=20$), and
 $11.8$\,MB ($I=60$); five seeds per horizon give a total of about $76$\,MB.
-Training and ensemble inference were performed on a single CUDA GPU (with
+I performed training and ensemble inference on a single CUDA GPU (with
 an Apple-silicon fallback for development); end-to-end execution of the
 pipeline takes on the order of a few wall-clock hours once the cleaned panel
 has been constructed.
