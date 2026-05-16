@@ -471,8 +471,12 @@ strategy and benchmark returns on their common dates. The plotted series is
 $\sum_t \log(1+\tilde r_t^{s})$. This normalization puts all strategies on the
 same volatility scale as the equity benchmark, so differences in slope reflect
 average return per unit of matched risk rather than mechanical differences in
-unconditional volatility.\footnote{The benchmark is SPY when the data download
-succeeds and the Fama--French cash-inclusive daily market otherwise. The
+unconditional volatility.\footnote{The original paper scales to SPY volatility.
+Because SPY price downloads were unavailable in our execution environment, we
+use the Fama--French cash-inclusive daily market return
+($\mathrm{Mkt{-}RF}+\mathrm{RF}$) as the volatility-matching benchmark. This
+keeps the object an investable broad-market volatility target, while introducing
+a small benchmark-definition difference relative to the original paper. The
 $I=20$ and $I=60$ CNN lines use our cached monthly and quarterly native
 rebalancing calendars, labelled I20/R20 and I60/R60. Thus those two lines are
 included as longer-horizon diagnostics rather than exact replicas of the
@@ -503,12 +507,12 @@ separation at $I=20$ and $I=60$. This does not contradict the short-horizon
 result. Rather, it suggests that the strongest economic content of the chart
 representation is concentrated in recent price and volume patterns. Because
 Figure~\ref{fig:fig8} is gross of transaction costs, it should be read together with
-Table~\ref{tab:table1}: once turnover and transaction costs are applied, only
+Table~\ref{tab:table2}: once turnover and transaction costs are applied, only
 the weekly CNN spread retains a robust net Sharpe ratio.
 
 \subsection{Decile portfolio statistics}
 
-\begin{table}[t]
+\begin{table}[H]
   \centering
   \caption{Equal-weighted decile portfolio statistics (reproduction of
     Table~1 in the original paper).
@@ -516,23 +520,23 @@ the weekly CNN spread retains a robust net Sharpe ratio.
     deviation, \texttt{SR} the resulting Sharpe ratio. ``H--L'' columns
     are for the long--short decile spread net of $20$\,bp round-trip
     transaction costs.}
-  \label{tab:table1}
+  \label{tab:table2}
   \small
   \begin{tabular}{l rrrrrrrrrrr r}
     \toprule
        & D1 & D2 & D3 & D4 & D5 & D6 & D7 & D8 & D9 & D10 & H--L \\
     \midrule
-    \multicolumn{12}{l}{\textbf{$I=5$ (weekly rebalance, turnover $0.858$)}}\\
+    \multicolumn{12}{l}{\textbf{$I=5 / R=5 $ (weekly rebalance, turnover $0.858$)}}\\
     Ret & 0.07 & 0.12 & 0.13 & 0.13 & 0.14 & 0.15 & 0.16 & 0.16 & 0.17 & 0.21 & 0.14 \\
     Std & 0.13 & 0.16 & 0.17 & 0.17 & 0.18 & 0.18 & 0.19 & 0.19 & 0.20 & 0.21 & 0.11 \\
     SR  & 0.55 & 0.75 & 0.77 & 0.77 & 0.75 & 0.79 & 0.83 & 0.85 & 0.89 & 1.04 & 1.29 \\
     \midrule
-    \multicolumn{12}{l}{\textbf{$I=20$ (monthly rebalance, turnover $0.841$)}}\\
+    \multicolumn{12}{l}{\textbf{$I=20 / R=20 $ (monthly rebalance, turnover $0.841$)}}\\
     Ret & 0.10 & 0.12 & 0.13 & 0.12 & 0.11 & 0.12 & 0.11 & 0.11 & 0.11 & 0.11 & 0.01 \\
     Std & 0.17 & 0.18 & 0.18 & 0.18 & 0.18 & 0.18 & 0.17 & 0.17 & 0.17 & 0.17 & 0.08 \\
     SR  & 0.59 & 0.63 & 0.72 & 0.65 & 0.63 & 0.65 & 0.65 & 0.66 & 0.68 & 0.68 & 0.16 \\
     \midrule
-    \multicolumn{12}{l}{\textbf{$I=60$ (quarterly rebalance, turnover $0.867$)}}\\
+    \multicolumn{12}{l}{\textbf{$I=60 / R=60 $ (quarterly rebalance, turnover $0.867$)}}\\
     Ret & 0.13 & 0.13 & 0.13 & 0.14 & 0.13 & 0.12 & 0.13 & 0.13 & 0.12 & 0.12 & $-0.01$ \\
     Std & 0.22 & 0.20 & 0.20 & 0.19 & 0.20 & 0.19 & 0.18 & 0.18 & 0.17 & 0.16 & 0.11 \\
     SR  & 0.60 & 0.65 & 0.67 & 0.71 & 0.65 & 0.67 & 0.69 & 0.73 & 0.73 & 0.77 & $-0.11$ \\
@@ -540,23 +544,29 @@ the weekly CNN spread retains a robust net Sharpe ratio.
   \end{tabular}
 \end{table}
 
-Table~\ref{tab:table1} confirms what Figure~\ref{fig:fig7} shows in cross-section together with Figure~\ref{fig:fig8} (risk-matched gross time series): only the $I=5$
+Table~\ref{tab:table2} confirms what Figure~\ref{fig:fig7} shows in cross-section together with Figure~\ref{fig:fig8} (risk-matched gross time series): only the $I=5$
 horizon delivers a
 robust net H--L spread (annualised SR $1.29$). At $I=20$ the H--L SR is
 $0.16$, and at $I=60$ the spread is mildly negative ($-0.11$). The
 monotone increase in within-decile Sharpe ratios at $I=60$ (from $0.60$
 at D1 to $0.77$ at D10) shows that the CNN \emph{ordering} is still
 informative, but the gross spread is too small relative to volatility to
-survive transaction costs.
+survive transaction costs. This weaker medium- and long-horizon performance
+should be read together with our horizon-matched trading design: unlike the
+original paper's weekly holding-period overlays, the $I=20$ and $I=60$
+portfolios here rebalance only monthly and quarterly, respectively. Such long
+holding intervals leave more time for short-lived chart signals to decay before
+portfolio formation is refreshed, which plausibly contributes to the gap between
+our $I=20$/$I=60$ portfolio performance and the stronger magnitudes reported in
+the original paper.
 
 \subsection{Classification metrics}
 
-\begin{table}[t]
+\begin{table}[H]
   \centering
   \caption{Out-of-sample binary classification metrics for the CNN
     ensemble (2001--2019). $N_{\mathrm{test}}$ is the number of rebalance-day
-    observations scored by the five-seed ensemble.}
-  \label{tab:classmetrics}
+    observations scored by the five-seed ensemble.\label{tab:classmetrics}}
   \small
   \begin{tabular}{lrrr}
     \toprule
@@ -570,23 +580,30 @@ survive transaction costs.
 \end{table}
 
 Table~\ref{tab:classmetrics} shows that AUC rises with horizon, in line
-with the original paper, which argues that longer
-look-back windows expose more learnable structure; accuracy at $I=5$ is
-\emph{below} the $50\%$ benchmark, which is consistent with a left-skewed
-label distribution (more days lose money in the weekly rebalance
-universe) rather than a strictly negative signal: the H--L Sharpe of
-$1.29$ shows that the predicted-probability \emph{ranking} is far more
-informative than the binary forecast.
+with the original paper, which argues that longer look-back windows expose
+more learnable structure. Accuracy at $I=5$ is slightly below $50\%$; in an
+imbalanced classification problem---here, a weekly universe where losing days need
+not be rare---hard accuracy is not a sufficient statistic for economic value,
+because it is mechanically tied to label prevalence and the default
+predict-majority rule. The AUC--ROC at $I=5$ is only modestly above
+chance ($0.5103$), but AUC measures rank discrimination and is therefore aligned
+with how we use the model: decile-sorted long--short portfolios exploit the
+\emph{ordering} implied by forecast probabilities, which can yield a high H--L
+Sharpe ($1.29$ at $I=5$) even when a single threshold would underperform on raw
+accuracy.
 
 \subsection{Fama--French five-factor + momentum spanning}
 
-\begin{table}[t]
+\begin{table}[H]
   \centering
   \caption{Fama--French five-factor plus momentum spanning regressions for
     the net CNN long--short spread. The dependent variable is
     $r_t^{\mathrm{CNN,LS}}-r_t^f$ regressed on
-    $\{$Mkt--RF, SMB, HML, RMW, CMA, Mom$\}$ at the matched rebalance
-    frequency. Alphas are annualised; $t$-statistics are in parentheses.}
+    $\{$Mkt--RF, SMB, HML, RMW, CMA, Mom$\}$. Daily factor returns are from the
+    Kenneth French Data Library; each regressor is compounded over the interval
+    between consecutive CNN rebalance dates so that factor realisations match the
+    holding-period frequency of the strategy returns. Alphas are annualised;
+    $t$-statistics are in parentheses.}
   \label{tab:ff6}
   \small
   \begin{tabular}{lccc}
@@ -607,18 +624,40 @@ informative than the binary forecast.
   \end{tabular}
 \end{table}
 
-The regression in Table~\ref{tab:ff6} delivers three messages. First, at
-$I=5$ the strategy's annualised alpha is statistically indistinguishable
-from zero ($+0.28\%$, $t=0.13$): the high raw Sharpe is largely captured
-by factor exposures (significant loadings on Mkt--RF, SMB, HML, and an
-opposite-signed load on CMA). Second, at $I=20$ and $I=60$ the alphas
-are \emph{negative} and significant ($-4.30\%$, $t=-2.23$; $-6.65\%$,
-$t=-3.77$); the loadings on RMW are positive and large, and at $I=60$ the
-strategy also picks up a positive momentum loading. Third, the very
-high $R^{2}$ at $I=60$ ($0.63$) suggests that the CNN signal at this
-horizon is essentially a re-weighting of standard style factors rather
-than an independent source of premia.
+The Fama--French five-factor-plus-momentum spanning analysis in
+Table~\ref{tab:ff6} is a novel extension to the empirical design of
+\citet{jiang2023reimagining}. We implement this test to quantify the incremental
+pricing information contained in the CNN long--short returns, above and beyond
+the explanatory power of standard traded style factors.
+The regressions yield three key findings.
 
+First, at $I=5$ the annualised alpha is statistically indistinguishable from
+zero ($+0.28\%$, $t=0.13$), providing no evidence of positive abnormal returns
+after accounting for standard factor exposures. The strong raw Sharpe ratio
+observed in portfolio tests is fully explained by significant and economically
+interpretable factor loadings: a positive coefficient on Mkt--RF ($\beta=0.29$, $t=14.24$)
+indicates substantial systematic market risk exposure; positive loadings on SMB ($\beta=0.14$, $t=3.81$)
+and HML ($\beta=0.13$, $t=3.57$) reflect a tilt toward small-cap and value stocks,
+capturing well-documented size and value premia; a negative loading on CMA
+($\beta=-0.25$, $t=-4.20$) signals exposure to high-investment, growth-oriented firms.
+While the $R^{2}=0.34$ indicates that a considerable portion of return variation
+is not captured by the six-factor model, the results confirm that the strategy
+derives its performance from style tilts rather than a statistically robust
+residual alpha.
+
+Second, at $I=20$ and $I=60$ the alphas are \emph{negative} and statistically
+significant ($-4.30\%$, $t=-2.23$; $-6.65\%$, $t=-3.77$). The strategy exhibits
+large positive loadings on RMW ($\beta=0.32$, $t=3.48$ at $I=20$; $\beta=0.69$,
+$t=5.24$ at $I=60$), meaning its returns closely align with the profitability
+factor, a core driver of cross-sectional return variation. At $I=60$, the
+strategy also loads positively on momentum ($\beta=0.23$, $t=3.86$), indicating
+that the CNN signal primarily replicates existing trend-following exposures
+rather than uncovering novel predictive information.
+
+Third, the very high $R^{2}$ at $I=60$ ($0.63$) reinforces this interpretation:
+the CNN strategy at this horizon is essentially a weighted combination of
+standard style factors---notably profitability and momentum---and does not
+represent an independent source of return premia.
 
 \section{Interpretability: input-gradient saliency}
 \label{sec:saliency}
@@ -636,15 +675,19 @@ than an independent source of premia.
   \label{fig:saliency}
 \end{figure}
 
-Following \citet{simonyan2014deep}, we compute the absolute pixel-level
-gradient of the ``up'' logit with respect to each input image for three
-high-confidence positive examples drawn from the $I=60$ test window
-(Figure~\ref{fig:saliency}). Across all three examples the saliency mass
-is concentrated on the right-most $10$--$20\%$ of the OHLC panel and on
-volume bars near sharp price moves. This is consistent with a
-data-driven momentum reading: the CNN essentially learns to up-weight
-the most-recent observations, which is also the regime in which classical
-price-trend signals concentrate their power.
+\citet{jiang2023reimagining} illustrate their CNNs using gradient-weighted class
+activation mapping (Grad-CAM; \citealt{selvaraju2017grad}), producing
+layer-wise heatmaps for an I20/R20 model (their Section~6.3 and Figure~13).
+This replication instead reports pixel-level input-gradient saliency following
+\citet{simonyan2014deep}---easier to implement in our codebase and focused on
+the $I=60$ ensemble in Figure~\ref{fig:saliency}. We compute the absolute
+pixel-level gradient of the ``up'' logit with respect to each input image for
+three high-confidence positive examples drawn from the $I=60$ test window.
+Across all three examples the saliency mass is concentrated on the right-most
+$10$--$20\%$ of the OHLC panel and on volume bars near sharp price moves. This
+is consistent with a data-driven momentum reading: the CNN essentially learns
+to up-weight the most-recent observations, which is also the regime in which
+classical price-trend signals concentrate their power.
 
 
 \section{Discussion and conclusion}
@@ -655,7 +698,7 @@ the original paper at $I=5$ -- a monotone decile ranking, a
 high gross-of-cost H--L spread that survives transaction costs into a
 $1.29$ net Sharpe ratio, and a decile-by-decile dominance over momentum
 and moving-average cross. At $I=20$ and $I=60$ the qualitative ranking
-is preserved (Table~\ref{tab:table1}, Figure~\ref{fig:fig7}), but the
+is preserved (Table~\ref{tab:table2}, Figure~\ref{fig:fig7}), but the
 H--L spread is too thin to survive costs, and the Fama--French six-factor
 regression delivers a statistically significant \emph{negative} alpha at
 both horizons.
@@ -668,6 +711,19 @@ a larger ensemble, which can stabilise probability estimates. (iii) Small
 implementation choices---chart rasterisation, float rounding, and how
 turnover maps into proportional costs---can move Sharpe ratios and alphas
 when gross spreads are thin.
+
+\paragraph{Limitations.}
+Trading is tied to a \emph{fixed} calendar (Friday for $I{=}5$, month-end for
+$I{=}20$, quarter-end for $I{=}60$), as in the label construction above. Spanning coefficients
+in Table~\ref{tab:ff6} therefore describe how the CNN long--short return
+covaries with risk factors \emph{conditional} on that timing; alternative
+rebalance rules---e.g.\ shifting execution within the week or month to reduce
+overlap with factor realisation windows---could change measured betas and
+alphas, and systematic robustness along this dimension is left for future work.
+The traditional-signal menu is also narrower than in Jiang et al.: we benchmark
+the CNN against momentum, moving-average cross, and a simple five-day reversal
+proxy rather than reproducing every STR/WSTR/TREND construction in the original
+paper.
 
 The saliency analysis (Figure~\ref{fig:saliency}) shows that the
 $I=60$ CNN learns a momentum-like reading rather than a more exotic
@@ -702,7 +758,7 @@ Every numerical claim in this paper traces back to a file in
         produced by \texttt{scripts/pipeline\_split/plot\_figure5\_vol\_adjusted\_cumlog.py}
         from cached \texttt{backtest\_I\{5,20,60\}.pkl} and a downloaded equity benchmark;
         optional auxiliary six-panel grids remain in \texttt{ppt\_images/ppt15\_cumulative\_returns*.png}.
-  \item Table~\ref{tab:table1}:
+  \item Table~\ref{tab:table2}:
         \texttt{pipeline\_runs/tables/table1\_I\{5,20,60\}.csv}.
   \item Table~\ref{tab:classmetrics}:
         \texttt{ppt\_images/ppt16\_classification\_metrics.csv} plus
