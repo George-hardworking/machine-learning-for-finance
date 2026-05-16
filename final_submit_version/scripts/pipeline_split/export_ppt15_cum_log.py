@@ -1,44 +1,64 @@
 #!/usr/bin/env python3
-"""Regenerate PPT 15 cumulative *log* return PNGs from cached backtest pickles only."""
+"""Regenerate PPT 15 PNGs: σ-matched cumulative log returns (Jiang Figure 5 style).
+
+Uses cached ``backtest_I{5,20,60}.pkl`` plus SPY or Fama--French daily market
+(see ``vol_matched_cumlog.py``). One figure per horizon × (net | gross): CNN EW vs Momentum.
+
+Title lines are kept only as comments in source (no matplotlib title shown), per paper style.
+"""
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
-CACHE = ROOT / "outputs" / "cache"
-PPT_OUT = ROOT / "outputs" / "ppt_images"
+from vol_matched_cumlog import (
+    compound_spy_over_schedule,
+    download_benchmark_daily,
+    load_backtest,
+    vol_scaled_cumulative_log,
+)
+
+SUBMIT_ROOT = Path(__file__).resolve().parents[2]
+PPT_OUT = SUBMIT_ROOT / "outputs" / "ppt_images"
 
 
-def cum_log(s: pd.Series) -> pd.Series:
-    return np.log1p(s.astype(float)).cumsum()
+def _curve(
+    bt: pd.DataFrame,
+    bench_daily: pd.Series,
+    strat_col: str,
+) -> pd.Series:
+    bench_h = compound_spy_over_schedule(bench_daily, bt.index)
+    common = bench_h.index.intersection(bt.index)
+    r = bt[strat_col].reindex(common).astype(float)
+    s = bench_h.reindex(common).astype(float)
+    idx = r.dropna().index.intersection(s.dropna().index)
+    return vol_scaled_cumulative_log(r.reindex(idx), s.reindex(idx))
 
 
 def main() -> None:
     PPT_OUT.mkdir(parents=True, exist_ok=True)
-    for h in (5, 20, 60):
-        p = CACHE / f"backtest_I{h}.pkl"
-        if not p.exists():
-            print(f"[skip] missing {p}")
-            continue
-        target_ret = pd.read_pickle(p)
-        if not isinstance(target_ret, pd.DataFrame):
-            print(f"[skip] bad pickle (not DataFrame): {p}")
-            continue
+
+    bt5, bt20, bt60 = load_backtest(5), load_backtest(20), load_backtest(60)
+    start = min(bt5.index.min(), bt20.index.min(), bt60.index.min())
+    end = max(bt5.index.max(), bt20.index.max(), bt60.index.max())
+    bench_daily, _bench_label = download_benchmark_daily(start, end)
+
+    for h, bt in ((5, bt5), (20, bt20), (60, bt60)):
         title_suffix = f"L={h}"
 
         plt.figure(figsize=(10, 5))
-        plt.plot(target_ret.index, cum_log(target_ret["CNN_LS_net_EW"]), label="CNN Portfolio EW (Net)", color="#c0392b", linewidth=2)
-        plt.plot(target_ret.index, cum_log(target_ret["Mom_LS_net"]), label="Momentum Baseline (Net)", color="#7f8c8d", linestyle="--")
-        plt.title(f"Cumulative Log Returns — Net of Costs ({title_suffix})", fontsize=12)
-        plt.ylabel("Cumulative log return (sum of log(1+r))")
+        cnn_n = _curve(bt, bench_daily, "CNN_LS_net_EW")
+        mom_n = _curve(bt, bench_daily, "Mom_LS_net")
+        plt.plot(cnn_n.index, cnn_n.values, label="CNN Portfolio EW (Net, σ-matched)", color="#c0392b", linewidth=2)
+        plt.plot(mom_n.index, mom_n.values, label="Momentum Baseline (Net, σ-matched)", color="#7f8c8d", linestyle="--")
+        # plt.title(f"Vol-matched cumulative log — Net of costs ({title_suffix})", fontsize=12)
+        plt.ylabel(r"Cumulative $\sum \log(1+\tilde r_t)$ (σ matched to benchmark)")
+        plt.xlabel("Date")
         plt.axhline(0.0, color="black", linewidth=0.8, alpha=0.35)
         plt.legend()
         plt.grid(alpha=0.3)
@@ -49,10 +69,13 @@ def main() -> None:
         print(f"[ok] {PPT_OUT / net_name}")
 
         plt.figure(figsize=(10, 5))
-        plt.plot(target_ret.index, cum_log(target_ret["CNN_LS_gross_EW"]), label="CNN Portfolio EW (Gross)", color="#c0392b", linewidth=2)
-        plt.plot(target_ret.index, cum_log(target_ret["Mom_LS_gross"]), label="Momentum Baseline (Gross)", color="#7f8c8d", linestyle="--")
-        plt.title(f"Cumulative Log Returns — Gross of Costs ({title_suffix})", fontsize=12)
-        plt.ylabel("Cumulative log return (sum of log(1+r))")
+        cnn_g = _curve(bt, bench_daily, "CNN_LS_gross_EW")
+        mom_g = _curve(bt, bench_daily, "Mom_LS_gross")
+        plt.plot(cnn_g.index, cnn_g.values, label="CNN Portfolio EW (Gross, σ-matched)", color="#c0392b", linewidth=2)
+        plt.plot(mom_g.index, mom_g.values, label="Momentum Baseline (Gross, σ-matched)", color="#7f8c8d", linestyle="--")
+        # plt.title(f"Vol-matched cumulative log — Gross ({title_suffix})", fontsize=12)
+        plt.ylabel(r"Cumulative $\sum \log(1+\tilde r_t)$ (σ matched to benchmark)")
+        plt.xlabel("Date")
         plt.axhline(0.0, color="black", linewidth=0.8, alpha=0.35)
         plt.legend()
         plt.grid(alpha=0.3)

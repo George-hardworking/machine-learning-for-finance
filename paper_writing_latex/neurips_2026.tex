@@ -112,7 +112,8 @@ interpretability literatures. Section~\ref{sec:data} details data sources and
 image construction. Section~\ref{sec:arch} describes the CNN architecture and
 training recipe. Section~\ref{sec:results} reports empirical results:
 cross-sectional decile analyses against momentum, moving-average cross,
-and short-term reversal benchmarks; cumulative H--L performance; portfolio
+and short-term reversal benchmarks; volatility-adjusted cumulative long--short
+performance (Figure~5--style); portfolio
 statistics; classification metrics; and Fama--French factor spanning.
 Section~\ref{sec:saliency} visualises model
 attention. Section~\ref{sec:discussion} discusses where our results align
@@ -434,50 +435,76 @@ preserve a coherent monotone ordering versus ad hoc extremes of reversal and
 price-trend heuristics.
 
 
-\subsection{Cumulative returns}
+\subsection{Short-horizon portfolio performance}
 
-\begin{figure}[t]
+Image-based forecasts are most useful economically if they translate into
+profitable portfolios, not merely higher classification scores. Following the
+short-horizon portfolio analysis in the original paper, we therefore focus first
+on the weekly signal and ask whether the CNN ranking produces persistent
+long--short gains relative to standard price-trend benchmarks. The portfolio
+return is the gross high-minus-low spread between the top and bottom forecast
+deciles. Equal-weighted and value-weighted CNN spreads are shown separately,
+and the weekly momentum and moving-average spreads are constructed on the same
+rebalance calendar.
+
+One implementation choice differs from the original paper. Its Figure~5 uses a
+common weekly holding period for several image lengths, whereas our portfolio
+backtests use matched prediction and holding horizons: $I=5$ is rebalanced every
+five trading days, $I=20$ every 20 trading days, and $I=60$ every 60 trading
+days. We adopt this design because the trained labels, forecast panels, and
+transaction-cost calculations in this replication are horizon matched
+($F=I$). It avoids applying a 20- or 60-day image model to a weekly trading
+problem for which it was not trained, and it makes turnover and holding-period
+returns internally comparable across the reported tables and figures.
+
+Figure~\ref{fig:fig8} reports cumulative \emph{volatility-adjusted} log
+returns. For a strategy with periodic gross spread $r_t^{s}$, and a benchmark
+holding-period return $r_t^{b}$ measured over the same interval, we compute
+\[
+  \tilde r_t^{s}
+  =
+  r_t^{s}
+  \frac{\sigma_b}{\sigma_s},
+\]
+where $\sigma_s$ and $\sigma_b$ are the full-sample standard deviations of the
+strategy and benchmark returns on their common dates. The plotted series is
+$\sum_t \log(1+\tilde r_t^{s})$. This normalization puts all strategies on the
+same volatility scale as the equity benchmark, so differences in slope reflect
+average return per unit of matched risk rather than mechanical differences in
+unconditional volatility.\footnote{The benchmark is SPY when the data download
+succeeds and the Fama--French cash-inclusive daily market otherwise. The
+$I=20$ and $I=60$ CNN lines use our cached monthly and quarterly native
+rebalancing calendars, labelled I20/R20 and I60/R60. Thus those two lines are
+included as longer-horizon diagnostics rather than exact replicas of the
+original paper's common weekly-holding overlays.}
+
+\begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{cum_ret_net_L5.png}
-    \caption{Net, $I=5$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{cum_ret_net_L20.png}
-    \caption{Net, $I=20$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{cum_ret_net_L60.png}
-    \caption{Net, $I=60$}
-  \end{subfigure}\\[2pt]
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{cum_ret_gross_L5.png}
-    \caption{Gross, $I=5$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{cum_ret_gross_L20.png}
-    \caption{Gross, $I=20$}
-  \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.32\linewidth}\centering
-    \includegraphics[width=\linewidth]{cum_ret_gross_L60.png}
-    \caption{Gross, $I=60$}
-  \end{subfigure}
-  \caption{Cumulative log returns of the H--L decile spread, net of
-    transaction costs (top row) and gross (bottom row). The $I=5$ spread
-    is the only one whose net curve still rises persistently; the $I=20$
-    and $I=60$ net curves flatten relative to their gross counterparts
-    because round-trip turnover is in the $84$--$87\%$ range
-    (Table~\ref{tab:table1}).}
+  \includegraphics[width=\linewidth]{figure5_vol_adjusted_cumlog.png}
+  \caption{Cumulative volatility-adjusted log returns of gross long--short
+    portfolios. Each strategy is rescaled to the volatility of the benchmark
+    measured over the same holding intervals; no transaction costs are applied
+    in this figure.}
   \label{fig:fig8}
 \end{figure}
 
-Figure~\ref{fig:fig8} plots the cumulative log return of the H--L
-spread. The $I=5$ net curve climbs steadily because the high-frequency
-ranking is sharp enough to absorb the transaction-cost drag. At $I=20$
-and $I=60$, the gross curves are mildly positive but the net curves are
-substantially attenuated: with turnover at $84.08\%$ and $86.68\%$ per
-period (Table~\ref{tab:table1}), the $20$\,bp round-trip cost erases
-most of the gross spread.
+The figure supports the central economic message of the reproduction. On the
+weekly calendar, the CNN long--short portfolios accumulate substantially more
+volatility-adjusted return than the momentum and moving-average benchmarks. The
+equal-weighted CNN curve is especially strong, while the value-weighted version
+also remains above the traditional trend signals for most of the evaluation
+window. In contrast, momentum and moving-average spreads contribute little
+sustained growth after volatility matching, which is consistent with the
+decile evidence in Figure~\ref{fig:fig7}: scalar trend rules do not generate
+as stable a cross-sectional ordering as the image-based CNN score.
+
+The longer-horizon CNN curves are flatter, which mirrors the weaker decile
+separation at $I=20$ and $I=60$. This does not contradict the short-horizon
+result. Rather, it suggests that the strongest economic content of the chart
+representation is concentrated in recent price and volume patterns. Because
+Figure~\ref{fig:fig8} is gross of transaction costs, it should be read together with
+Table~\ref{tab:table1}: once turnover and transaction costs are applied, only
+the weekly CNN spread retains a robust net Sharpe ratio.
 
 \subsection{Decile portfolio statistics}
 
@@ -513,8 +540,7 @@ most of the gross spread.
   \end{tabular}
 \end{table}
 
-Table~\ref{tab:table1} confirms the pattern evident in Figure~\ref{fig:fig7}
-and the cumulative-return evidence in Figure~\ref{fig:fig8}: only the $I=5$
+Table~\ref{tab:table1} confirms what Figure~\ref{fig:fig7} shows in cross-section together with Figure~\ref{fig:fig8} (risk-matched gross time series): only the $I=5$
 horizon delivers a
 robust net H--L spread (annualised SR $1.29$). At $I=20$ the H--L SR is
 $0.16$, and at $I=60$ the spread is mildly negative ($-0.11$). The
@@ -671,8 +697,11 @@ Every numerical claim in this paper traces back to a file in
         \texttt{pipeline\_runs/figures/}; decile-level CSVs via
         \texttt{fig7\_simple\_I\{5,20,60\}\_*.csv} (the pipeline additionally
         exports Figure~6-style tables for reproducibility auditing).
-  \item Figure~\ref{fig:fig8}: PNGs in
-        \texttt{ppt\_images/ppt15\_cumulative\_returns\{,\_gross\}\_L\{5,20,60\}.png}.
+  \item Figure~\ref{fig:fig8}:
+        \texttt{pipeline\_runs/figures/figure5\_vol\_adjusted\_cumlog.png}
+        produced by \texttt{scripts/pipeline\_split/plot\_figure5\_vol\_adjusted\_cumlog.py}
+        from cached \texttt{backtest\_I\{5,20,60\}.pkl} and a downloaded equity benchmark;
+        optional auxiliary six-panel grids remain in \texttt{ppt\_images/ppt15\_cumulative\_returns*.png}.
   \item Table~\ref{tab:table1}:
         \texttt{pipeline\_runs/tables/table1\_I\{5,20,60\}.csv}.
   \item Table~\ref{tab:classmetrics}:
@@ -752,7 +781,7 @@ has been constructed.
   \label{fig:fig7-i60}
 \end{figure}
 
-
+\newpage
 \input{checklist.tex}
 
 

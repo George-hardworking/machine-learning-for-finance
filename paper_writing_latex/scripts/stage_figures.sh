@@ -16,4 +16,5 @@ cp "$SRC/ppt_images/ppt15_cumulative_returns_L60.png"       "$DST/cum_ret_net_L6
 cp "$SRC/ppt_images/ppt15_cumulative_returns_gross_L5.png"  "$DST/cum_ret_gross_L5.png"
 cp "$SRC/ppt_images/ppt15_cumulative_returns_gross_L20.png" "$DST/cum_ret_gross_L20.png"
 cp "$SRC/ppt_images/ppt15_cumulative_returns_gross_L60.png" "$DST/cum_ret_gross_L60.png"
+cp "$SRC/pipeline_runs/figures/figure5_vol_adjusted_cumlog.png" "$DST/figure5_vol_adjusted_cumlog.png"
 echo "Staged $(ls "$DST" | wc -l) figure files into $DST"
