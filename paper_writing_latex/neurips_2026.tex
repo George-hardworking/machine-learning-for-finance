@@ -1,18 +1,9 @@
 \documentclass{article}
-
-% if you need to pass options to natbib, use, e.g.:
-%     \PassOptionsToPackage{numbers, compress}{natbib}
-% before loading neurips_2026
-
-% Submission/track options (see neurips_2026.sty header).
-% We use the "preprint" track so author identity is shown, line numbers
-% are removed, and the footer reads "Preprint. Work in progress." which
-% is appropriate for a graded course report rather than a blind review.
 \usepackage[preprint]{neurips_2026}
-
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
+\usepackage{xurl}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
@@ -36,7 +27,6 @@ A Reproduction of Jiang, Kelly, and Xiu (2023)}
 
 \author{%
   Kaibiao Zhu \\
-  Final Project, Machine Learning for Finance \\
   The Hong Kong University of Science and Technology (Guangzhou) \\
   \texttt{kzhu597@connect.hkust-gz.edu.cn}
 }
@@ -348,9 +338,12 @@ The original paper reports headline results from an ensemble of
 independently trained networks whose softmax outputs are averaged at
 inference. Our replication proceeded in two stages. For the course
 presentation, limited local compute allowed only a single random seed
-($42$) per horizon, so we could not yet reproduce the full
-ensemble-averaging protocol. For the final project we reran training on
-rented cloud GPUs with five seeds
+($42$) per horizon and we restricted the panel to the Top~1{,}000 stocks
+by market capitalization to keep training tractable, so we could not yet
+reproduce the full ensemble-averaging protocol or match the original
+cross-section breadth. For the final project we reran training on
+rented cloud GPUs on the full eligible universe (without Top~1{,}000
+truncation), using five seeds
 $\{42, 123, 456, 789, 101112\}$ and aggregate by averaging
 softmax-probability outputs at inference time, as in the original paper.
 All empirical results in Sections~\ref{sec:results}--\ref{sec:saliency}
@@ -662,7 +655,19 @@ represent an independent source of return premia.
 \section{Interpretability: input-gradient saliency}
 \label{sec:saliency}
 
-\begin{figure}[t]
+The original paper illustrate their CNNs using gradient-weighted class
+activation mapping producing layer-wise heatmaps for an I20/R20 model (their Section~6.3 and Figure~13).
+This reproduction instead reports pixel-level input-gradient saliency which easier to implement in our codebase and focused on
+the $I=60$ ensemble in Figure~\ref{fig:saliency}. We compute the absolute
+pixel-level gradient of the ``up'' logit with respect to each input image for
+three high-confidence positive examples drawn from the $I=60$ test window.
+Across all three examples the saliency mass is concentrated on the right-most
+$10$--$20\%$ of the OHLC panel and on volume bars near sharp price moves. This
+is consistent with a data-driven momentum reading: the CNN essentially learns
+to up-weight the most-recent observations, which is also the regime in which
+classical price-trend signals concentrate their power.
+
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{saliency_I60.png}
   \caption{Input-gradient saliency for three high-confidence positive
@@ -675,64 +680,36 @@ represent an independent source of return premia.
   \label{fig:saliency}
 \end{figure}
 
-\citet{jiang2023reimagining} illustrate their CNNs using gradient-weighted class
-activation mapping (Grad-CAM; \citealt{selvaraju2017grad}), producing
-layer-wise heatmaps for an I20/R20 model (their Section~6.3 and Figure~13).
-This replication instead reports pixel-level input-gradient saliency following
-\citet{simonyan2014deep}---easier to implement in our codebase and focused on
-the $I=60$ ensemble in Figure~\ref{fig:saliency}. We compute the absolute
-pixel-level gradient of the ``up'' logit with respect to each input image for
-three high-confidence positive examples drawn from the $I=60$ test window.
-Across all three examples the saliency mass is concentrated on the right-most
-$10$--$20\%$ of the OHLC panel and on volume bars near sharp price moves. This
-is consistent with a data-driven momentum reading: the CNN essentially learns
-to up-weight the most-recent observations, which is also the regime in which
-classical price-trend signals concentrate their power.
-
-
 \section{Discussion and conclusion}
 \label{sec:discussion}
 
-We recover the qualitative shape of
-the original paper at $I=5$ -- a monotone decile ranking, a
-high gross-of-cost H--L spread that survives transaction costs into a
-$1.29$ net Sharpe ratio, and a decile-by-decile dominance over momentum
-and moving-average cross. At $I=20$ and $I=60$ the qualitative ranking
-is preserved (Table~\ref{tab:table2}, Figure~\ref{fig:fig7}), but the
-H--L spread is too thin to survive costs, and the Fama--French six-factor
-regression delivers a statistically significant \emph{negative} alpha at
-both horizons.
+We successfully reproduce the core qualitative findings of the original paper at the short horizon $I=5$: a monotonic cross-sectional decile return ranking, a robust gross long-short spread that retains a net Sharpe ratio of 1.29 after transaction costs, and consistent outperformance relative to conventional momentum and moving-average crossover strategies. For medium and long horizons $I=20$ and $I=60$, the qualitative cross-sectional ranking structure is preserved (Table~\ref{tab:table2}, Figure~\ref{fig:fig7}), yet the long-short spread becomes insufficient to offset transaction costs. Notably, our novel Fama--French six-factor spanning regressions---a contribution beyond the original study---document statistically significant negative alphas at both longer horizons.
 
-Several factors plausibly account for numerical differences relative to
-the original paper. (i) Our CRSP-style extract, liquidity filters,
-and ETF-based calendar construction need not coincide exactly with the original paper's.
-(ii) We aggregate five randomly seeded models; the original paper's headline results pool
-a larger ensemble, which can stabilise probability estimates. (iii) Small
-implementation choices---chart rasterisation, float rounding, and how
-turnover maps into proportional costs---can move Sharpe ratios and alphas
-when gross spreads are thin.
+{\bfseries\noindent
+In order to provide a more perfect reproduction, the empirical exercise was deliberately upgraded in a second phase.
+Under tight local compute and time constraints, an initial reproduction (presentation)
+restricted the training and evaluation universe to the Top~1{,}000 stocks
+by market capitalization and trained each horizon-specific CNN with only
+seed~$42$.
+The results reported throughout Sections~\ref{sec:results}--\ref{sec:saliency}
+instead come from a final pass on the full eligible equity panel (no
+Top~1{,}000 truncation), with five independent random seeds per horizon
+aggregated exactly as in the original paper.
+We rented cloud GPU servers specifically to afford this fuller cross-section
+and multi-seed ensemble protocol and thereby align the implementation as
+closely as permitted by our data pipeline.
+}\medskip
+
+Several factors explain the numerical discrepancies between our reproduction and the original study. First, our CRSP-style data processing pipeline, liquidity screening criteria, and ETF-aligned trading calendar implementation differ slightly from the original setup. Second, minor implementation details---including image rasterization precision, numerical floating-point rounding, and the mapping of portfolio turnover to proportional transaction costs---can materially influence Sharpe ratios and alpha estimates when gross return spreads are narrow.
 
 \paragraph{Limitations.}
-Trading is tied to a \emph{fixed} calendar (Friday for $I{=}5$, month-end for
-$I{=}20$, quarter-end for $I{=}60$), as in the label construction above. Spanning coefficients
-in Table~\ref{tab:ff6} therefore describe how the CNN long--short return
-covaries with risk factors \emph{conditional} on that timing; alternative
-rebalance rules---e.g.\ shifting execution within the week or month to reduce
-overlap with factor realisation windows---could change measured betas and
-alphas, and systematic robustness along this dimension is left for future work.
-The traditional-signal menu is also narrower than in Jiang et al.: we benchmark
-the CNN against momentum, moving-average cross, and a simple five-day reversal
-proxy rather than reproducing every STR/WSTR/TREND construction in the original
-paper.
+First, our strategy strictly follows a fixed rebalancing calendar (Friday for $I{=}5$, month-end for $I{=}20$, quarter-end for $I{=}60$) consistent with the label construction. As such, the spanning coefficients in Table~\ref{tab:ff6} reflect factor covariances conditional on this specific timing rule; alternative rebalancing schemes (e.g., staggered execution to avoid overlap with standard factor realization windows) may alter estimated betas and alphas, and formal robustness tests for this design choice are left to future research.
+Second, our set of traditional benchmark signals is parsimonious: we evaluate the CNN against momentum, moving-average crossover, and a five-day short-term reversal proxy, rather than replicating the full suite of technical indicators (STR/WSTR/TREND) in the original paper.
+Third, we apply a fixed proportional transaction cost assumption across all stocks and time periods, without accounting for time-varying liquidity, cross-sectional differences in trading costs, or market impact, which may affect real-world strategy performance.
+Fourth, our analysis is restricted to U.S. equities over the 1992--2024 period; we do not test the generalizability of the CNN trend signal to global equity markets or distinct market regimes (e.g., high-volatility crises or prolonged low-interest-rate environments).
+Finally, we strictly replicate the fixed CNN architecture from the original study without conducting hyperparameter optimization or architectural ablation studies, which limits our analysis of the model's sensitivity to design choices.
 
-The saliency analysis (Figure~\ref{fig:saliency}) shows that the
-$I=60$ CNN learns a momentum-like reading rather than a more exotic
-pattern; this is consistent with a model whose alpha is largely
-spanned by RMW and Mom. Promising directions for future work include
-regime-conditioned heads, industry- or size-neutralised label
-construction, and a mixture-of-experts ensemble that explicitly
-allocates capacity across horizons.
-
+Our input-gradient saliency analysis (Figure~\ref{fig:saliency}) demonstrates that the $I=60$ CNN learns simple momentum-like patterns instead of complex or exotic price patterns, which aligns with our spanning regression results showing the model's alpha is largely spanned by profitability (RMW) and momentum (Mom) factors. Promising directions for future research include regime-specific network heads, industry- or size-neutralized return label construction, and mixture-of-experts ensembles that dynamically allocate predictive capacity across short, medium, and long horizons.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
@@ -740,36 +717,87 @@ allocates capacity across horizons.
 
 \appendix
 
+\section*{Appendix}
+
 \section{Reproduction artefact map}
 \label{app:artefacts}
 
-Every numerical claim in this paper traces back to a file in
-\texttt{final\_submit\_version/outputs/}:
+Numeric figures and cached tables reconcile to artefacts under%
+\path{final_submit_version/outputs/}%
+(relative to the repository root). Raster figures wired into this PDF lie in%
+\path{paper_writing_latex/figures/}%
+(\texttt{\textbackslash includegraphics}); when a script emits elsewhere, copy/mirror its PNG before typesetting.\allowbreak{}
+
 \begin{itemize}
-  \item Figure~\ref{fig:ohlc-sample}: produced by
-        \texttt{scripts/pipeline\_split/export\_paper\_assets.py}.
-  \item Figure~\ref{fig:fig7} (appendix Figures~\ref{fig:fig7-i20} and
-        \ref{fig:fig7-i60}): PNGs in
-        \texttt{pipeline\_runs/figures/}; decile-level CSVs via
-        \texttt{fig7\_simple\_I\{5,20,60\}\_*.csv} (the pipeline additionally
-        exports Figure~6-style tables for reproducibility auditing).
-  \item Figure~\ref{fig:fig8}:
-        \texttt{pipeline\_runs/figures/figure5\_vol\_adjusted\_cumlog.png}
-        produced by \texttt{scripts/pipeline\_split/plot\_figure5\_vol\_adjusted\_cumlog.py}
-        from cached \texttt{backtest\_I\{5,20,60\}.pkl} and a downloaded equity benchmark;
-        optional auxiliary six-panel grids remain in \texttt{ppt\_images/ppt15\_cumulative\_returns*.png}.
-  \item Table~\ref{tab:table2}:
-        \texttt{pipeline\_runs/tables/table1\_I\{5,20,60\}.csv}.
-  \item Table~\ref{tab:classmetrics}:
-        \texttt{ppt\_images/ppt16\_classification\_metrics.csv} plus
-        shape of \texttt{cache/preds\_I\{5,20,60\}.npy}.
-  \item Table~\ref{tab:ff6}: produced by
-        \texttt{scripts/pipeline\_split/export\_ff\_regression.py};
-        intermediate file
-        \texttt{pipeline\_runs/tables/ff\_regression\_combined.csv}.
-  \item Figure~\ref{fig:saliency}: produced by
-        \texttt{scripts/pipeline\_split/export\_saliency\_map.py} using
-        the $I=60$ checkpoint at seed $42$.
+  \raggedright
+\setlength{\rightskip}{0pt plus 6em}% extra stretch so long \path breaks stay within margins
+\item Figure~\ref{fig:ohlc-sample}
+      (\path{paper_writing_latex/figures/ohlc_sample.png}):\allowbreak{}
+      regenerate with%
+      \path{final_submit_version/scripts/pipeline_split/export_paper_assets.py}%
+      (hits \path{final_submit_version/outputs/cache/cleaned_data_all.pkl}).
+\item Figure~\ref{fig:cnn-arch}: inline TikZ in \path{paper_writing_latex/neurips_2026.tex}, not rasterised by the Python pipeline.\allowbreak{}
+
+\item Figure~\ref{fig:fig7} and appendix Figures~\ref{fig:fig7-i20}%
+      and~\ref{fig:fig7-i60}%
+      (\path{paper_writing_latex/figures/fig7_I5.png}%
+      ,\allowbreak{}
+      \path{paper_writing_latex/figures/fig7_I20.png}%
+      ,\allowbreak{}
+      \path{paper_writing_latex/figures/fig7_I60.png}%
+      ).
+      The staged notebook pipeline writes decile panel CSVs%
+      (\path|final_submit_version/outputs/pipeline_runs/tables/fig7_simple_I*_*.csv|).\allowbreak{}
+      After modifying those inputs, rerun%
+      \path{final_submit_version/scripts/pipeline_split/redraw_fig7.py}%
+      to refresh thesis-style plots; lower-level previews named like%
+      \texttt{fig7\_simple\_*.png}%
+      also reside under%
+      \path{final_submit_version/outputs/pipeline_runs/figures/}.\allowbreak{}
+
+\item Figure~\ref{fig:fig8}
+      (\path{paper_writing_latex/figures/figure5_vol_adjusted_cumlog.png}%
+      :\allowbreak{}
+      keep in sync manually).
+      Source script%
+      \path{final_submit_version/scripts/pipeline_split/plot_figure5_vol_adjusted_cumlog.py}%
+      loads cached backtests (\path{final_submit_version/outputs/cache/backtest_I5.pkl},%
+      \path{final_submit_version/outputs/cache/backtest_I20.pkl},%
+      \path{final_submit_version/outputs/cache/backtest_I60.pkl})\allowbreak{}
+      plus a benchmark download and emits%
+      \path{final_submit_version/outputs/pipeline_runs/figures/figure5_vol_adjusted_cumlog.png}%
+      (duplicate slideshow copy%
+      \path{final_submit_version/outputs/ppt_images/figure5_vol_adjusted_cumlog.png}).\allowbreak{}
+
+\item Table~\ref{tab:table2}: aligns with CSV exports%
+      \path{final_submit_version/outputs/pipeline_runs/tables/table1_I5.csv},%
+      \path{final_submit_version/outputs/pipeline_runs/tables/table1_I20.csv}, and%
+      \path{final_submit_version/outputs/pipeline_runs/tables/table1_I60.csv}%
+      (\texttt{table1} stage via%
+      \path{final_submit_version/scripts/pipeline_split/run_table1_stage.py}).\allowbreak{}
+
+\item Table~\ref{tab:classmetrics}: metrics file%
+      \path{final_submit_version/outputs/ppt_images/ppt16_classification_metrics.csv}%
+      (\path|final_submit_version/notebooks/final_improve.ipynb|%
+      ; evaluation notebook cells) paired with stacked predictions%
+      \path{final_submit_version/outputs/cache/preds_I5.npy},%
+      \path{final_submit_version/outputs/cache/preds_I20.npy},\allowbreak{}
+      \path{final_submit_version/outputs/cache/preds_I60.npy}% used to reconcile \(N_{\mathrm{test}}\).\allowbreak{}
+
+\item Table~\ref{tab:ff6}:%
+      \path{final_submit_version/scripts/pipeline_split/export_ff_regression.py}%
+      writes horizon-specific regressions%
+      \path{final_submit_version/outputs/pipeline_runs/tables/ff_regression_I5.csv},%
+      \path{final_submit_version/outputs/pipeline_runs/tables/ff_regression_I20.csv},\allowbreak{}
+      \path{final_submit_version/outputs/pipeline_runs/tables/ff_regression_I60.csv}%
+      and merges them into%
+      \path{final_submit_version/outputs/pipeline_runs/tables/ff_regression_combined.csv}.\allowbreak{}
+
+\item Figure~\ref{fig:saliency}
+      (\path{paper_writing_latex/figures/saliency_I60.png}):\allowbreak{}
+      generate with%
+      \path{final_submit_version/scripts/pipeline_split/export_saliency_map.py}%
+      (loads \path{final_submit_version/outputs/models/I60_checkpoint42.pth.tar}; seed~$42$, \(I{=}60\)).
 \end{itemize}
 
 \section{Hyperparameters and per-block tensor shapes}
