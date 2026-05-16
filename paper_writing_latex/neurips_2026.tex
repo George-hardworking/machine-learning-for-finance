@@ -50,14 +50,14 @@ A Reproduction of Jiang, Kelly, and Xiu (2023)}
 
 \begin{abstract}
 This paper reproduces the image-based price-trend prediction framework of
-\citet{jiang2023reimagining}, which replaces predefined technical indicators
+\citet{jiang2023reimagining} (hereafter the \emph{original paper}), which replaces predefined technical indicators
 with OHLC-volume charts and convolutional neural networks (CNNs). Using CRSP
 daily U.S. equity data, we reconstruct the image pipeline, train horizon-specific
 CNN ensembles, and evaluate the resulting signals through out-of-sample backtests. We compare the CNN signals with momentum,
 moving-average, and reversal benchmarks, and assess residual performance through
 factor-spanning regressions. The reproduction is strongest at short horizons,
 where image-based signals deliver the best economic performance. Relative to
-the magnitudes reported by \citet{jiang2023reimagining}, medium- and
+the magnitudes reported by the original paper, medium- and
 long-horizon strategies weaken substantially after costs, and factor stripping
 yields significantly negative alphas. Saliency
 maps indicate that the CNN mainly attends to recent price movement and volume
@@ -71,11 +71,11 @@ can be audited and extended.
 
 Technical analysis has long suggested that the visual ``shape'' of a price
 chart conveys information beyond what is captured by scalar momentum or
-moving-average filters. \citet{jiang2023reimagining} formalise this intuition
+moving-average filters. The original paper formalises this intuition
 by feeding fixed-resolution open--high--low--close (OHLC) images with a
 volume sub-panel into a convolutional neural network and showing that the
 resulting forecasts dominate canonical price-trend signals out of sample.
-Their work joins a growing empirical asset-pricing literature that uses
+The study joins a growing empirical asset-pricing literature that uses
 flexible machine-learning predictors to map raw historical features into
 expected returns \citep{gu2020empirical,kelly2019characteristics}, and it
 ties directly to early efforts at formalising chart patterns via kernel
@@ -83,15 +83,15 @@ smoothing \citep{lo2000foundations}.
 
 This paper re-implements the core pipeline from end to end and evaluates it
 under the same in-sample and out-of-sample calendar design as
-\citet{jiang2023reimagining}: training and validation draw from 1993--2000
+the original paper: training and validation draw from 1993--2000
 with a 70/30 random sample split, and headline out-of-sample results are
 reported for 2001--2019. Our contributions are:
 \begin{enumerate}
   \item An independent OHLC-plus-volume image renderer and horizon-matched CNN
         stacks built from the dimensions, drawing rules, and layer geometry
-        documented in \citet{jiang2023reimagining}---including the simple
+        documented in the original paper---including the simple
         moving-average overlay, volume sub-panel, and vertical orientation
-        convention---implemented from the paper's written specification and
+        convention---implemented from the original paper's written specification and
         reported tensor dimensions.
   \item A CRSP-style daily panel for data construction, with headline
         out-of-sample CNN evaluation as above; proportional transaction
@@ -115,7 +115,7 @@ training recipe. Section~\ref{sec:results} reports empirical results
 classification metrics, decile portfolio statistics, and Fama--French
 spanning regressions). Section~\ref{sec:saliency} visualises model
 attention. Section~\ref{sec:discussion} discusses where our results align
-with and diverge from \citet{jiang2023reimagining}.
+with and diverge from the original paper.
 
 
 \section{Related work}
@@ -135,7 +135,7 @@ that are difficult to capture with closed-form characteristics. \citet{gu2020emp
 benchmark a broad set of supervised learners on U.S. equities;
 \citet{kelly2019characteristics} use latent-factor models with characteristic
 loadings. Within technical analysis, \citet{sezer2018algorithmic} convert
-indicators into images for trading. \citet{jiang2023reimagining} unify these
+indicators into images for trading. The original paper unifies these
 threads by treating the OHLC chart itself as the model input.
 
 \paragraph{Interpretability via input gradients.}
@@ -151,7 +151,7 @@ technique to identify which segments of each OHLC image drive the model's
 
 \paragraph{Universe.}
 We employ a CRSP-consistent daily security-level panel of U.S. equities
-spanning January 1, 1992, to December 31, 2024. Data are observed at the
+spanning 1992-01-01, to 2024-12-31. Data are observed at the
 daily frequency for each security, uniquely identified by its CRSP permanent
 security number (PERMNO). The panel includes core trading and pricing
 fields: daily market capitalization, total and price returns, trading
@@ -173,7 +173,7 @@ fixed at period-end calendar boundaries (Friday for $F=5$, month-end for
 $F=20$, quarter-end for $F=60$), matching the canonical SPY trade calendar.
 
 \paragraph{Image construction.}
-Following \citet{jiang2023reimagining}, we encode each stock--date
+Following the original paper, we encode each stock--date
 observation as a fixed-size grayscale \emph{chart image} rather than a
 vector of technical indicators. The background is black (pixel value~0)
 and all price--volume objects are drawn in white (255). We consider three
@@ -204,7 +204,7 @@ chart date.
 
 \emph{Volume sub-panel.}
 The lower portion of the image displays volume bars. As in
-\citet{jiang2023reimagining}, the volume chart is drawn along the bottom of
+the original paper, the volume chart is drawn along the bottom of
 the image and occupies one-fifth of the total height; the OHLC panel fills
 the upper four-fifths, with a one-pixel gap between the two regions. Within
 the volume band,
@@ -215,9 +215,12 @@ blank.
 \emph{Image dimensions.}
 Because each day uses three pixel columns, the image width is $W=3I$.
 The total height $H$ stacks the OHLC block, the separator, and the volume
-band. The $(W,H)$ pairs used in our implementation, identical to those reported
-by \citet{jiang2023reimagining}, are:
-\begin{center}
+band. Table~\ref{tab:image-dims} reports the $(W,H)$ pairs used in our
+implementation, identical to those in the original paper.
+\begin{table}[ht]
+  \centering
+  \caption{Image Dimensions}
+  \label{tab:image-dims}
   \begin{tabular}{ccc}
     \toprule
     Horizon & $W$ & $H$ \\
@@ -227,28 +230,34 @@ by \citet{jiang2023reimagining}, are:
     $I=60$ & 180 & 96 \\
     \bottomrule
   \end{tabular}
-\end{center}
+\end{table}
 
-Figure~\ref{fig:ohlc-sample} illustrates the three horizons for one security
-on the same calendar date, so the reader can compare how a longer look-back
-compresses the same price path into a wider and taller canvas.
+Figure~\ref{fig:ohlc-sample} provides a concrete illustration of the
+construction rules above. We plot the same security on the same calendar
+anchor for $I\in\{5,20,60\}$, so the only deliberate difference across panels
+is the look-back length. The left panel ($I=5$) is the coarsest view: fifteen
+columns of price action and a compact volume strip. The centre and right
+panels progressively widen the canvas to sixty and one hundred eighty columns,
+revealing more fine-grained OHLC structure, a longer SMA trace, and richer
+intra-window variation in volume. Because every image fed to the CNN has
+fixed $(W,H)$ for a given horizon, longer windows do not add pixels per
+trading day; instead, the model sees the same economic history at three
+standardised resolutions, analogous to viewing a price chart at weekly,
+monthly, and quarterly zoom levels.
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{ohlc_sample.png}
   \caption{OHLC-plus-volume images for a single security at horizons
-    $I\in\{5,20,60\}$. The same calendar anchor (2015-12-18) is used so
-    the visual density at different resolutions is directly comparable.}
+    $I\in\{5,20,60\}$.}
   \label{fig:ohlc-sample}
 \end{figure}
 
 \paragraph{Train/validation/test split.}
-We follow \citet{jiang2023reimagining} in treating the early portion of
+We follow the original paper in treating the early portion of
 the panel as in-sample. Training is performed on 1993--2000 with a
-70/30 random sample-level split for training/validation. Out-of-sample
-backtests start in 2001 and run through to the end of the cached panel.
-For the headline tables and figures we report results from 2001-01 to
-2019-12 to align with where all baseline ETFs (used for calendar
-construction) have continuous coverage.
+70/30 random sample-level split for training/validation. Out-of-sample backtests start in January 2001. Headline tables and figures
+report results through December 2019, matching the evaluation window in
+the original paper.
 
 
 \section{CNN architecture and training}
@@ -314,7 +323,7 @@ Table~\ref{tab:cnn-layers} (Appendix~\ref{app:hyper}).
     \node[left=2mm of i60in] {$I=60$};
   \end{tikzpicture}
   \caption{Horizon-specific CNN backbones (cf.\ Figure~2 of
-    \citet{jiang2023reimagining}). Each rectangle is one block:
+    the original paper). Each rectangle is one block:
     $5{\times}3$ convolution (with the channel width shown), LeakyReLU,
     batch normalisation, and $2{\times}1$ max pooling. Stride and dilation
     for $I=20$ and $I=60$ are in Table~\ref{tab:cnn-layers}. FC widths
@@ -364,7 +373,7 @@ both legs.
   \end{subfigure}
   \caption{Annualised decile returns by horizon for the CNN, matched-horizon
     momentum, and moving-average cross signals. Reproduction of Figure~6 of
-    \citet{jiang2023reimagining}; all series are computed from the same
+    the original paper; all series are computed from the same
     out-of-sample prediction panels and rebalance calendar.}
   \label{fig:fig6}
 \end{figure}
@@ -412,9 +421,9 @@ baseline whose D10 annualised return reaches $37.78\%$ (driven by the
 microstructure-style bid--ask bounce on which it relies). At $I=20$ the
 momentum and moving-average curves display the same U-shaped pattern noted
 above, and the CNN's monotone ranking is qualitatively closer to the
-monthly-frequency pattern they emphasise when comparing CNN deciles to
+monthly-frequency pattern the original paper emphasises when comparing CNN deciles to
 traditional signals. At $I=60$ the CNN ranking is nearly horizontal both
-here and in their Figure~6(c),
+here and in Figure~6(c) of the original paper,
 consistent with the well-documented attenuation of price-trend signals
 at quarterly horizons.
 
@@ -463,11 +472,12 @@ substantially attenuated: with turnover at $84.08\%$ and $86.68\%$ per
 period (Table~\ref{tab:table1}), the $20$\,bp round-trip cost erases
 most of the gross spread.
 
-\subsection{Decile portfolio statistics (Table~1 reproduction)}
+\subsection{Decile portfolio statistics}
 
 \begin{table}[t]
   \centering
-  \caption{Equal-weighted decile portfolio statistics (Table~1 reproduction).
+  \caption{Equal-weighted decile portfolio statistics (reproduction of
+    Table~1 in the original paper).
     \texttt{Ret} is annualised mean return, \texttt{Std} annualised standard
     deviation, \texttt{SR} the resulting Sharpe ratio. ``H--L'' columns
     are for the long--short decile spread net of $20$\,bp round-trip
@@ -510,7 +520,7 @@ survive transaction costs.
 \begin{table}[t]
   \centering
   \caption{Out-of-sample binary classification metrics for the CNN
-    ensemble. $N_{\mathrm{test}}$ is the number of rebalance-day
+    ensemble (2001--2019). $N_{\mathrm{test}}$ is the number of rebalance-day
     observations scored by the five-seed ensemble.}
   \label{tab:classmetrics}
   \small
@@ -526,7 +536,7 @@ survive transaction costs.
 \end{table}
 
 Table~\ref{tab:classmetrics} shows that AUC rises with horizon, in line
-with \citet{jiang2023reimagining}, who argue that longer
+with the original paper, which argues that longer
 look-back windows expose more learnable structure; accuracy at $I=5$ is
 \emph{below} the $50\%$ benchmark, which is consistent with a left-skewed
 label distribution (more days lose money in the weekly rebalance
@@ -538,11 +548,11 @@ informative than the binary forecast.
 
 \begin{table}[t]
   \centering
-  \caption{Fama--French five-factor plus momentum spanning regression
-    of the net long--short CNN spread $r_t^{\mathrm{CNN,LS}}-r_t^f$
-    on $\{$Mkt--RF, SMB, HML, RMW, CMA, Mom$\}$ at the matched
-    rebalance frequency. Alphas are annualised; $t$-statistics are
-    reported in parentheses.}
+  \caption{Fama--French five-factor plus momentum spanning regressions for
+    the net CNN long--short spread. The dependent variable is
+    $r_t^{\mathrm{CNN,LS}}-r_t^f$ regressed on
+    $\{$Mkt--RF, SMB, HML, RMW, CMA, Mom$\}$ at the matched rebalance
+    frequency. Alphas are annualised; $t$-statistics are in parentheses.}
   \label{tab:ff6}
   \small
   \begin{tabular}{lccc}
@@ -607,7 +617,7 @@ price-trend signals concentrate their power.
 \label{sec:discussion}
 
 We recover the qualitative shape of
-\citet{jiang2023reimagining} at $I=5$ -- a monotone decile ranking, a
+the original paper at $I=5$ -- a monotone decile ranking, a
 high gross-of-cost H--L spread that survives transaction costs into a
 $1.29$ net Sharpe ratio, and a decile-by-decile dominance over momentum
 and moving-average cross. At $I=20$ and $I=60$ the qualitative ranking
@@ -617,9 +627,9 @@ regression delivers a statistically significant \emph{negative} alpha at
 both horizons.
 
 Several factors plausibly account for numerical differences relative to
-\citet{jiang2023reimagining}. (i) Our CRSP-style extract, liquidity filters,
-and ETF-based calendar construction need not coincide exactly with theirs.
-(ii) We aggregate five randomly seeded models; their headline results pool
+the original paper. (i) Our CRSP-style extract, liquidity filters,
+and ETF-based calendar construction need not coincide exactly with the original paper's.
+(ii) We aggregate five randomly seeded models; the original paper's headline results pool
 a larger ensemble, which can stabilise probability estimates. (iii) Small
 implementation choices---chart rasterisation, float rounding, and how
 turnover maps into proportional costs---can move Sharpe ratios and alphas
@@ -676,8 +686,9 @@ Conv$\to$BatchNorm$\to$LeakyReLU($0.01$)$\to$MaxPool$(2,1)$ pattern.
 
 \begin{table}[h]
   \centering
-  \caption{Per-block convolutional configuration. ``--'' denotes a block
-    that the horizon does not use.}
+  \caption{CNN backbone configuration by horizon. ``--'' denotes a
+    convolutional block not used for that horizon. FC input dimensions match
+    Figure~\ref{fig:cnn-arch}.}
   \label{tab:cnn-layers}
   \small
   \begin{tabular}{lccc}
