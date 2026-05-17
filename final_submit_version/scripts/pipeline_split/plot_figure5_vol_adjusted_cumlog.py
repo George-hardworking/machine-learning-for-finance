@@ -6,11 +6,14 @@ rebalance (I=R), not the paper's I*/R5 weekly overlay.
 
 Outputs (300 dpi PNG):
 
-- ``final_submit_version/outputs/pipeline_runs/figures/figure5_vol_adjusted_cumlog.png``
-- ``final_submit_version/outputs/ppt_images/figure5_vol_adjusted_cumlog.png``
+- ``figure5_vol_adjusted_cumlog.png`` — gross of transaction costs
+- ``figure5_vol_adjusted_cumlog_net.png`` — net of proportional costs (same σ-matching)
+
+Also copies to ``final_submit_version/outputs/ppt_images/``.
 """
 from __future__ import annotations
 
+import shutil
 import sys
 from pathlib import Path
 
@@ -28,11 +31,10 @@ FIG_DIR = REPO_ROOT / "final_submit_version" / "outputs" / "pipeline_runs" / "fi
 PPT_DIR = REPO_ROOT / "final_submit_version" / "outputs" / "ppt_images"
 
 
-def main() -> None:
-    import matplotlib.pyplot as plt
-
+def _build_series_spec(*, gross: bool) -> list[tuple[str, object, str]]:
+    """Return list of (legend math name, cumulative log series, color key)."""
     series_spec: list[tuple[str, object, str]] = []
-
+    cost_tag = "gross" if gross else "net"
     bt5 = load_backtest(5)
     bt20 = load_backtest(20)
     bt60 = load_backtest(60)
@@ -44,36 +46,44 @@ def main() -> None:
     spy5 = compound_spy_over_schedule(bench_daily, bt5.index)
     common5 = spy5.index.intersection(bt5.index)
 
-    def add_scaled(name: str, col: str) -> None:
+    def add_scaled(name: str, col: str, color_key: str) -> None:
         r = bt5[col].reindex(common5).dropna()
         s = spy5.reindex(r.index).dropna()
         idx = r.index.intersection(s.index)
         c = vol_scaled_cumulative_log(r.reindex(idx), s.reindex(idx))
         if len(c) > 0:
-            series_spec.append((name, c, col))
+            series_spec.append((name, c, color_key))
 
-    add_scaled(r"CNN I5/R5 ($\mathrm{EW}$, gross)", "CNN_LS_gross_EW")
-    add_scaled(r"CNN I5/R5 ($\mathrm{VW}$, gross)", "CNN_LS_gross_VW")
-    add_scaled("Momentum (weekly H–L, gross)", "Mom_LS_gross")
-    add_scaled("MA cross (weekly H–L, gross)", "MA_LS_gross")
+    cnn_ew = f"CNN_LS_{cost_tag}_EW"
+    cnn_vw = f"CNN_LS_{cost_tag}_VW"
+    add_scaled(rf"CNN I5/R5 ($\mathrm{{EW}}$, {cost_tag})", cnn_ew, "CNN_LS_gross_EW")
+    add_scaled(rf"CNN I5/R5 ($\mathrm{{VW}}$, {cost_tag})", cnn_vw, "CNN_LS_gross_VW")
+    add_scaled(rf"Momentum (weekly H–L, {cost_tag})", f"Mom_LS_{cost_tag}", "Mom_LS_gross")
+    add_scaled(rf"MA cross (weekly H–L, {cost_tag})", f"MA_LS_{cost_tag}", "MA_LS_gross")
 
-    for h, bt, tag in ((20, bt20, "I20/R20"), (60, bt60, "I60/R60")):
+    for h, bt, horizon_label in ((20, bt20, "I20/R20"), (60, bt60, "I60/R60")):
         spy_h = compound_spy_over_schedule(bench_daily, bt.index)
-        for col, sfx in (("CNN_LS_gross_EW", "EW"), ("CNN_LS_gross_VW", "VW")):
+        for sfx in ("EW", "VW"):
+            col = f"CNN_LS_{cost_tag}_" + sfx
             common = spy_h.index.intersection(bt.index)
             r = bt[col].reindex(common).astype(float)
             s = spy_h.reindex(common).astype(float)
             idx = r.dropna().index.intersection(s.dropna().index)
             c = vol_scaled_cumulative_log(r.reindex(idx), s.reindex(idx))
             if len(c) > 0:
-                series_spec.append((rf"CNN {tag} ($\mathrm{{{sfx}}}$, gross)", c, f"I{h}_{sfx}"))
+                color_key = f"I{h}_{sfx}"
+                series_spec.append(
+                    (rf"CNN {horizon_label} ($\mathrm{{{sfx}}}$, {cost_tag})", c, color_key)
+                )
 
     r_spy = spy5.dropna()
     c_spy = np.log1p(r_spy).cumsum()
     series_spec.append((rf"{bench_label} (weekly hold)", c_spy, "SPY"))
+    return series_spec
 
-    FIG_DIR.mkdir(parents=True, exist_ok=True)
-    PPT_DIR.mkdir(parents=True, exist_ok=True)
+
+def _plot_and_save(series_spec: list[tuple[str, object, str]], out_path: Path) -> None:
+    import matplotlib.pyplot as plt
 
     plt.figure(figsize=(11, 6.2), dpi=120)
     colors = {
@@ -92,21 +102,28 @@ def main() -> None:
         lw = 2.2 if key in {"CNN_LS_gross_EW", "SPY"} else 1.6
         plt.plot(curve.index, curve.values, label=name, color=c, linewidth=lw)
 
-    # plt.title(
-    #     f"Volatility-adjusted cumulative log returns (EW L/S; σ matched to {bench_label})",
-    #     fontsize=12,
-    # )
     plt.axhline(0.0, color="gray", linewidth=0.7, linestyle="-", alpha=0.4)
     plt.legend(loc="upper left", fontsize=8, framealpha=0.92)
     plt.grid(True, alpha=0.25)
     plt.tight_layout()
-    out1 = FIG_DIR / "figure5_vol_adjusted_cumlog.png"
-    out2 = PPT_DIR / "figure5_vol_adjusted_cumlog.png"
-    plt.savefig(out1, dpi=300, bbox_inches="tight")
-    plt.savefig(out2, dpi=300, bbox_inches="tight")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"wrote {out1}")
-    print(f"wrote {out2}")
+    print(f"wrote {out_path}")
+
+
+def main() -> None:
+    gross_spec = _build_series_spec(gross=True)
+    net_spec = _build_series_spec(gross=False)
+
+    out_gross = FIG_DIR / "figure5_vol_adjusted_cumlog.png"
+    out_net = FIG_DIR / "figure5_vol_adjusted_cumlog_net.png"
+    _plot_and_save(gross_spec, out_gross)
+    _plot_and_save(net_spec, out_net)
+
+    PPT_DIR.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(out_gross, PPT_DIR / "figure5_vol_adjusted_cumlog.png")
+    shutil.copy2(out_net, PPT_DIR / "figure5_vol_adjusted_cumlog_net.png")
 
 
 if __name__ == "__main__":

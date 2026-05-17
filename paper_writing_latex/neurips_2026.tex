@@ -451,8 +451,12 @@ problem for which it was not trained, and it makes turnover and holding-period
 returns internally comparable across the reported tables and figures.
 
 Figure~\ref{fig:fig8} reports cumulative \emph{volatility-adjusted} log
-returns. For a strategy with periodic gross spread $r_t^{s}$, and a benchmark
-holding-period return $r_t^{b}$ measured over the same interval, I compute
+returns in two panels: \subref{fig:fig8gross} is \emph{gross} of transaction costs;
+\subref{fig:fig8net} applies the same long--short returns \emph{after} proportional
+transaction costs (``net''), using identical volatility matching throughout. For
+each panel, let $r_t^{s}$ be the periodic decile spread (gross in
+\subref{fig:fig8gross}, net in \subref{fig:fig8net}), and let $r_t^{b}$ be the
+benchmark holding-period return over the same interval. I compute
 \[
   \tilde r_t^{s}
   =
@@ -477,31 +481,46 @@ original paper's common weekly-holding overlays.}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figure5_vol_adjusted_cumlog.png}
-  \caption{Cumulative volatility-adjusted log returns of gross long--short
-    portfolios. Each strategy is rescaled to the volatility of the benchmark
-    measured over the same holding intervals; no transaction costs are applied
-    in this figure.}
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figure5_vol_adjusted_cumlog.png}
+    \caption{Gross of transaction costs.}
+    \label{fig:fig8gross}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figure5_vol_adjusted_cumlog_net.png}
+    \caption{Net of proportional transaction costs (same $\sigma$-matching).}
+    \label{fig:fig8net}
+  \end{subfigure}
+  \caption{Cumulative volatility-adjusted log returns of long--short portfolios.
+    Panel~\subref{fig:fig8gross} uses decile spreads before transaction costs;
+    Panel~\subref{fig:fig8net} uses the same construction after proportional costs.
+    Each strategy is rescaled to the volatility of the benchmark measured over the
+    same holding intervals.}
   \label{fig:fig8}
 \end{figure}
 
 The figure supports the central economic message of the reproduction. On the
 weekly calendar, the CNN long--short portfolios accumulate substantially more
-volatility-adjusted return than the momentum and moving-average benchmarks. The
-equal-weighted CNN curve is especially strong, while the value-weighted version
+volatility-adjusted return than the momentum and moving-average benchmarks in
+\subref{fig:fig8gross}. Panel~\subref{fig:fig8net} shows that ranking is largely preserved net of costs, but cumulative slopes are lower and medium-horizon lines are closer to zero, in line with thinner net spreads. The
+equal-weighted CNN curve is especially strong in the gross panel, while the value-weighted version
 also remains above the traditional trend signals for most of the evaluation
 window. In contrast, momentum and moving-average spreads contribute little
 sustained growth after volatility matching, which is consistent with the
 decile evidence in Figure~\ref{fig:fig7}: scalar trend rules do not generate
 as stable a cross-sectional ordering as the image-based CNN score.
 
-The longer-horizon CNN curves are flatter, which mirrors the weaker decile
+The longer-horizon CNN curves are flatter in both panels, which mirrors the weaker decile
 separation at $I=20$ and $I=60$. This does not contradict the short-horizon
 result. Rather, it suggests that the strongest economic content of the chart
 representation is concentrated in recent price and volume patterns. Because
-Figure~\ref{fig:fig8} is gross of transaction costs, it should be read together with
-Table~\ref{tab:table2}: once turnover and transaction costs are applied, only
-the weekly CNN spread retains a robust net Sharpe ratio.
+\subref{fig:fig8gross} omits transaction costs for comparability with the
+original paper's gross exposition, it should be read together with
+\subref{fig:fig8net} and Table~\ref{tab:table2}: once turnover and transaction costs are applied, only
+the weekly CNN spread retains a robust net Sharpe ratio in the tabulated
+portfolio statistics.
 
 \subsection{Decile portfolio statistics}
 
@@ -537,7 +556,7 @@ the weekly CNN spread retains a robust net Sharpe ratio.
   \end{tabular}
 \end{table}
 
-Table~\ref{tab:table2} confirms what Figure~\ref{fig:fig7} shows in cross-section together with Figure~\ref{fig:fig8} (risk-matched gross time series): only the $I=5$
+Table~\ref{tab:table2} confirms what Figure~\ref{fig:fig7} shows in cross-section together with Figure~\ref{fig:fig8} (risk-matched gross and net time series): only the $I=5$
 horizon delivers a
 robust net H--L spread (annualised SR $1.29$). At $I=20$ the H--L SR is
 $0.16$, and at $I=60$ the spread is mildly negative ($-0.11$). The
@@ -756,8 +775,8 @@ Numeric figures and cached tables reconcile to artefacts under%
       \path{final_submit_version/outputs/pipeline_runs/figures/}.\allowbreak{}
 
 \item Figure~\ref{fig:fig8}
-      (\path{paper_writing_latex/figures/figure5_vol_adjusted_cumlog.png}%
-      :\allowbreak{}
+      (\path{paper_writing_latex/figures/figure5_vol_adjusted_cumlog.png} gross;
+      \path{paper_writing_latex/figures/figure5_vol_adjusted_cumlog_net.png} net;
       keep in sync manually).
       Source script%
       \path{final_submit_version/scripts/pipeline_split/plot_figure5_vol_adjusted_cumlog.py}%
@@ -765,9 +784,10 @@ Numeric figures and cached tables reconcile to artefacts under%
       \path{final_submit_version/outputs/cache/backtest_I20.pkl},%
       \path{final_submit_version/outputs/cache/backtest_I60.pkl})\allowbreak{}
       plus a benchmark download and emits%
-      \path{final_submit_version/outputs/pipeline_runs/figures/figure5_vol_adjusted_cumlog.png}%
-      (duplicate slideshow copy%
-      \path{final_submit_version/outputs/ppt_images/figure5_vol_adjusted_cumlog.png}).\allowbreak{}
+      \path{final_submit_version/outputs/pipeline_runs/figures/figure5_vol_adjusted_cumlog.png},%
+      \path{final_submit_version/outputs/pipeline_runs/figures/figure5_vol_adjusted_cumlog_net.png}%
+      (duplicate slideshow copies under%
+      \path{final_submit_version/outputs/ppt_images/}).\allowbreak{}
 
 \item Table~\ref{tab:table2}: aligns with CSV exports%
       \path{final_submit_version/outputs/pipeline_runs/tables/table1_I5.csv},%
